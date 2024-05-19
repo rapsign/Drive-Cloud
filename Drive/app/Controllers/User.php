@@ -11,4 +11,8 @@ class User extends BaseController
     {
         return view('user/index');
     }
+    public function recent()
+    {
+        return view('user/recent');
+    }
 }

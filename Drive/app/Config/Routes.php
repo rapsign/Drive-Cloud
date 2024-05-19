@@ -7,3 +7,4 @@ use CodeIgniter\Router\RouteCollection;
  */
 $routes->get('/', 'Authentication::index');
 $routes->get('/user', 'User::index');
+$routes->get('/user/recent', 'User::recent');

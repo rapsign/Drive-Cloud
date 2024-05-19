@@ -11,216 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-        }
-
-        .navbar {
-            background-color: #4285f4;
-            color: white;
-            position: relative;
-            z-index: 1100;
-            /* Ensure navbar is on top */
-        }
-
-        .navbar-brand,
-        .nav-link {
-            color: white !important;
-        }
-
-        /* CSS untuk tampilan daftar */
-        .list-view .file-item {
-            display: block;
-        }
-
-        /* CSS untuk tampilan ikon */
-        .icon-view .file-item {
-            display: inline-block;
-        }
-
-
-        .sidebar {
-            background-color: #ffffff;
-            border-right: 1px solid #dee2e6;
-            padding: 20px 0;
-            position: fixed;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            z-index: 1000;
-            overflow-y: auto;
-            width: 250px;
-            /* lebar sidebar */
-        }
-
-        .sidebar .nav-link {
-            color: black !important;
-        }
-
-        .sidebar .nav-link i {
-            margin-right: 10px;
-        }
-
-        .content {
-            padding: 20px;
-            margin-left: 250px;
-            /* Adjust based on your sidebar width */
-        }
-
-        .file-item {
-            margin-bottom: 15px;
-        }
-
-        .file-icon {
-            font-size: 48px;
-            margin-bottom: 10px;
-
-        }
-
-        .file-icon-i {
-
-            margin-right: 20px;
-        }
-
-
-
-        .file-preview {
-            width: 100%;
-            height: 200px;
-            /* Set a fixed height for the preview container */
-            overflow: hidden;
-            /* Hide any content that overflows the container */
-        }
-
-        .file-preview iframe {
-            width: 100%;
-            height: 100%;
-            /* Ensure the iframe fills the preview container */
-            border: none;
-            /* Remove any border around the iframe */
-        }
-
-        .file-name {
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .card-header {
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .card-footer {
-            background-color: #f8f9fa;
-            border-top: 1px solid #dee2e6;
-        }
-
-        .card {
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
-        }
-
-        .card-body {
-            padding: 20px;
-        }
-
-        .search-form {
-            margin-bottom: 20px;
-        }
-
-        .search-form input[type="search"] {
-            border-radius: 30px;
-            /* More rounded corners */
-            padding: 25px 20px;
-            /* Adjust padding as needed */
-            border: none;
-            box-shadow: none;
-            /* Remove default input styles */
-            width: 85%;
-            /* Full width input */
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        .search-form button[type="submit"] {
-            border-radius: 30px;
-            /* More rounded corners */
-            padding: 10px 20px;
-            /* Adjust padding as needed */
-            margin-left: 10px;
-            /* Add some space between input and button */
-            background-color: #4285f4;
-            color: white;
-            border: none;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                position: relative;
-                width: 100%;
-                /* Lebar maksimum saat mode mobile */
-            }
-
-            .content {
-                margin-left: 0;
-                /* Hapus margin pada mode mobile */
-            }
-
-            .navbar-brand a {
-                display: none;
-            }
-
-            .navbar-brand img {
-                display: inline;
-                height: 80px;
-
-            }
-        }
-
-        .nav-item.disabled .nav-link {
-            pointer-events: none;
-            /* Menonaktifkan klik pada tautan */
-            cursor: default;
-            /* Mengubah kursor menjadi default */
-        }
-
-        .nav-item.disabled .nav-link.active {
-            pointer-events: none;
-            /* Menonaktifkan klik pada tautan aktif */
-        }
-
-        .nav-item.disabled .nav-link {
-            text-align: center;
-            /* Mengatur teks menjadi tengah */
-        }
-
-        /* Menjadikan warna latar belakang form sedikit abu-abu */
-        .search-form input[type="search"] {
-            background-color: #e9ecef;
-            /* Warna abu-abu */
-        }
-
-        /* Mengubah warna latar belakang form menjadi putih saat di klik */
-        .search-form input[type="search"]:focus {
-            background-color: #ffffff;
-            /* Warna putih */
-        }
-
-        .dropdown-toggle.dropdown-toggle-no-caret::after {
-            display: none;
-            /* Hide the caret */
-        }
-    </style>
+    <link rel="stylesheet" href="<?= base_url() ?>/assets/css/style.css">
 </head>
 
 <body>
@@ -293,6 +84,7 @@
                 </div>
 
                 <!-- Daftar Konten -->
+                <!-- Tampilan List -->
                 <div class="row list-view">
                     <!-- Tampilan daftar -->
                     <div class="col-md-12">
@@ -354,79 +146,192 @@
                     </div>
                 </div>
 
-
                 <!-- Tampilan ikon -->
-                <div class="row icon-view" style="display: none;">
-                    <div class="col-md-3 col-6 file-item">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <span class="file-name">Folder 1</span>
-                                <div class="dropdown">
-                                    <i class="fas fa-ellipsis-v dropdown-toggle dropdown-toggle-no-caret" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
-                                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated" aria-labelledby="dropdownMenuButton1">
-                                        <a class="dropdown-item" href="#">Action 1</a>
-                                        <div class="dropdown-divider"></div> <!-- Divider line -->
-                                        <a class="dropdown-item" href="#">Action 2</a>
-                                        <div class="dropdown-divider"></div> <!-- Divider line -->
-                                        <a class="dropdown-item" href="#">Action 3</a>
+                <div class="icon-view" style="display: none;">
+                    <h6>Folders</h6>
+                    <div class="btn-group">
+                        <a href="<?= base_url('user/recent') ?>" class="btn btn-secondary">
+                            <i class="fas fa-folder fa-lg mr-2"></i> <!-- Icon with additional classes -->
+                            <span class="btn-text">Folder 1 with a very long name</span>
+                        </a>
+                        <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false" style="width: 10px;">
+                            <span class="visually-hidden"><i class="fas fa-ellipsis-v"></i></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Separated link</a></li>
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <a href="<?= base_url('user/recent') ?>" class="btn btn-secondary">
+                            <i class="fas fa-folder fa-lg mr-2"></i> <!-- Icon with additional classes -->
+                            <span class="btn-text">Folder 1 with a very long name</span>
+                        </a>
+                        <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false" style="width: 10px;">
+                            <span class="visually-hidden"><i class="fas fa-ellipsis-v"></i></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Separated link</a></li>
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <a href="<?= base_url('user/recent') ?>" class="btn btn-secondary">
+                            <i class="fas fa-folder fa-lg mr-2"></i> <!-- Icon with additional classes -->
+                            <span class="btn-text">Folder 1 with a very long name</span>
+                        </a>
+                        <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false" style="width: 10px;">
+                            <span class="visually-hidden"><i class="fas fa-ellipsis-v"></i></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Separated link</a></li>
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <a href="<?= base_url('user/recent') ?>" class="btn btn-secondary">
+                            <i class="fas fa-folder fa-lg mr-2"></i> <!-- Icon with additional classes -->
+                            <span class="btn-text">Folder 1 with a very long name</span>
+                        </a>
+                        <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false" style="width: 10px;">
+                            <span class="visually-hidden"><i class="fas fa-ellipsis-v"></i></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Separated link</a></li>
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <a href="<?= base_url('user/recent') ?>" class="btn btn-secondary">
+                            <i class="fas fa-folder fa-lg mr-2"></i> <!-- Icon with additional classes -->
+                            <span class="btn-text">Folder 1 with a very long name</span>
+                        </a>
+                        <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false" style="width: 10px;">
+                            <span class="visually-hidden"><i class="fas fa-ellipsis-v"></i></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Separated link</a></li>
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <a href="<?= base_url('user/recent') ?>" class="btn btn-secondary">
+                            <i class="fas fa-folder fa-lg mr-2"></i> <!-- Icon with additional classes -->
+                            <span class="btn-text">Folder 1 with a very long name</span>
+                        </a>
+                        <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false" style="width: 10px;">
+                            <span class="visually-hidden"><i class="fas fa-ellipsis-v"></i></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Separated link</a></li>
+                        </ul>
+                    </div>
+
+                    <hr>
+                    <h6>Files</h6>
+                    <div class="row">
+                        <div class="col-md-3 col-6 file-item">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <span class="file-name">Folder 1</span>
+                                    <div class="dropdown">
+                                        <i class="fas fa-ellipsis-v dropdown-toggle dropdown-toggle-no-caret" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated" aria-labelledby="dropdownMenuButton1">
+                                            <a class="dropdown-item" href="#">Action 1</a>
+                                            <div class="dropdown-divider"></div> <!-- Divider line -->
+                                            <a class="dropdown-item" href="#">Action 2</a>
+                                            <div class="dropdown-divider"></div> <!-- Divider line -->
+                                            <a class="dropdown-item" href="#">Action 3</a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="card-body text-center">
-                                <div class="file-icon mb-3">
-                                    <i class="fas fa-folder"></i>
+                                <div class="card-body text-center">
+                                    <div class="file-icon mb-3">
+                                        <i class="fas fa-folder"></i>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="card-footer text-muted text-center">
-                                April 21, 2024
+                                <div class="card-footer text-muted text-center">
+                                    April 21, 2024
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-3 col-6 file-item">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <span class="file-name">Folder 2</span>
-                                <i class="fas fa-ellipsis-v"></i>
-                            </div>
-                            <div class="card-body text-center">
-                                <div class="file-icon mb-3">
-                                    <i class="fas fa-folder"></i>
+                        <div class="col-md-3 col-6 file-item">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <span class="file-name">Folder 2</span>
+                                    <i class="fas fa-ellipsis-v"></i>
                                 </div>
-                            </div>
-                            <div class="card-footer text-muted text-center">
-                                April 21, 2024
+                                <div class="card-body text-center">
+                                    <div class="file-icon mb-3">
+                                        <i class="fas fa-folder"></i>
+                                    </div>
+                                </div>
+                                <div class="card-footer text-muted text-center">
+                                    April 21, 2024
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-3 col-6 file-item">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <span class="file-name">Document 1</span>
-                                <i class="fas fa-ellipsis-v"></i>
-                            </div>
-                            <div class="card-body text-center" style="height: 200px;">
-                                <div class="file-preview" style="width: 100%; height: 100%;">
-                                    <!-- Preview will be loaded here -->
+                        <div class="col-md-3 col-6 file-item">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <span class="file-name">Document 1</span>
+                                    <i class="fas fa-ellipsis-v"></i>
                                 </div>
-                            </div>
-                            <div class="card-footer text-muted text-center">
-                                April 21, 2024
+                                <div class="card-body text-center" style="height: 200px;">
+                                    <div class="file-preview" style="width: 100%; height: 100%;">
+                                        <!-- Preview will be loaded here -->
+                                    </div>
+                                </div>
+                                <div class="card-footer text-muted text-center">
+                                    April 21, 2024
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-3 col-6 file-item">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <span class="file-name">Document 2</span>
-                                <i class="fas fa-ellipsis-v"></i>
-                            </div>
-                            <div class="card-body text-center">
-                                <div class="file-icon mb-3">
-                                    <i class="fas fa-file-alt"></i>
+                        <div class="col-md-3 col-6 file-item">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <span class="file-name">Document 2</span>
+                                    <i class="fas fa-ellipsis-v"></i>
                                 </div>
-                            </div>
-                            <div class="card-footer text-muted text-center">
-                                April 21, 2024
+                                <div class="card-body text-center">
+                                    <div class="file-icon mb-3">
+                                        <i class="fas fa-file-alt"></i>
+                                    </div>
+                                </div>
+                                <div class="card-footer text-muted text-center">
+                                    April 21, 2024
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -483,6 +388,46 @@
 
         // Example usage
         loadFilePreview('example.png');
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let clickCount = 0;
+            const folderButton = document.getElementById('folderButton');
+            const dropdownMenuButton = document.getElementById('dropdownMenuButton1');
+            const dropdownMenu = document.querySelector('.dropdown-menu');
+
+            folderButton.addEventListener('click', function(event) {
+                clickCount++;
+                setTimeout(function() {
+                    if (clickCount === 1) {
+                        // Single click: Show dropdown
+                        dropdownMenu.classList.toggle('show');
+                    } else if (clickCount === 2) {
+                        // Double click: Navigate to new page
+                        window.location.href = '<?= base_url('user/recent') ?>';
+                    }
+                    clickCount = 0;
+                }, 300);
+            });
+
+            // Prevent dropdown from closing when clicking inside it
+            dropdownMenu.addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!folderButton.contains(event.target)) {
+                    dropdownMenu.classList.remove('show');
+                }
+            });
+
+            // Ensure dropdown toggles only when clicking the ellipsis
+            dropdownMenuButton.addEventListener('click', function(event) {
+                event.stopPropagation();
+                dropdownMenu.classList.toggle('show');
+            });
+        });
     </script>
 </body>
 
