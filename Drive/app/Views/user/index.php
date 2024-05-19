@@ -40,6 +40,7 @@
             display: inline-block;
         }
 
+
         .sidebar {
             background-color: #ffffff;
             border-right: 1px solid #dee2e6;
@@ -69,20 +70,60 @@
         }
 
         .file-item {
-            background-color: #ffffff;
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
-            padding: 20px;
             margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .file-item:hover {
-            background-color: #f1f3f4;
         }
 
         .file-icon {
             font-size: 48px;
+            margin-bottom: 10px;
+
+        }
+
+        .file-icon-i {
+
+            margin-right: 20px;
+        }
+
+
+
+        .file-preview {
+            width: 100%;
+            height: 200px;
+            /* Set a fixed height for the preview container */
+            overflow: hidden;
+            /* Hide any content that overflows the container */
+        }
+
+        .file-preview iframe {
+            width: 100%;
+            height: 100%;
+            /* Ensure the iframe fills the preview container */
+            border: none;
+            /* Remove any border around the iframe */
+        }
+
+        .file-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .card-footer {
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .card {
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+
+        .card-body {
+            padding: 20px;
         }
 
         .search-form {
@@ -99,6 +140,16 @@
             /* Remove default input styles */
             width: 85%;
             /* Full width input */
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .search-form button[type="submit"] {
@@ -123,6 +174,16 @@
             .content {
                 margin-left: 0;
                 /* Hapus margin pada mode mobile */
+            }
+
+            .navbar-brand a {
+                display: none;
+            }
+
+            .navbar-brand img {
+                display: inline;
+                height: 80px;
+
             }
         }
 
@@ -154,13 +215,21 @@
             background-color: #ffffff;
             /* Warna putih */
         }
+
+        .dropdown-toggle.dropdown-toggle-no-caret::after {
+            display: none;
+            /* Hide the caret */
+        }
     </style>
 </head>
 
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light">
-        <a class="navbar-brand" href="#">Drive</a>
+        <a class="navbar-brand" href="<?php base_url() ?>">
+            <span class="d-none d-md-inline">Cloud Storage</span>
+            <img src="<?= base_url() ?>/assets/img/logo-white.png" class="d-inline d-md-none" alt="Drive Logo" height="30">
+        </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -226,55 +295,152 @@
                 <!-- Daftar Konten -->
                 <div class="row list-view">
                     <!-- Tampilan daftar -->
-                    <div class="col-md-12 file-item">
-                        Folder 1
-                    </div>
-                    <div class="col-md-12 file-item">
-                        Folder 2
-                    </div>
-                    <div class="col-md-12 file-item">
-                        Document 1
-                    </div>
-                    <div class="col-md-12 file-item">
-                        Document 2
+                    <div class="col-md-12">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">File Size</th>
+                                    <th scope="col"><i class="fas fa-ellipsis-v"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-folder file-icon-i"></i> Folder 1
+                                    </td>
+                                    <td>2024-05-01</td>
+                                    <td>-</td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <i class="fas fa-ellipsis-v dropdown-toggle dropdown-toggle-no-caret" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated" aria-labelledby="dropdownMenuButton1">
+                                                <a class="dropdown-item" href="#">Action 1</a>
+                                                <div class="dropdown-divider"></div> <!-- Divider line -->
+                                                <a class="dropdown-item" href="#">Action 2</a>
+                                                <div class="dropdown-divider"></div> <!-- Divider line -->
+                                                <a class="dropdown-item" href="#">Action 3</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-folder file-icon-i"></i> Folder 2
+                                    </td>
+                                    <td>2024-05-02</td>
+                                    <td>-</td>
+                                    <td><i class="fas fa-ellipsis-v"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-file file-icon-i"></i> Document 1
+                                    </td>
+                                    <td>2024-05-03</td>
+                                    <td>1.2 MB</td>
+                                    <td><i class="fas fa-ellipsis-v"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-file file-icon-i"></i> Document 2
+                                    </td>
+                                    <td>2024-05-04</td>
+                                    <td>3.4 MB</td>
+                                    <td><i class="fas fa-ellipsis-v"></i></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
+
 
                 <!-- Tampilan ikon -->
                 <div class="row icon-view" style="display: none;">
                     <div class="col-md-3 col-6 file-item">
-                        <div class="file-icon">
-                            <i class="fas fa-folder"></i>
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span class="file-name">Folder 1</span>
+                                <div class="dropdown">
+                                    <i class="fas fa-ellipsis-v dropdown-toggle dropdown-toggle-no-caret" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated" aria-labelledby="dropdownMenuButton1">
+                                        <a class="dropdown-item" href="#">Action 1</a>
+                                        <div class="dropdown-divider"></div> <!-- Divider line -->
+                                        <a class="dropdown-item" href="#">Action 2</a>
+                                        <div class="dropdown-divider"></div> <!-- Divider line -->
+                                        <a class="dropdown-item" href="#">Action 3</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body text-center">
+                                <div class="file-icon mb-3">
+                                    <i class="fas fa-folder"></i>
+                                </div>
+                            </div>
+                            <div class="card-footer text-muted text-center">
+                                April 21, 2024
+                            </div>
                         </div>
-                        <div class="file-name">Folder 1</div>
                     </div>
                     <div class="col-md-3 col-6 file-item">
-                        <div class="file-icon">
-                            <i class="fas fa-folder"></i>
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span class="file-name">Folder 2</span>
+                                <i class="fas fa-ellipsis-v"></i>
+                            </div>
+                            <div class="card-body text-center">
+                                <div class="file-icon mb-3">
+                                    <i class="fas fa-folder"></i>
+                                </div>
+                            </div>
+                            <div class="card-footer text-muted text-center">
+                                April 21, 2024
+                            </div>
                         </div>
-                        <div class="file-name">Folder 2</div>
                     </div>
                     <div class="col-md-3 col-6 file-item">
-                        <div class="file-icon">
-                            <i class="fas fa-file-alt"></i>
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span class="file-name">Document 1</span>
+                                <i class="fas fa-ellipsis-v"></i>
+                            </div>
+                            <div class="card-body text-center" style="height: 200px;">
+                                <div class="file-preview" style="width: 100%; height: 100%;">
+                                    <!-- Preview will be loaded here -->
+                                </div>
+                            </div>
+                            <div class="card-footer text-muted text-center">
+                                April 21, 2024
+                            </div>
                         </div>
-                        <div class="file-name">Document 1</div>
                     </div>
                     <div class="col-md-3 col-6 file-item">
-                        <div class="file-icon">
-                            <i class="fas fa-file-alt"></i>
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span class="file-name">Document 2</span>
+                                <i class="fas fa-ellipsis-v"></i>
+                            </div>
+                            <div class="card-body text-center">
+                                <div class="file-icon mb-3">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                            </div>
+                            <div class="card-footer text-muted text-center">
+                                April 21, 2024
+                            </div>
                         </div>
-                        <div class="file-name">Document 2</div>
                     </div>
                 </div>
+
+
+
             </main>
         </div>
     </div>
 
     <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
     <!-- Font Awesome for icons -->
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <script>
@@ -290,6 +456,33 @@
                 $('.icon-view').show();
             });
         });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('.dropdown-toggle').dropdown();
+        });
+    </script>
+
+    <script>
+        // Assuming 'fileURL' is the URL of the file
+        function loadFilePreview(fileURL) {
+            var fileExtension = fileURL.split('.').pop().toLowerCase();
+            var previewContainer = document.querySelector('.file-preview');
+
+            if (fileExtension === 'pdf') {
+                // If it's a PDF file, load a PDF viewer with dimensions matching the card body
+                previewContainer.innerHTML = '<iframe src="' + fileURL + '" width="100%" height="100%"></iframe>';
+            } else if (['png', 'jpg', 'jpeg', 'gif', 'bmp'].includes(fileExtension)) {
+                // If it's an image file, load the image directly
+                previewContainer.innerHTML = '<img src="' + fileURL + '" alt="File Preview" style="max-width: 100%; max-height: 100%;">';
+            } else {
+                // For other file types, you might not have a direct preview
+                previewContainer.innerHTML = '<p>No preview available for this file type.</p>';
+            }
+        }
+
+        // Example usage
+        loadFilePreview('example.png');
     </script>
 </body>
 
