@@ -10,7 +10,7 @@
         </form>
     </div>
 
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
         <h1 class="h2">My Drive</h1>
         <div class="btn-group mb-3" role="group">
             <button type="button" class="btn btn-primary list-view-toggle"><i class="fas fa-list"></i></button>
@@ -20,6 +20,7 @@
 
     <!-- Daftar Konten -->
     <!-- Tampilan List -->
+
     <div class="row list-view fade-in">
         <!-- Tampilan daftar -->
         <div class="col-md-12">
@@ -82,6 +83,7 @@
     </div>
 
     <!-- Tampilan ikon -->
+    <hr>
     <div class="icon-view fade-in" style="display: none;">
         <h6>Folders</h6>
         <div class="btn-group">

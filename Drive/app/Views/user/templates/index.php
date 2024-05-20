@@ -47,7 +47,7 @@
                             <div class="dropdown nav-link">
                                 <button class="btn btn-plus dropdown-toggle dropdown-toggle-no-caret" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-plus"></i> New</button>
                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated" aria-labelledby="dropdownMenuButton1">
-                                    <a class="dropdown-item" href="#"><i class="fas fa-upload"></i> File Upload</a>
+                                    <a class="dropdown-item" href="<?= base_url('user/upload') ?>"><i class="fas fa-upload"></i> File Upload</a>
                                     <div class="dropdown-divider"></div> <!-- Divider line -->
                                     <a class="dropdown-item" type="button" data-toggle="modal" data-target="#staticBackdrop"><i class="fas fa-folder"></i> New Folder</a>
                                 </div>
@@ -212,6 +212,87 @@
                 }); // Ubah angka 2000 menjadi jumlah milidetik yang Anda inginkan
             }
         };
+    </script>
+    <script>
+        var selectedFiles = [];
+
+        $(document).ready(function() {
+            var $dragDropArea = $('#drag-drop-area');
+
+            $dragDropArea.on('dragover', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $dragDropArea.addClass('dragging');
+            });
+
+            $dragDropArea.on('dragleave', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $dragDropArea.removeClass('dragging');
+            });
+
+            $dragDropArea.on('drop', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $dragDropArea.removeClass('dragging');
+                selectedFiles = e.originalEvent.dataTransfer.files;
+                displayPreview(selectedFiles);
+            });
+
+            $('#fileInput').on('change', function(e) {
+                selectedFiles = e.target.files;
+                displayPreview(selectedFiles);
+            });
+
+            function displayPreview(files) {
+                $dragDropArea.empty(); // Kosongkan area drag-drop
+
+                var $previewArea = $('<div class="preview-area"></div>');
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    var reader = new FileReader();
+                    reader.onload = (function(theFile) {
+                        return function(e) {
+                            var fileType = theFile.type.split('/')[0];
+                            if (fileType === 'image') {
+                                $previewArea.append('<img src="' + e.target.result + '" alt="' + theFile.name + '">');
+                            } else {
+                                $previewArea.append('<div class="file-name">' + theFile.name + '</div>');
+                            }
+                        };
+                    })(file);
+                    reader.readAsDataURL(file);
+                }
+                $dragDropArea.append($previewArea);
+                $dragDropArea.append('<button id="uploadButton" type="button" class="btn btn-success mt-3 upload-button">Upload Files</button>');
+                $dragDropArea.append('<button id="cancelButton" type="button" class="btn btn-danger mt-3 cancel-button">Cancel</button>');
+
+                $('#uploadButton').on('click', function() {
+                    if (selectedFiles.length > 0) {
+                        uploadFiles(selectedFiles);
+                    } else {
+                        alert('Please select files first.');
+                    }
+                });
+
+                $('#cancelButton').on('click', function() {
+                    location.reload(); // Menyegarkan halaman saat tombol batal diklik
+                });
+            }
+
+            function uploadFiles(files) {
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    var fileInfo = `
+                                    File Name: ${file.name}
+                                    File Size: ${file.size} bytes
+                                    File Type: ${file.type}
+                                    `;
+                    console.log(fileInfo);
+
+                }
+            }
+        });
     </script>
 
 </body>

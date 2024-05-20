@@ -15,4 +15,8 @@ class User extends BaseController
     {
         return view('user/recent');
     }
+    public function upload()
+    {
+        return view('user/upload');
+    }
 }
