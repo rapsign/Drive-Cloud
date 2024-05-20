@@ -10,3 +10,4 @@ $routes->get('/user', 'User::index');
 $routes->get('/user/recent', 'User::recent');
 $routes->get('/user/upload', 'User::upload');
 $routes->get('/user/trash', 'User::trash');
+$routes->get('/admin', 'admin::index');
