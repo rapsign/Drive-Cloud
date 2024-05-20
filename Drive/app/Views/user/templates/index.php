@@ -63,13 +63,13 @@
                                 <i class="fas fa-history"></i> Recent
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link" href="#">
                                 <i class="fas fa-star"></i> Starred
                             </a>
-                        </li>
+                        </li> -->
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="<?= base_url('user/trash') ?>">
                                 <i class="fas fa-trash-alt"></i> Trash
                             </a>
                         </li>

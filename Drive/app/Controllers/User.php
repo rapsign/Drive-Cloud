@@ -19,4 +19,8 @@ class User extends BaseController
     {
         return view('user/upload');
     }
+    public function trash()
+    {
+        return view('user/trash');
+    }
 }
