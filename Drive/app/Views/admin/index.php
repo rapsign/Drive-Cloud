@@ -97,6 +97,7 @@
             <h1 class="h2">Users</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
                 <button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#addUser">Add User</button>
+                <button class="btn btn-success btn-sm" style="margin-left: 10px;" data-toggle="modal" data-target="#addUserExcel">Add User With Excel</button>
             </div>
         </div>
 
@@ -598,19 +599,17 @@
                 <div class="modal-body">
                     <form>
                         <div class="form-group">
-                            <label for="exampleInputEmail1">Email address</label>
-                            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                            <label for="Username">Username</label>
+                            <input type="text" class="form-control" id="username" aria-describedby="username" name="username">
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputPassword1">Password</label>
-                            <input type="password" class="form-control" id="exampleInputPassword1">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" id="name" aria-describedby="name" name="name">
                         </div>
-                        <div class="form-group form-check">
-                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                            <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" name="password">
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -636,6 +635,30 @@
                             <option>Admin</option>
                             <option>User</option>
                         </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="addUserExcel" tabindex="-1" aria-labelledby="addUserExcel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addUserExcel">Add User</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="form-group">
+                            <label for="exampleFormControlFile1">.Xls Only</label>
+                            <input type="file" class="form-control-file" id="exampleFormControlFile1" accept=".xlsx, .xls">
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
