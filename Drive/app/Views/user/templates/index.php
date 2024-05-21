@@ -23,7 +23,7 @@
     </div>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light">
-        <a class="navbar-brand" href="<?php base_url() ?>">
+        <a class="navbar-brand" href="<?= base_url() ?>">
             <span class="d-none d-md-inline">Cloud Storage</span>
             <img src="<?= base_url() ?>/assets/img/logo-white.png" class="d-inline d-md-none" alt="Drive Logo" height="30">
         </a>
