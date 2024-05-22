@@ -35,9 +35,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>
-                            <i class="fas fa-folder file-icon-i"></i> Folder 1
-                        </td>
+                        <td><i class="fas fa-folder file-icon-i"></i> Folder 1</td>
                         <td>2024-05-01</td>
                         <td>-</td>
                         <td>
