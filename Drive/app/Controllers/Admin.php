@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\UsersModel;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class Admin extends BaseController
 {
@@ -61,7 +62,7 @@ class Admin extends BaseController
         // Memvalidasi input
         if (!$this->validate($validationRules)) {
             // Jika validasi gagal
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors())->with('showModal', true);
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors())->with('showModalAdd', true);
         }
 
         // Jika validasi berhasil
@@ -90,7 +91,13 @@ class Admin extends BaseController
 
         if (!$validation->withRequest($this->request)->run()) {
             // Kembali dengan error jika validasi gagal
-            return redirect()->back()->withInput()->with('errors', $validation->getErrors());
+            if ($newRoleId === null) {
+                return redirect()->back()->withInput()->with('roleError', 'Please select a role')->with('showModalRole', true);
+            } else {
+                // Dapatkan pesan kesalahan validasi
+                $errors = $validation->getErrors();
+                return redirect()->back()->withInput()->with('errors', $errors)->with('showModalRole', true);
+            }
         }
 
         // Update role_id di database
@@ -100,7 +107,73 @@ class Admin extends BaseController
         session()->setFlashdata('success_message', 'Role updated successfully!');
         return redirect()->back();
     }
-    public function uploadRegister()
+
+    public function deleteUser()
     {
+        $userId = $this->request->getVar('userId');
+
+        // Pastikan ID pengguna yang akan dihapus valid
+        if (!empty($userId)) {
+            // Lakukan penghapusan pengguna dari database
+            $deleted = $this->userModel->delete($userId);
+            if ($deleted) {
+                // Kirim pesan sukses jika penghapusan berhasil
+                session()->setFlashdata('success_message', 'User deleted successfully!');
+            } else {
+                // Kirim pesan kesalahan jika gagal menghapus pengguna
+                session()->setFlashdata('error_message', 'Failed to delete user!');
+            }
+        } else {
+            // Kirim pesan kesalahan jika ID pengguna kosong
+            session()->setFlashdata('error_message', 'Invalid user ID!');
+        }
+
+        // Redirect kembali ke halaman sebelumnya
+        return redirect()->back();
+    }
+    public function addUsersFromExcel()
+    {
+        // Validasi unggahan file
+        $validation = \Config\Services::validation();
+        $validation->setRules([
+            'excelFile' => 'uploaded[excelFile]|max_size[excelFile,1024]|ext_in[excelFile,xls,xlsx]'
+        ]);
+
+        if (!$validation->withRequest($this->request)->run()) {
+            // Kembali ke halaman sebelumnya dengan pesan kesalahan jika validasi gagal
+            return redirect()->back()->withInput()->with('errors', $validation->getErrors());
+        }
+
+        // Ambil file Excel yang diunggah
+        $excelFile = $this->request->getFile('excelFile');
+
+        // Load file Excel menggunakan PhpSpreadsheet
+        $reader = IOFactory::createReader('Xlsx'); // Ubah sesuai ekstensi file Excel
+        $spreadsheet = $reader->load($excelFile->getTempName());
+        $worksheet = $spreadsheet->getActiveSheet();
+
+        // Looping baris-baris Excel, mulai dari baris kedua (baris pertama biasanya berisi header)
+        foreach ($worksheet->getRowIterator(2) as $row) {
+            $rowData = $row->getValues();
+
+            // Simpan data pengguna ke dalam database
+            $username = $rowData[0]; // Misalnya kolom pertama adalah username
+            $name = $rowData[1]; // Misalnya kolom kedua adalah nama
+            $password = $rowData[1];
+            // ... Lanjutkan untuk kolom lainnya
+
+            // Contoh menyimpan ke dalam tabel users menggunakan model
+
+            $this->userModel->save([
+                'username' => $username,
+                'name' => $name,
+                'password' => $password,
+                // ... Lanjutkan untuk kolom lainnya
+            ]);
+        }
+
+        // Tampilkan pesan sukses jika berhasil
+        session()->setFlashdata('success_message', 'Users added successfully!');
+        return redirect()->back();
     }
 }

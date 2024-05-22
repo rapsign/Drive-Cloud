@@ -13,3 +13,5 @@ $routes->get('/user/trash', 'User::trash');
 $routes->get('/admin', 'admin::index');
 $routes->post('/admin/register', 'admin::register');
 $routes->post('/admin/changeRole', 'admin::changeRole');
+$routes->post('/admin/deleteUser', 'admin::deleteUser');
+$routes->post('/admin/addUsersFromExcel', 'admin::addUsersFromExcel');

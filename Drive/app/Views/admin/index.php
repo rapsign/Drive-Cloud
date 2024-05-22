@@ -109,9 +109,9 @@
                 <tr>
                     <th class="text-center">NO</th>
                     <th class="text-center">Username</th>
-                    <th class="text-center">Position</th>
-                    <th class="text-center">Office</th>
-                    <th class="text-center">Age</th>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Role</th>
+                    <th class="text-center">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -124,7 +124,10 @@
                         <td class="text-center"><?= $user['role_name'] ?></td>
                         <td class="text-center">
                             <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editModal" onclick="openEditModal(<?= $user['id'] ?>)"><i class="fas fa-cog"></i></button>
-                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                            <form id="deleteUserForm" action="<?= base_url('admin/deleteUser') ?>" method="post" class="d-inline">
+                                <input type="hidden" name="userId" value="<?= $user['id'] ?>">
+                                <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete(event)"><i class="fas fa-trash"></i></button>
+                            </form>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -132,10 +135,10 @@
             <tfoot>
                 <tr>
                     <th class="text-center">NO</th>
+                    <th class="text-center">Username</th>
                     <th class="text-center">Name</th>
-                    <th class="text-center">Position</th>
-                    <th class="text-center">Office</th>
-                    <th class="text-center">Age</th>
+                    <th class="text-center">Role</th>
+                    <th class="text-center">Action</th>
                 </tr>
             </tfoot>
         </table>
@@ -233,18 +236,19 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <div class="form-group">
+                <form action="<?= base_url('admin/addUsersFromExcel') ?>" method="post" enctype="multipart/form-data">
+                    <div class="modal-body">
                         <div class="form-group">
-                            <label for="exampleFormControlFile1">.Xls Only</label>
-                            <input type="file" class="form-control-file" id="exampleFormControlFile1" accept=".xlsx, .xls">
+                            <label for="exampleFormControlFile1" class="mb-3">Upload Excel File (.Xls Only)</label>
+                            <input type="file" class="form-control-file" id="exampleFormControlFile1" name="excelFile" accept=".xlsx, .xls">
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+
             </div>
         </div>
     </div>
@@ -280,7 +284,7 @@
     </script>
     <script type="text/javascript">
         $(document).ready(function() {
-            <?php if (session('showModal')) : ?>
+            <?php if (session('showModalAdd')) : ?>
                 $('#addUser').modal('show');
             <?php endif; ?>
         });
@@ -299,7 +303,7 @@
                 });
             <?php endif; ?>
 
-            <?php if (session('errors')) : ?>
+            <?php if (session('showModalRole')) : ?>
                 $('#editModal').modal('show');
             <?php endif; ?>
         });
@@ -310,6 +314,28 @@
             $('#editModal').modal('show');
         }
     </script>
+    <script>
+        function confirmDelete(event) {
+            event.preventDefault(); // Menghentikan pengiriman formulir secara langsung
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.parentElement.submit(); // Teruskan penghapusan
+                }
+            });
+        }
+    </script>
+
+
+
 </body>
 
 </html>

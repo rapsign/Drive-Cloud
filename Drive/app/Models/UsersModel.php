@@ -45,7 +45,7 @@ class UsersModel extends Model
         // Lakukan JOIN antara tabel users dan roles
         // Ambil data username, name, dan nama peran (role name) dari hasil JOIN
         return $this->db->table('users')
-            ->select('users.id, users.username, users.name, roles.role as role_name')
+            ->select('users.id, users.username, users.name, users.role_id, roles.role as role_name')
             ->join('roles', 'roles.id = users.role_id')
             ->get()
             ->getResultArray();
