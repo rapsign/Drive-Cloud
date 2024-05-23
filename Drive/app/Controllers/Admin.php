@@ -136,7 +136,14 @@ class Admin extends BaseController
         // Validasi unggahan file
         $validation = \Config\Services::validation();
         $validation->setRules([
-            'excelFile' => 'uploaded[excelFile]|max_size[excelFile,1024]|ext_in[excelFile,xls,xlsx]'
+            'excelFile' => [
+                'rules' => 'uploaded[excelFile]|max_size[excelFile,1024]|ext_in[excelFile,xls,xlsx]',
+                'errors' => [
+                    'uploaded' => 'The uploaded file is required.',
+                    'max_size' => 'The uploaded file exceeds the maximum file size limit of 1024 KB.',
+                    'ext_in'   => 'The uploaded file must be a .xls or .xlsx file.'
+                ]
+            ]
         ]);
 
         if (!$validation->withRequest($this->request)->run()) {
@@ -154,21 +161,55 @@ class Admin extends BaseController
 
         // Looping baris-baris Excel, mulai dari baris kedua (baris pertama biasanya berisi header)
         foreach ($worksheet->getRowIterator(2) as $row) {
-            $rowData = $row->getValues();
+            $rowData = [];
+            $cellIterator = $row->getCellIterator();
+            $cellIterator->setIterateOnlyExistingCells(false); // Loop through all cells, even if cell value is not set
+
+            foreach ($cellIterator as $cell) {
+                $rowData[] = $cell->getValue(); // Mengambil nilai dari setiap sel dalam baris
+            }
 
             // Simpan data pengguna ke dalam database
             $username = $rowData[0]; // Misalnya kolom pertama adalah username
             $name = $rowData[1]; // Misalnya kolom kedua adalah nama
-            $password = $rowData[1];
+            $password = $rowData[2]; // Misalnya kolom ketiga adalah password
+
             // ... Lanjutkan untuk kolom lainnya
 
             // Contoh menyimpan ke dalam tabel users menggunakan model
+            if (empty($username) || empty($name) || empty($password)) {
+                // Jika data kosong, lewati baris ini dan lanjutkan ke baris berikutnya
+                continue;
+            }
 
+            // Validasi username
+            if (strlen($username) < 6 || strlen($username) > 20) {
+                // Jika panjang username tidak sesuai, kembali dengan pesan kesalahan
+                return redirect()->back()->withInput()->with('errors', ['username' => 'Username must be between 6 and 20 characters.']);
+            }
+
+            // Validasi password
+            if (strlen($password) < 8) {
+                // Jika panjang password kurang dari 8 karakter, kembali dengan pesan kesalahan
+                return redirect()->back()->withInput()->with('errors', ['password' => 'Password must be at least 8 characters long.']);
+            }
+
+            // Validasi nama
+            if (strlen($name) < 2) {
+                // Jika panjang nama kurang dari 2 karakter, kembali dengan pesan kesalahan
+                return redirect()->back()->withInput()->with('errors', ['name' => 'Name must be at least 2 characters long.']);
+            }
+
+            // Validasi apakah username sudah ada dalam database
+            if ($this->userModel->where('username', $username)->countAllResults() > 0) {
+                // Jika username sudah ada, kembali dengan pesan kesalahan
+                return redirect()->back()->withInput()->with('errors', ['username' => 'Username already exists.']);
+            }
             $this->userModel->save([
                 'username' => $username,
                 'name' => $name,
-                'password' => $password,
-                // ... Lanjutkan untuk kolom lainnya
+                'password' => password_hash($password, PASSWORD_BCRYPT),
+                'role_id' => 2
             ]);
         }
 

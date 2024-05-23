@@ -333,6 +333,15 @@
             });
         }
     </script>
+    <script>
+        <?php if (session()->has('errors')) : ?>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '<?php echo implode('<br>', session('errors')) ?>',
+            });
+        <?php endif ?>
+    </script>
 
 
 
