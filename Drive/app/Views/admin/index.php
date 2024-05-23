@@ -89,7 +89,7 @@
     <nav class="navbar navbar-light bg-primary">
         <div class="container">
             <a class="navbar-brand">Cloud Storage</a>
-            <a href="#" type="button" class="btn text-white my-2 my-sm-0"><i class="fas fa-sign-out-alt"></i></a>
+            <a href="<?= base_url('logout') ?>" type="button" class="btn text-white my-2 my-sm-0"><i class="fas fa-sign-out-alt"></i></a>
         </div>
     </nav>
 
