@@ -74,7 +74,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="<?= base_url('logout') ?>">
                                 <i class="fas fa-sign-out-alt"></i> logout
                             </a>
                         </li>
@@ -96,16 +96,16 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form action="<?= base_url('user/createFolder') ?>" method="post">
                         <div class="form-group">
+                            <input type="hidden" name="userId" value="<?= session()->get('id') ?>">
                             <input type="text" class="form-control" id="folder" name="folder" value="Untitled folder">
                         </div>
-
-                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary">Create</button>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                    </form>
                 </div>
             </div>
         </div>

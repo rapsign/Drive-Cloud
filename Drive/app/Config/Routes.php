@@ -15,6 +15,7 @@ $routes->get('/user', 'User::index', ['filter' => 'auth:user']);
 $routes->get('/user/recent', 'User::recent', ['filter' => 'auth:user']);
 $routes->get('/user/upload', 'User::upload', ['filter' => 'auth:user']);
 $routes->get('/user/trash', 'User::trash', ['filter' => 'auth:user']);
+$routes->post('/user/createFolder', 'User::addFolder', ['filter' => 'auth:user']);
 
 // Admin
 $routes->get('/admin', 'admin::index', ['filter' => 'auth:admin']);

@@ -70,8 +70,11 @@ class Admin extends BaseController
             'username' => $this->request->getVar('username'),
             'name' => $this->request->getVar('name'),
             'role_id' => 2,
-            'password' => password_hash($this->request->getVar('password'), PASSWORD_BCRYPT)
-        ]);
+            'password' => password_hash($this->request->getVar('password'), PASSWORD_BCRYPT),
+        ],);
+        $foldername = $this->request->getVar('name');
+        $folderPath = FCPATH . '../files/' . $foldername;
+        mkdir($folderPath, 0777, true);
 
         session()->setFlashdata('success_message', 'Registration successful!');
         return redirect()->to('/admin');
@@ -111,13 +114,17 @@ class Admin extends BaseController
     public function deleteUser()
     {
         $userId = $this->request->getVar('userId');
+        $name = $this->request->getVar('name');
 
+        // Pastikan ID pengguna yang akan dihapus valid
         // Pastikan ID pengguna yang akan dihapus valid
         if (!empty($userId)) {
             // Lakukan penghapusan pengguna dari database
             $deleted = $this->userModel->delete($userId);
             if ($deleted) {
-                // Kirim pesan sukses jika penghapusan berhasil
+                $foldername = $name;
+                $folderPath = FCPATH . '../files/' . $foldername;
+                rmdir($folderPath);
                 session()->setFlashdata('success_message', 'User deleted successfully!');
             } else {
                 // Kirim pesan kesalahan jika gagal menghapus pengguna
@@ -211,6 +218,9 @@ class Admin extends BaseController
                 'password' => password_hash($password, PASSWORD_BCRYPT),
                 'role_id' => 2
             ]);
+            $foldername = $name;
+            $folderPath = FCPATH . '../files/' . $foldername;
+            mkdir($folderPath, 0777, true);
         }
 
         // Tampilkan pesan sukses jika berhasil

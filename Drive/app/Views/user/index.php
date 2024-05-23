@@ -34,31 +34,23 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td><i class="fas fa-folder file-icon-i"></i> Folder 1</td>
-                        <td>2024-05-01</td>
-                        <td>-</td>
-                        <td>
-                            <div class="dropdown">
-                                <i class="fas fa-ellipsis-v dropdown-toggle dropdown-toggle-no-caret" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
-                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated" aria-labelledby="dropdownMenuButton1">
-                                    <a class="dropdown-item" href="#">Action 1</a>
-                                    <div class="dropdown-divider"></div> <!-- Divider line -->
-                                    <a class="dropdown-item" href="#">Action 2</a>
-                                    <div class="dropdown-divider"></div> <!-- Divider line -->
-                                    <a class="dropdown-item" href="#">Action 3</a>
+                    <?php foreach ($folders as $folder) : ?>
+                        <tr>
+                            <td><i class="fas fa-folder file-icon-i"></i> <?= $folder['folder_name'] ?></td>
+                            <td class="small"><?= date('F d, Y', strtotime($folder['created_at'])) ?></td>
+                            <td>-</td>
+                            <td>
+                                <div class="dropdown">
+                                    <i class="fas fa-ellipsis-v dropdown-toggle dropdown-toggle-no-caret" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated" aria-labelledby="dropdownMenuButton1">
+                                        <li><a class="dropdown-item" href="#"><i class="fas fa-edit mr-3"></i>Rename</a></li>
+                                        <hr class="dropdown-divider">
+                                        <li><a class="dropdown-item" href="#"><i class="fas fa-trash mr-3"></i>Move to Trash</a></li>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <i class="fas fa-folder file-icon-i"></i> Folder 2
-                        </td>
-                        <td>2024-05-02</td>
-                        <td>-</td>
-                        <td><i class="fas fa-ellipsis-v"></i></td>
-                    </tr>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
                     <tr>
                         <td>
                             <i class="fas fa-file file-icon-i"></i> Document 1
@@ -84,114 +76,22 @@
     <hr>
     <div class="icon-view fade-in" style="display: none;">
         <h6>Folders</h6>
-        <div class="btn-group">
-            <a href="<?= base_url('user/recent') ?>" class="btn btn-secondary">
-                <i class="fas fa-folder fa-lg mr-2"></i> <!-- Icon with additional classes -->
-                <span class="btn-text">Folder 1 with a very long name</span>
-            </a>
-            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false" style="width: 10px;">
-                <span class="visually-hidden"><i class="fas fa-ellipsis-v"></i></span>
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-                <li>
+        <?php foreach ($folders as $folder) : ?>
+            <div class="btn-group">
+                <a href="<?= base_url('user/recent') ?>" class="btn btn-secondary">
+                    <i class="fas fa-folder fa-lg mr-2"></i> <!-- Icon with additional classes -->
+                    <span class="btn-text"><?= $folder['folder_name'] ?></span>
+                </a>
+                <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false" style="width: 10px;">
+                    <span class="visually-hidden"><i class="fas fa-ellipsis-v"></i></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit mr-3"></i>Rename</a></li>
                     <hr class="dropdown-divider">
-                </li>
-                <li><a class="dropdown-item" href="#">Separated link</a></li>
-            </ul>
-        </div>
-        <div class="btn-group">
-            <a href="<?= base_url('user/recent') ?>" class="btn btn-secondary">
-                <i class="fas fa-folder fa-lg mr-2"></i> <!-- Icon with additional classes -->
-                <span class="btn-text">Folder 1 with a very long name</span>
-            </a>
-            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false" style="width: 10px;">
-                <span class="visually-hidden"><i class="fas fa-ellipsis-v"></i></span>
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
-                <li><a class="dropdown-item" href="#">Separated link</a></li>
-            </ul>
-        </div>
-        <div class="btn-group">
-            <a href="<?= base_url('user/recent') ?>" class="btn btn-secondary">
-                <i class="fas fa-folder fa-lg mr-2"></i> <!-- Icon with additional classes -->
-                <span class="btn-text">Folder 1 with a very long name</span>
-            </a>
-            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false" style="width: 10px;">
-                <span class="visually-hidden"><i class="fas fa-ellipsis-v"></i></span>
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
-                <li><a class="dropdown-item" href="#">Separated link</a></li>
-            </ul>
-        </div>
-        <div class="btn-group">
-            <a href="<?= base_url('user/recent') ?>" class="btn btn-secondary">
-                <i class="fas fa-folder fa-lg mr-2"></i> <!-- Icon with additional classes -->
-                <span class="btn-text">Folder 1 with a very long name</span>
-            </a>
-            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false" style="width: 10px;">
-                <span class="visually-hidden"><i class="fas fa-ellipsis-v"></i></span>
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
-                <li><a class="dropdown-item" href="#">Separated link</a></li>
-            </ul>
-        </div>
-        <div class="btn-group">
-            <a href="<?= base_url('user/recent') ?>" class="btn btn-secondary">
-                <i class="fas fa-folder fa-lg mr-2"></i> <!-- Icon with additional classes -->
-                <span class="btn-text">Folder 1 with a very long name</span>
-            </a>
-            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false" style="width: 10px;">
-                <span class="visually-hidden"><i class="fas fa-ellipsis-v"></i></span>
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
-                <li><a class="dropdown-item" href="#">Separated link</a></li>
-            </ul>
-        </div>
-        <div class="btn-group">
-            <a href="<?= base_url('user/recent') ?>" class="btn btn-secondary">
-                <i class="fas fa-folder fa-lg mr-2"></i> <!-- Icon with additional classes -->
-                <span class="btn-text">Folder 1 with a very long name</span>
-            </a>
-            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false" style="width: 10px;">
-                <span class="visually-hidden"><i class="fas fa-ellipsis-v"></i></span>
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
-                <li><a class="dropdown-item" href="#">Separated link</a></li>
-            </ul>
-        </div>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-trash mr-3"></i>Move to Trash</a></li>
+                </ul>
+            </div>
+        <?php endforeach; ?>
 
         <hr>
         <h6>Files</h6>

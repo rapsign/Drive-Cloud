@@ -126,6 +126,7 @@
                             <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editModal" onclick="openEditModal(<?= $user['id'] ?>)"><i class="fas fa-cog"></i></button>
                             <form id="deleteUserForm" action="<?= base_url('admin/deleteUser') ?>" method="post" class="d-inline">
                                 <input type="hidden" name="userId" value="<?= $user['id'] ?>">
+                                <input type="hidden" name="name" value="<?= $user['name'] ?>">
                                 <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete(event)"><i class="fas fa-trash"></i></button>
                             </form>
                         </td>
