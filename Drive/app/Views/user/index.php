@@ -43,7 +43,7 @@
                                 <div class="dropdown">
                                     <i class="fas fa-ellipsis-v dropdown-toggle dropdown-toggle-no-caret" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
                                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated" aria-labelledby="dropdownMenuButton1">
-                                        <li><a class="dropdown-item" href="#"><i class="fas fa-edit mr-3"></i>Rename</a></li>
+                                        <li><a class="dropdown-item" type="button" data-toggle="modal" data-target="#renameFolder" data-id="<?= $folder['id'] ?>" data-name="<?= $folder['folder_name'] ?>"><i class="fas fa-edit mr-3"></i> Rename</a></li>
                                         <hr class="dropdown-divider">
                                         <li><a class="dropdown-item" href="#"><i class="fas fa-trash mr-3"></i>Move to Trash</a></li>
                                     </div>
@@ -86,7 +86,7 @@
                     <span class="visually-hidden"><i class="fas fa-ellipsis-v"></i></span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit mr-3"></i>Rename</a></li>
+                    <li><a class="dropdown-item" type="button" data-toggle="modal" data-target="#renameFolder" data-id="<?= $folder['id'] ?>" data-name="<?= $folder['folder_name'] ?>"><i class="fas fa-edit mr-3"></i> Rename</a></li>
                     <hr class="dropdown-divider">
                     <li><a class="dropdown-item" href="#"><i class="fas fa-trash mr-3"></i>Move to Trash</a></li>
                 </ul>

@@ -110,6 +110,32 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="renameFolder" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Rename</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="<?= base_url('user/folder/rename') ?>" method="post">
+                        <div class="form-group">
+                            <input type="hidden" name="id" id="folder-id">
+                            <input type="text" class="form-control" id="folder-name" name="folder_name" required>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     <!-- Bootstrap JS and dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
@@ -137,7 +163,6 @@
             $('.dropdown-toggle').dropdown();
         });
     </script>
-
     <script>
         // Assuming 'fileURL' is the URL of the file
         function loadFilePreview(fileURL) {
@@ -294,7 +319,17 @@
             }
         });
     </script>
+    <script>
+        $('#renameFolder').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var name = button.data('name');
 
+            var modal = $(this);
+            modal.find('#folder-id').val(id);
+            modal.find('#folder-name').val(name);
+        });
+    </script>
 </body>
 
 </html>
