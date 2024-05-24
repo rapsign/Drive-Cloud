@@ -19,6 +19,7 @@ $routes->get('/user/trash', 'User::trash', ['filter' => 'auth:user']);
 //folder
 $routes->post('/user/createFolder', 'Folder::addFolder', ['filter' => 'auth:user']);
 $routes->post('/user/folder/rename', 'Folder::renameFolder', ['filter' => 'auth:user']);
+$routes->post('/user/folder/delete', 'Folder::deleteFolder', ['filter' => 'auth:user']);
 
 // Admin
 $routes->get('/admin', 'admin::index', ['filter' => 'auth:admin']);

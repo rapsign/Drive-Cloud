@@ -43,7 +43,12 @@ class Folder extends BaseController
 
         return redirect()->to('/user');
     }
+
     public function deleteFolder()
     {
+        $folderSlug = $this->request->getVar('folderSlug');
+        $this->folderModel->where('slug', $folderSlug)->delete();
+        session()->setFlashdata('success_message', 'Folder deleted successfully!');
+        return redirect()->to('/user');
     }
 }

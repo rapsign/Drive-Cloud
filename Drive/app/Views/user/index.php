@@ -45,7 +45,12 @@
                                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated" aria-labelledby="dropdownMenuButton1">
                                         <li><a class="dropdown-item" type="button" data-toggle="modal" data-target="#renameFolder" data-id="<?= $folder['id'] ?>" data-name="<?= $folder['folder_name'] ?>"><i class="fas fa-edit mr-3"></i> Rename</a></li>
                                         <hr class="dropdown-divider">
-                                        <li><a class="dropdown-item" href="#"><i class="fas fa-trash mr-3"></i>Move to Trash</a></li>
+                                        <li>
+                                            <form action="<?= base_url('user/folder/delete') ?>" method="post" class="d-inline">
+                                                <input type="hidden" name="folderSlug" value="<?= $folder['slug'] ?>">
+                                                <button type="button" class="dropdown-item" onclick="Delete(event)"><i class="fas fa-trash mr-3"></i> Move To Trash</button>
+                                            </form>
+                                        </li>
                                     </div>
                                 </div>
                             </td>
@@ -86,13 +91,17 @@
                     <span class="visually-hidden"><i class="fas fa-ellipsis-v"></i></span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" type="button" data-toggle="modal" data-target="#renameFolder" data-id="<?= $folder['id'] ?>" data-name="<?= $folder['folder_name'] ?>"><i class="fas fa-edit mr-3"></i> Rename</a></li>
+                    <li><button class="dropdown-item" type="button" data-toggle="modal" data-target="#renameFolder" data-id="<?= $folder['id'] ?>" data-name="<?= $folder['folder_name'] ?>"><i class="fas fa-edit mr-3"></i> Rename</button></li>
                     <hr class="dropdown-divider">
-                    <li><a class="dropdown-item" href="#"><i class="fas fa-trash mr-3"></i>Move to Trash</a></li>
+                    <li>
+                        <form action="<?= base_url('user/folder/delete') ?>" method="post" class="d-inline">
+                            <input type="hidden" name="folderSlug" value="<?= $folder['slug'] ?>">
+                            <button type="button" class="dropdown-item" onclick="Delete(event)"><i class="fas fa-trash mr-3"></i> Move To Trash</button>
+                        </form>
+                    </li>
                 </ul>
             </div>
         <?php endforeach; ?>
-
         <hr>
         <h6>Files</h6>
         <div class="row">
