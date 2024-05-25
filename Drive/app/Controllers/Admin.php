@@ -73,7 +73,7 @@ class Admin extends BaseController
             'password' => password_hash($this->request->getVar('password'), PASSWORD_BCRYPT),
         ],);
         $foldername = $this->request->getVar('name');
-        $folderPath = FCPATH . '../files/' . $foldername;
+        $folderPath = FCPATH . 'files/' . $foldername;
         mkdir($folderPath, 0777, true);
 
         session()->setFlashdata('success_message', 'Registration successful!');
@@ -123,7 +123,7 @@ class Admin extends BaseController
             $deleted = $this->userModel->delete($userId);
             if ($deleted) {
                 $foldername = $name;
-                $folderPath = FCPATH . '../files/' . $foldername;
+                $folderPath = FCPATH . 'files/' . $foldername;
                 rmdir($folderPath);
                 session()->setFlashdata('success_message', 'User deleted successfully!');
             } else {
@@ -219,7 +219,7 @@ class Admin extends BaseController
                 'role_id' => 2
             ]);
             $foldername = $name;
-            $folderPath = FCPATH . '../files/' . $foldername;
+            $folderPath = FCPATH . 'files/' . $foldername;
             mkdir($folderPath, 0777, true);
         }
 

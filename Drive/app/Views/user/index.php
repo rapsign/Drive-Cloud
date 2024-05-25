@@ -115,24 +115,23 @@
                 <div class="col-md-3 col-6 file-item">
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <span class="file-name" onclick="loadFilePreview('<?= base_url('../file/') . session()->get('name') . '/' . $file['file_name'] ?>')"><?= $file['file_name'] ?></span>
+                            <div class="d-flex align-items-center">
+                                <span class="file-icon"></span>
+                                <span class="file-name"><?= $file['file_name'] ?></span>
+                            </div>
                             <div class="dropdown">
                                 <i class="fas fa-ellipsis-v dropdown-toggle dropdown-toggle-no-caret" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated" aria-labelledby="dropdownMenuButton1">
                                     <a class="dropdown-item" href="#">Action 1</a>
-                                    <div class="dropdown-divider"></div> <!-- Divider line -->
+                                    <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="#">Action 2</a>
-                                    <div class="dropdown-divider"></div> <!-- Divider line -->
+                                    <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="#">Action 3</a>
                                 </div>
                             </div>
                         </div>
                         <div class="card-body text-center">
-                            <div class="card-body text-center" style="height: 200px;">
-                                <div class="file-preview" style="width: 100%; height: 100%;">
-
-                                </div>
-                            </div>
+                            <div class="file-preview" style="width: 100%; height: 200px;"></div>
                         </div>
                         <div class="card-footer text-muted text-center small">
                             <?= date('F d, Y', strtotime($file['created_at'])) ?>

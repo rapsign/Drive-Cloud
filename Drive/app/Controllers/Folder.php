@@ -68,7 +68,7 @@ class Folder extends BaseController
         }
 
         $oldFolderName = $folder['folder_name'];
-        $baseFolderPath = FCPATH . '../files/' . $username . '/';
+        $baseFolderPath = FCPATH . 'files/' . $username . '/';
         $oldFolderPath = $baseFolderPath . $oldFolderName;
         $newFolderPath = $baseFolderPath . $newFolderName;
 

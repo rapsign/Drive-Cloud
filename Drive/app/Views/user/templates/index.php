@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link href="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+    <link rel="stylesheet" href="https://viewerjs.org/ViewerJS/css/viewer.css">
 </head>
 
 <body>
@@ -146,6 +147,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone-min.js"></script>
     <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
+    <script src="https://viewerjs.org/ViewerJS/js/viewer.js"></script>
 
 
     <script>
@@ -168,25 +171,6 @@
         });
     </script>
     <script>
-        function loadFilePreview(fileURL) {
-            var previewContainer = $('.file-preview'); // Menggunakan jQuery untuk memilih elemen
-            var fileExtension = fileURL.split('.').pop().toLowerCase();
-
-            // Menentukan tipe MIME berdasarkan ekstensi file
-            var mimeType;
-            if (['pdf', 'txt', 'doc', 'docx', 'xls', 'xlsx'].includes(fileExtension)) {
-                mimeType = 'application/pdf'; // Misalnya, PDF, teks, Word, atau Excel
-            } else if (['png', 'jpg', 'jpeg', 'gif', 'bmp'].includes(fileExtension)) {
-                mimeType = 'image/' + fileExtension; // Misalnya, gambar
-            } else {
-                mimeType = 'application/octet-stream'; // Jika tipe file tidak dikenali, gunakan default
-            }
-
-            // Menggunakan tag <object> untuk menampilkan file dengan tipe MIME yang sesuai
-            previewContainer.html('<object data="' + fileURL + '" type="' + mimeType + '" width="100%" height="100%"></object>');
-        }
-    </script>
-    <script>
         document.onreadystatechange = function() {
             if (document.readyState !== "complete") {
                 document.querySelector("body").style.visibility = "hidden";
@@ -199,103 +183,6 @@
                 }); // Ubah angka 2000 menjadi jumlah milidetik yang Anda inginkan
             }
         };
-    </script>
-    <script>
-        var selectedFiles = [];
-
-        $(document).ready(function() {
-            var $dragDropArea = $('#drag-drop-area');
-
-            $dragDropArea.on('dragover', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                $dragDropArea.addClass('dragging');
-            });
-
-            $dragDropArea.on('dragleave', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                $dragDropArea.removeClass('dragging');
-            });
-
-            $dragDropArea.on('drop', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                $dragDropArea.removeClass('dragging');
-                selectedFiles = e.originalEvent.dataTransfer.files;
-                displayPreview(selectedFiles);
-            });
-
-            $('#fileInput').on('change', function(e) {
-                selectedFiles = e.target.files;
-                displayPreview(selectedFiles);
-            });
-
-            function displayPreview(files) {
-                $dragDropArea.empty(); // Kosongkan area drag-drop
-
-                var $previewArea = $('<div class="preview-area"></div>');
-                for (var i = 0; i < files.length; i++) {
-                    var file = files[i];
-                    var reader = new FileReader();
-                    reader.onload = (function(theFile) {
-                        return function(e) {
-                            var fileType = theFile.type.split('/')[0];
-                            if (fileType === 'image') {
-                                $previewArea.append('<img src="' + e.target.result + '" alt="' + theFile.name + '">');
-                            } else {
-                                $previewArea.append('<div class="file-name">' + theFile.name + '</div>');
-                            }
-                        };
-                    })(file);
-                    reader.readAsDataURL(file);
-                }
-                $dragDropArea.append($previewArea);
-                $dragDropArea.append('<button id="uploadButton" type="button" class="btn btn-success mt-3 upload-button">Upload Files</button>');
-                $dragDropArea.append('<button id="cancelButton" type="button" class="btn btn-danger mt-3 cancel-button">Cancel</button>');
-
-                $('#uploadButton').on('click', function() {
-                    if (selectedFiles.length > 0) {
-                        uploadFiles(selectedFiles);
-                    } else {
-                        alert('Please select files first.');
-                    }
-                });
-
-                $('#cancelButton').on('click', function() {
-                    location.reload(); // Menyegarkan halaman saat tombol batal diklik
-                });
-            }
-
-            function uploadFiles(files) {
-                for (var i = 0; i < files.length; i++) {
-                    var file = files[i];
-                    var fileInfo = {
-                        name: file.name,
-                        size: file.size,
-                        type: file.type
-                    };
-
-                    fetch('<?= base_url('user/addFiles') ?>', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(fileInfo)
-                        })
-                        .then(response => {
-                            if (response.ok) {
-                                console.log('File info saved successfully!');
-                            } else {
-                                console.error('Failed to save file info:', response.statusText);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error saving file info:', error);
-                        });
-                }
-            }
-        });
     </script>
     <script>
         $('#renameFolder').on('show.bs.modal', function(event) {
@@ -346,7 +233,7 @@
             });
         }
     </script>
-    <script type="text/javascript">
+    <script>
         $(document).ready(function() {
             <?php if (session()->getFlashdata('success_message')) : ?>
                 Swal.fire({
@@ -362,6 +249,76 @@
             url: "<?= base_url('user/addFiles') ?>", // Set the url for your upload script location
             paramName: "file", // The name that will be used to transfer the file
             maxFiles: 10,
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll('.file-item').forEach(fileItem => {
+                const fileNameElement = fileItem.querySelector('.file-name');
+                const fileName = fileNameElement.textContent.trim();
+                const fileExtension = fileName.slice(fileName.lastIndexOf('.')).toLowerCase();
+                const iconContainer = fileItem.querySelector('.file-icon');
+
+                let iconClass = '';
+                let iconColor = '';
+
+                switch (fileExtension) {
+                    case '.jpg':
+                    case '.jpeg':
+                    case '.png':
+                    case '.gif':
+                        iconClass = 'fas fa-file-image';
+                        iconColor = 'red';
+                        break;
+                    case '.pdf':
+                        iconClass = 'fas fa-file-pdf';
+                        iconColor = 'red';
+                        break;
+                    case '.txt':
+                        iconClass = 'fas fa-file-alt';
+                        iconColor = 'blue';
+                        break;
+                    case '.doc':
+                    case '.docx':
+                        iconClass = 'fas fa-file-word';
+                        iconColor = 'blue';
+                        break;
+                    case '.xls':
+                    case '.xlsx':
+                        iconClass = 'fas fa-file-excel';
+                        iconColor = 'green';
+                        break;
+                    case '.ppt':
+                    case '.pptx':
+                        iconClass = 'fas fa-file-powerpoint';
+                        iconColor = 'orange';
+                        break;
+                    case '.zip':
+                    case '.rar':
+                        iconClass = 'fas fa-file-archive';
+                        iconColor = 'grey';
+                        break;
+                    case '.mp3':
+                    case '.wav':
+                        iconClass = 'fas fa-file-audio';
+                        iconColor = 'red';
+                        break;
+                    case '.mp4':
+                    case '.avi':
+                    case '.mkv':
+                        iconClass = 'fas fa-file-video';
+                        iconColor = 'red';
+                        break;
+                    default:
+                        iconClass = 'fas fa-file';
+                        iconColor = 'grey';
+                }
+
+                const iconElement = document.createElement('i');
+                iconElement.className = iconClass;
+                iconElement.style.color = iconColor;
+                iconContainer.appendChild(iconElement);
+            });
         });
     </script>
 </body>
