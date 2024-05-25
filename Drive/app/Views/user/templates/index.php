@@ -134,6 +134,30 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="renameFile" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Rename</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="<?= base_url('user/file/rename') ?>" method="post">
+                        <div class="form-group">
+                            <input type="hidden" name="id" id="file-id">
+                            <input type="text" class="form-control" id="file-name" name="file_name" required>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
@@ -151,7 +175,7 @@
     <script src="https://viewerjs.org/ViewerJS/js/viewer.js"></script>
 
 
-    <script>
+    <!--   <script>
         // JavaScript untuk mengganti tampilan
         $(document).ready(function() {
             $('.list-view-toggle').click(function() {
@@ -164,7 +188,7 @@
                 $('.icon-view').show();
             });
         });
-    </script>
+    </script> -->
     <script>
         $(document).ready(function() {
             $('.dropdown-toggle').dropdown();
@@ -196,12 +220,43 @@
         });
     </script>
     <script>
+        $('#renameFile').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var name = button.data('name');
+            var filenameWithoutExt = name.split('.').slice(0, -1).join('.'); // Menghapus ekstensi dari nama file
+
+            var modal = $(this);
+            modal.find('#file-id').val(id);
+            modal.find('#file-name').val(filenameWithoutExt);
+        });
+    </script>
+    <script>
         function Delete(event) {
             event.preventDefault(); // Menghentikan pengiriman formulir secara langsung
 
             Swal.fire({
                 title: 'Are you sure?',
                 text: "This folder will be moved to the Trash",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Move to trash'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.parentElement.submit(); // Teruskan penghapusan
+                }
+            });
+        }
+    </script>
+    <script>
+        function fileDelete(event) {
+            event.preventDefault(); // Menghentikan pengiriman formulir secara langsung
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This file will be moved to the Trash",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
@@ -257,7 +312,8 @@
                 const fileNameElement = fileItem.querySelector('.file-name');
                 const fileName = fileNameElement.textContent.trim();
                 const fileExtension = fileName.slice(fileName.lastIndexOf('.')).toLowerCase();
-                const iconContainer = fileItem.querySelector('.file-icon');
+                const previewContainer = fileItem.querySelector('.file-preview');
+                const fileUrl = '<?= base_url('files/') ?>' + '<?= session()->get('name') ?>' + '/' + fileName;
 
                 let iconClass = '';
                 let iconColor = '';
@@ -269,58 +325,112 @@
                     case '.gif':
                         iconClass = 'fas fa-file-image';
                         iconColor = 'red';
+                        const img = document.createElement('img');
+                        img.src = fileUrl;
+                        img.classList.add('img-fluid');
+                        previewContainer.appendChild(img);
                         break;
                     case '.pdf':
                         iconClass = 'fas fa-file-pdf';
                         iconColor = 'red';
+                        const pdfIcon = document.createElement('i');
+                        pdfIcon.className = iconClass;
+                        pdfIcon.style.color = iconColor;
+                        pdfIcon.style.fontSize = '120px';
+                        previewContainer.appendChild(pdfIcon);
                         break;
                     case '.txt':
                         iconClass = 'fas fa-file-alt';
                         iconColor = 'blue';
+                        fetch(fileUrl)
+                            .then(response => response.text())
+                            .then(data => {
+                                const textPreview = document.createElement('pre');
+                                textPreview.textContent = data;
+                                previewContainer.appendChild(textPreview);
+                            });
                         break;
                     case '.doc':
                     case '.docx':
                         iconClass = 'fas fa-file-word';
                         iconColor = 'blue';
+                        const wordIcon = document.createElement('i');
+                        wordIcon.className = iconClass;
+                        wordIcon.style.color = iconColor;
+                        wordIcon.style.fontSize = '120px';
+                        previewContainer.appendChild(wordIcon);
                         break;
                     case '.xls':
                     case '.xlsx':
                         iconClass = 'fas fa-file-excel';
                         iconColor = 'green';
+                        const excelIcon = document.createElement('i');
+                        excelIcon.className = iconClass;
+                        excelIcon.style.color = iconColor;
+                        excelIcon.style.fontSize = '120px';
+                        previewContainer.appendChild(excelIcon);
                         break;
                     case '.ppt':
                     case '.pptx':
                         iconClass = 'fas fa-file-powerpoint';
                         iconColor = 'orange';
+                        const pptIcon = document.createElement('i');
+                        pptIcon.className = iconClass;
+                        pptIcon.style.color = iconColor;
+                        pptIcon.style.fontSize = '120px';
+                        previewContainer.appendChild(pptIcon);
                         break;
                     case '.zip':
                     case '.rar':
                         iconClass = 'fas fa-file-archive';
                         iconColor = 'grey';
+                        const archiveIcon = document.createElement('i');
+                        pptIcon.className = iconClass;
+                        pptIcon.style.color = iconColor;
+                        pptIcon.style.fontSize = '120px';
+                        previewContainer.appendChild(archiveIcon);
                         break;
                     case '.mp3':
                     case '.wav':
                         iconClass = 'fas fa-file-audio';
                         iconColor = 'red';
+                        const audio = document.createElement('audio');
+                        audio.controls = true;
+                        audio.controlsList = 'nodownload'; // Menambahkan atribut controlsList untuk menghapus tombol unduh
+                        audio.src = fileUrl;
+                        previewContainer.appendChild(audio);
                         break;
                     case '.mp4':
                     case '.avi':
                     case '.mkv':
                         iconClass = 'fas fa-file-video';
                         iconColor = 'red';
+                        const video = document.createElement('video');
+                        video.controls = true;
+                        video.controlsList = 'nodownload'; // Menambahkan atribut controlsList untuk menghapus tombol unduh
+                        video.src = fileUrl;
+                        video.classList.add('img-fluid');
+                        previewContainer.appendChild(video);
                         break;
                     default:
                         iconClass = 'fas fa-file';
                         iconColor = 'grey';
+                        const defaultIcon = document.createElement('i');
+                        pptIcon.className = iconClass;
+                        pptIcon.style.color = iconColor;
+                        pptIcon.style.fontSize = '120px';
+                        previewContainer.appendChild(defaultIcon);
+
                 }
 
                 const iconElement = document.createElement('i');
                 iconElement.className = iconClass;
                 iconElement.style.color = iconColor;
-                iconContainer.appendChild(iconElement);
+                fileItem.querySelector('.file-icon').appendChild(iconElement);
             });
         });
     </script>
+
 </body>
 
 </html>

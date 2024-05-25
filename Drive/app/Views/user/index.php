@@ -12,17 +12,16 @@
 
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
         <h1 class="h2">My Drive</h1>
-        <div class="btn-group mb-3" role="group">
+        <!-- <div class="btn-group mb-3" role="group">
             <button type="button" class="btn btn-primary list-view-toggle"><i class="fas fa-list"></i></button>
             <button type="button" class="btn btn-primary icon-view-toggle"><i class="fas fa-th-large"></i> </button>
-        </div>
+        </div> -->
     </div>
 
     <!-- Daftar Konten -->
     <!-- Tampilan List -->
 
-    <div class="row list-view fade-in">
-        <!-- Tampilan daftar -->
+    <!-- <div class="row list-view fade-in">
         <div class="col-md-12">
             <table class="table table-hover">
                 <thead>
@@ -58,7 +57,7 @@
                     <?php endforeach; ?>
                     <?php foreach ($files as $file) : ?>
                         <tr>
-                            <td><i class="fas fa-file file-icon-i"></i> <?= $file['file_name'] ?></td>
+                            <td><i class="fas fa-file file-icon-i"></i><?= $file['file_name'] ?> <span class="file-icon"></span></td>
                             <td class="small"><?= date('F d, Y', strtotime($file['created_at'])) ?></td>
                             <td>-</td>
                             <td>
@@ -81,11 +80,11 @@
                 </tbody>
             </table>
         </div>
-    </div>
+    </div> -->
 
     <!-- Tampilan ikon -->
     <hr>
-    <div class="icon-view fade-in" style="display: none;">
+    <div class="icon-view fade-in">
         <h6>Folders</h6>
         <?php foreach ($folders as $folder) : ?>
             <div class="btn-group">
@@ -117,16 +116,19 @@
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center">
                                 <span class="file-icon"></span>
-                                <span class="file-name"><?= $file['file_name'] ?></span>
+                                <span class="file-name small"><?= $file['file_name'] ?></span>
                             </div>
                             <div class="dropdown">
                                 <i class="fas fa-ellipsis-v dropdown-toggle dropdown-toggle-no-caret" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated" aria-labelledby="dropdownMenuButton1">
-                                    <a class="dropdown-item" href="#">Action 1</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#">Action 2</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#">Action 3</a>
+                                    <li><button class="dropdown-item" type="button" data-toggle="modal" data-target="#renameFile" data-id="<?= $file['id'] ?>" data-name="<?= $file['file_name'] ?>"><i class="fas fa-edit mr-3"></i> Rename</button></li>
+                                    <hr class="dropdown-divider">
+                                    <li>
+                                        <form action="<?= base_url('user/file/moveToTrash') ?>" method="post" class="d-inline">
+                                            <input type="hidden" name="fileId" value="<?= $file['id'] ?>">
+                                            <button type="button" class="dropdown-item" onclick="fileDelete(event)"><i class="fas fa-trash mr-3"></i> Move To Trash</button>
+                                        </form>
+                                    </li>
                                 </div>
                             </div>
                         </div>
@@ -134,7 +136,7 @@
                             <div class="file-preview" style="width: 100%; height: 200px;"></div>
                         </div>
                         <div class="card-footer text-muted text-center small">
-                            <?= date('F d, Y', strtotime($file['created_at'])) ?>
+                            Added on <?= date('F d, Y', strtotime($file['created_at'])) ?>
                         </div>
                     </div>
                 </div>

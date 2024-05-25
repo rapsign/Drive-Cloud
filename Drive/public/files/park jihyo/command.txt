@@ -1,0 +1,4 @@
+ravanger = execute at MyouiMinarii run summon ravager ~5 ~5 ~ {CustomName:"\"{username}\""}
+food = execute at MyouiMinarii run give MyouiMinarii cooked_mutton 1
+creper = execute at MyouiMinarii run summon creeper ~5 ~5 ~ {CustomName:"\"{username}\""}
+chat = execute at MyouiMinarii run tellraw @a [{"text": "{username}", "bold":true,"color": "aqua"} ,{"text": " {comment}", "color": "white"}]
