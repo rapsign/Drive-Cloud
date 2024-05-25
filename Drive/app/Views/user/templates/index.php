@@ -128,7 +128,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Create</button>
+                    <button type="submit" class="btn btn-primary">Rename</button>
                     </form>
                 </div>
             </div>
@@ -147,12 +147,13 @@
                     <form action="<?= base_url('user/file/rename') ?>" method="post">
                         <div class="form-group">
                             <input type="hidden" name="id" id="file-id">
+                            <input type="hidden" name="ext" id="file-ext">
                             <input type="text" class="form-control" id="file-name" name="file_name" required>
                         </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Create</button>
+                    <button type="submit" class="btn btn-primary">Rename</button>
                     </form>
                 </div>
             </div>
@@ -224,11 +225,13 @@
             var button = $(event.relatedTarget);
             var id = button.data('id');
             var name = button.data('name');
-            var filenameWithoutExt = name.split('.').slice(0, -1).join('.'); // Menghapus ekstensi dari nama file
+            var filenameWithoutExt = name.split('.').slice(0, -1).join('.');
+            var filenameExt = name.split('.').pop();
 
             var modal = $(this);
             modal.find('#file-id').val(id);
             modal.find('#file-name').val(filenameWithoutExt);
+            modal.find('#file-ext').val(filenameExt);
         });
     </script>
     <script>
@@ -311,6 +314,7 @@
             document.querySelectorAll('.file-item').forEach(fileItem => {
                 const fileNameElement = fileItem.querySelector('.file-name');
                 const fileName = fileNameElement.textContent.trim();
+                console.log(fileName)
                 const fileExtension = fileName.slice(fileName.lastIndexOf('.')).toLowerCase();
                 const previewContainer = fileItem.querySelector('.file-preview');
                 const fileUrl = '<?= base_url('files/') ?>' + '<?= session()->get('name') ?>' + '/' + fileName;

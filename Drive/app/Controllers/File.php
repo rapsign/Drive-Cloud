@@ -57,44 +57,69 @@ class File extends BaseController
             ]);
         }
     }
-    public function renameFolder()
+    public function renameFile()
     {
-        $folderId = $this->request->getVar('id');
-        $newFolderName = $this->request->getVar('folder_name');
+        $fileId = $this->request->getVar('id');
+        $newFileName = $this->request->getVar('file_name');
+        $fileExt = $this->request->getVar('ext');
         $username = session()->get('name');
 
-        // Dapatkan folder lama dari database
-        $folder = $this->folderModel->find($folderId);
-        if (!$folder) {
-            session()->setFlashdata('error_message', 'Folder not found!');
+        // Get old file details from the database
+        $file = $this->fileModel->find($fileId);
+        if (!$file) {
+            session()->setFlashdata('error_message', 'File not found!');
             return redirect()->to('/user');
         }
 
-        $oldFolderName = $folder['folder_name'];
-        $baseFolderPath = FCPATH . 'files/' . $username . '/';
-        $oldFolderPath = $baseFolderPath . $oldFolderName;
-        $newFolderPath = $baseFolderPath . $newFolderName;
+        $oldFileName = $file['file_name'];
+        $baseFilePath = FCPATH . 'files/' . $username . '/';
+        $oldFilePath = $baseFilePath . $oldFileName;
+        $newFilePath = $baseFilePath . $newFileName . '.' . $fileExt;
 
-        // Tambahkan nomor di belakang nama folder jika sudah ada
-        $counter = 2;
-        while (is_dir($newFolderPath) && $newFolderName != $oldFolderName) {
-            $newFolderName = $this->request->getVar('folder_name') . '_' . $counter;
-            $newFolderPath = $baseFolderPath . $newFolderName;
-            $counter++;
+        // Check if the new file name is the same as the old one
+        if ($newFileName === pathinfo($oldFileName, PATHINFO_FILENAME)) {
+            session()->setFlashdata('error_message', 'New file name is the same as the old one.');
+            return redirect()->to('/user');
         }
 
-        // Ubah nama folder di sistem file
-        if (is_dir($oldFolderPath)) {
-            rename($oldFolderPath, $newFolderPath);
+        // Check if the new file already exists
+        if (file_exists($newFilePath)) {
+            session()->setFlashdata('error_message', 'A file with the same name already exists.');
+            return redirect()->to('/user');
         }
 
-        // Simpan perubahan nama folder ke database
-        $this->folderModel->save([
-            'id' => $folderId,
-            'folder_name' => $newFolderName,
+        // Attempt to rename the file
+        if (rename($oldFilePath, $newFilePath)) {
+            // Update database only if rename is successful
+            $this->fileModel->save([
+                'id' => $fileId,
+                'file_name' => $newFileName . '.' . $fileExt,
+            ]);
+
+            session()->setFlashdata('success_message', 'File renamed successfully!');
+        } else {
+            session()->setFlashdata('error_message', 'Failed to rename the file.');
+        }
+
+        return redirect()->to('/user');
+    }
+    public function moveToTrash()
+    {
+        $fileId = $this->request->getVar('fileId');
+        $this->fileModel->where('id', $fileId)->delete();
+        session()->setFlashdata('success_message', 'File move to trash');
+        return redirect()->to('/user');
+    }
+    public function restoreFile()
+    {
+        $fileId = $this->request->getVar('fileId');
+
+        $this->fileModel->save([
+            'id' => $fileId,
+            'deleted_at' => null,
         ]);
 
-        session()->setFlashdata('success_message', 'Folder renamed successfully!');
-        return redirect()->to('/user');
+        session()->setFlashdata('success_message', 'File restored successfully!');
+        return redirect()->to('/user/trash');
     }
 }

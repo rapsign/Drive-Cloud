@@ -28,7 +28,7 @@ class Folder extends BaseController
         $username = session()->get('name');
 
         // Path dasar untuk folder pengguna
-        $baseFolderPath = FCPATH . '../files/' . $username . '/';
+        $baseFolderPath = FCPATH . 'files/' . $username . '/';
         $folderPath = $baseFolderPath . $foldername;
 
         // Tambahkan nomor di belakang nama folder jika sudah ada
@@ -121,7 +121,7 @@ class Folder extends BaseController
 
 
         $folderName = $this->request->getVar('folderName');
-        $folderPath = FCPATH . '../files/' . $username . '/' . $folderName;
+        $folderPath = FCPATH . 'files/' . $username . '/' . $folderName;
 
         // Hapus direktori dan isinya dari sistem file
         $this->deleteDirectory($folderPath);
