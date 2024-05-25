@@ -45,6 +45,7 @@ class Authentication extends BaseController
                 'isLoggedIn' => TRUE,
                 'id' => $user['id'],
                 'username' => $user['username'],
+                'name' => $user['name'],
                 'role' => $user['role_id']
             ];
             session()->set($data);

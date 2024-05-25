@@ -25,47 +25,47 @@
 
     </div>
 
-    <!-- Daftar Konten -->
-    <div class="row list-view">
+    <div class="row list-view fade-in">
         <!-- Tampilan daftar -->
         <div class="col-md-12">
             <table class="table table-hover">
                 <thead>
                     <tr>
                         <th scope="col">Name</th>
-                        <th scope="col">Trashed Date</th>
+                        <th scope="col">Date</th>
                         <th scope="col">File Size</th>
                         <th scope="col"><i class="fas fa-ellipsis-v"></i></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>
-                            <i class="fas fa-folder file-icon-i"></i> Folder 1
-                        </td>
-                        <td>2024-05-01</td>
-                        <td>-</td>
-                        <td>
-                            <div class="dropdown">
-                                <i class="fas fa-ellipsis-v dropdown-toggle dropdown-toggle-no-caret" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
-                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated" aria-labelledby="dropdownMenuButton1">
-                                    <a class="dropdown-item" href="#">Action 1</a>
-                                    <div class="dropdown-divider"></div> <!-- Divider line -->
-                                    <a class="dropdown-item" href="#">Action 2</a>
-                                    <div class="dropdown-divider"></div> <!-- Divider line -->
-                                    <a class="dropdown-item" href="#">Action 3</a>
+                    <?php foreach ($folders as $folder) : ?>
+                        <tr>
+                            <td><i class="fas fa-folder file-icon-i"></i> <?= $folder['folder_name'] ?></td>
+                            <td class="small"><?= date('F d, Y', strtotime($folder['created_at'])) ?></td>
+                            <td>-</td>
+                            <td>
+                                <div class="dropdown">
+                                    <i class="fas fa-ellipsis-v dropdown-toggle dropdown-toggle-no-caret" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated" aria-labelledby="dropdownMenuButton1">
+                                        <li>
+                                            <form action="<?= base_url('user/folder/restoreFolder') ?>" method="post" style="display: inline;">
+                                                <input type="hidden" name="folderId" value="<?php echo esc($folder['id']); ?>">
+                                                <button type="submit" class="dropdown-item"><i class="fas fa-undo mr-3"></i> Restore</button>
+                                            </form>
+                                        </li>
+                                        <hr class="dropdown-divider">
+                                        <li>
+                                            <form action="<?= base_url('user/folder/deleteFolder') ?>" method="post" class="d-inline">
+                                                <input type="hidden" name="folderId" value="<?= $folder['id'] ?>">
+                                                <input type="hidden" name="folderName" value="<?= $folder['folder_name'] ?>">
+                                                <button type="button" class="dropdown-item" onclick="DeleteFolder(event)"><i class="fas fa-trash mr-3"></i> Delete forever</button>
+                                            </form>
+                                        </li>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <i class="fas fa-folder file-icon-i"></i> Folder 2
-                        </td>
-                        <td>2024-05-02</td>
-                        <td>-</td>
-                        <td><i class="fas fa-ellipsis-v"></i></td>
-                    </tr>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
                     <tr>
                         <td>
                             <i class="fas fa-file file-icon-i"></i> Document 1
@@ -87,83 +87,109 @@
         </div>
     </div>
 
-
     <!-- Tampilan ikon -->
-    <div class="row icon-view" style="display: none;">
-
-        <div class="col-md-3 col-6 file-item">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span class="file-name">Folder 1</span>
-                    <div class="dropdown">
-                        <i class="fas fa-ellipsis-v dropdown-toggle dropdown-toggle-no-caret" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
-                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated" aria-labelledby="dropdownMenuButton1">
-                            <a class="dropdown-item" href="#">Action 1</a>
-                            <div class="dropdown-divider"></div> <!-- Divider line -->
-                            <a class="dropdown-item" href="#">Action 2</a>
-                            <div class="dropdown-divider"></div> <!-- Divider line -->
-                            <a class="dropdown-item" href="#">Action 3</a>
+    <hr>
+    <div class="icon-view fade-in" style="display: none;">
+        <h6>Folders</h6>
+        <?php foreach ($folders as $folder) : ?>
+            <div class="btn-group">
+                <a href="<?= base_url('user/recent') ?>" class="btn btn-secondary">
+                    <i class="fas fa-folder fa-lg mr-2"></i> <!-- Icon with additional classes -->
+                    <span class="btn-text"><?= $folder['folder_name'] ?></span>
+                </a>
+                <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false" style="width: 10px;">
+                    <span class="visually-hidden"><i class="fas fa-ellipsis-v"></i></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><button class="dropdown-item" type="button" data-toggle="modal" data-target="#renameFolder" data-id="<?= $folder['id'] ?>" data-name="<?= $folder['folder_name'] ?>"><i class="fas fa-edit mr-3"></i> Rename</button></li>
+                    <hr class="dropdown-divider">
+                    <li>
+                        <form action="<?= base_url('user/folder/moveToTrash') ?>" method="post" class="d-inline">
+                            <input type="hidden" name="folderSlug" value="<?= $folder['slug'] ?>">
+                            <button type="button" class="dropdown-item" onclick="Delete(event)"><i class="fas fa-trash mr-3"></i> Delete forever</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        <?php endforeach; ?>
+        <hr>
+        <h6>Files</h6>
+        <div class="row">
+            <div class="col-md-3 col-6 file-item">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span class="file-name">Folder 1</span>
+                        <div class="dropdown">
+                            <i class="fas fa-ellipsis-v dropdown-toggle dropdown-toggle-no-caret" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated" aria-labelledby="dropdownMenuButton1">
+                                <a class="dropdown-item" href="#">Action 1</a>
+                                <div class="dropdown-divider"></div> <!-- Divider line -->
+                                <a class="dropdown-item" href="#">Action 2</a>
+                                <div class="dropdown-divider"></div> <!-- Divider line -->
+                                <a class="dropdown-item" href="#">Action 3</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="card-body text-center">
-                    <div class="file-icon mb-3">
-                        <i class="fas fa-folder"></i>
+                    <div class="card-body text-center">
+                        <div class="file-icon mb-3">
+                            <i class="fas fa-folder"></i>
+                        </div>
                     </div>
-                </div>
-                <div class="card-footer text-muted text-center">
-                    April 21, 2024
+                    <div class="card-footer text-muted text-center">
+                        April 21, 2024
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-3 col-6 file-item">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span class="file-name">Folder 2</span>
-                    <i class="fas fa-ellipsis-v"></i>
-                </div>
-                <div class="card-body text-center">
-                    <div class="file-icon mb-3">
-                        <i class="fas fa-folder"></i>
+            <div class="col-md-3 col-6 file-item">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span class="file-name">Folder 2</span>
+                        <i class="fas fa-ellipsis-v"></i>
                     </div>
-                </div>
-                <div class="card-footer text-muted text-center">
-                    April 21, 2024
+                    <div class="card-body text-center">
+                        <div class="file-icon mb-3">
+                            <i class="fas fa-folder"></i>
+                        </div>
+                    </div>
+                    <div class="card-footer text-muted text-center">
+                        April 21, 2024
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-3 col-6 file-item">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span class="file-name">Document 1</span>
-                    <i class="fas fa-ellipsis-v"></i>
-                </div>
-                <div class="card-body text-center" style="height: 200px;">
-                    <div class="file-preview" style="width: 100%; height: 100%;">
-                        <!-- Preview will be loaded here -->
+            <div class="col-md-3 col-6 file-item">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span class="file-name">Document 1</span>
+                        <i class="fas fa-ellipsis-v"></i>
                     </div>
-                </div>
-                <div class="card-footer text-muted text-center">
-                    April 21, 2024
+                    <div class="card-body text-center" style="height: 200px;">
+                        <div class="file-preview" style="width: 100%; height: 100%;">
+                            <!-- Preview will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="card-footer text-muted text-center">
+                        April 21, 2024
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-3 col-6 file-item">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span class="file-name">Document 2</span>
-                    <i class="fas fa-ellipsis-v"></i>
-                </div>
-                <div class="card-body text-center">
-                    <div class="file-icon mb-3">
-                        <i class="fas fa-file-alt"></i>
+            <div class="col-md-3 col-6 file-item">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span class="file-name">Document 2</span>
+                        <i class="fas fa-ellipsis-v"></i>
                     </div>
-                </div>
-                <div class="card-footer text-muted text-center">
-                    April 21, 2024
+                    <div class="card-body text-center">
+                        <div class="file-icon mb-3">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                    </div>
+                    <div class="card-footer text-muted text-center">
+                        April 21, 2024
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
 </main>
 <?= $this->endSection(); ?>

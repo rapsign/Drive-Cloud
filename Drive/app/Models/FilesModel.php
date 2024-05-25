@@ -4,15 +4,15 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class FolderModel extends Model
+class FilesModel extends Model
 {
-    protected $table            = 'folders';
+    protected $table            = 'files';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['folder_name', 'user_id', 'slug', 'deleted_at'];
+    protected $allowedFields    = ['file_name', 'file_size', 'file_type', 'folder_id', 'user_id'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

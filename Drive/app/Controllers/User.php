@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\FilesModel;
 use App\Models\FolderModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\I18n\Time;
@@ -11,21 +12,25 @@ use CodeIgniter\I18n\Time;
 class User extends BaseController
 {
     protected $folderModel;
-    protected $userId;
+    protected $fileModel;
 
 
     public function __construct()
     {
         $this->folderModel = new FolderModel();
-        $this->userId = session()->get('id');
+        $this->fileModel = new FilesModel();
     }
     public function index()
     {
+        $files = $this->fileModel->where('user_id', session()->get('id'))
+            ->orderBy('created_at', 'DESC')
+            ->findAll();
         $folders = $this->folderModel->where('user_id', session()->get('id'))
             ->orderBy('created_at', 'DESC')
             ->findAll();
 
         $data['folders'] = $folders;
+        $data['files'] = $files;
         return view('user/index', $data);
     }
     public function recent()
@@ -38,6 +43,11 @@ class User extends BaseController
     }
     public function trash()
     {
-        return view('user/trash');
+        $folders = $this->folderModel->onlyDeleted()
+            ->where('user_id', session()->get('id'))
+            ->orderBy('deleted_at', 'DESC')
+            ->findAll();
+        $data['folders'] = $folders;
+        return view('user/trash', $data);
     }
 }

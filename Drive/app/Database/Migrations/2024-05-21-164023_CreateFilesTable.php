@@ -31,6 +31,7 @@ class CreateFilesTable extends Migration
                 'type' => 'INT',
                 'constraint' => 11,
                 'unsigned' => true,
+                'null' => true,
             ],
             'user_id' => [
                 'type' => 'INT',

@@ -15,6 +15,8 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
     <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link href="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
 </head>
 
 <body>
@@ -60,11 +62,6 @@
                                 <i class="fas fa-home"></i> Home
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('user/recent') ?>">
-                                <i class="fas fa-history"></i> Recent
-                            </a>
-                        </li>
                         <!-- <li class="nav-item">
                             <a class="nav-link" href="#">
                                 <i class="fas fa-star"></i> Starred
@@ -88,8 +85,8 @@
             <?= $this->renderSection('page-content'); ?>
         </div>
     </div>
-    <div class="modal fade modal-dialog modal-dialog-centered" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
+    <div class="modal fade " id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="staticBackdropLabel">New Folder</h5>
@@ -147,6 +144,9 @@
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone-min.js"></script>
+    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+
 
     <script>
         // JavaScript untuk mengganti tampilan
@@ -168,65 +168,23 @@
         });
     </script>
     <script>
-        // Assuming 'fileURL' is the URL of the file
         function loadFilePreview(fileURL) {
+            var previewContainer = $('.file-preview'); // Menggunakan jQuery untuk memilih elemen
             var fileExtension = fileURL.split('.').pop().toLowerCase();
-            var previewContainer = document.querySelector('.file-preview');
 
-            if (fileExtension === 'pdf') {
-                // If it's a PDF file, load a PDF viewer with dimensions matching the card body
-                previewContainer.innerHTML = '<iframe src="' + fileURL + '" width="100%" height="100%"></iframe>';
+            // Menentukan tipe MIME berdasarkan ekstensi file
+            var mimeType;
+            if (['pdf', 'txt', 'doc', 'docx', 'xls', 'xlsx'].includes(fileExtension)) {
+                mimeType = 'application/pdf'; // Misalnya, PDF, teks, Word, atau Excel
             } else if (['png', 'jpg', 'jpeg', 'gif', 'bmp'].includes(fileExtension)) {
-                // If it's an image file, load the image directly
-                previewContainer.innerHTML = '<img src="' + fileURL + '" alt="File Preview" style="max-width: 100%; max-height: 100%;">';
+                mimeType = 'image/' + fileExtension; // Misalnya, gambar
             } else {
-                // For other file types, you might not have a direct preview
-                previewContainer.innerHTML = '<p>No preview available for this file type.</p>';
+                mimeType = 'application/octet-stream'; // Jika tipe file tidak dikenali, gunakan default
             }
+
+            // Menggunakan tag <object> untuk menampilkan file dengan tipe MIME yang sesuai
+            previewContainer.html('<object data="' + fileURL + '" type="' + mimeType + '" width="100%" height="100%"></object>');
         }
-
-        // Example usage
-        loadFilePreview('example.png');
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            let clickCount = 0;
-            const folderButton = document.getElementById('folderButton');
-            const dropdownMenuButton = document.getElementById('dropdownMenuButton1');
-            const dropdownMenu = document.querySelector('.dropdown-menu');
-
-            folderButton.addEventListener('click', function(event) {
-                clickCount++;
-                setTimeout(function() {
-                    if (clickCount === 1) {
-                        // Single click: Show dropdown
-                        dropdownMenu.classList.toggle('show');
-                    } else if (clickCount === 2) {
-                        // Double click: Navigate to new page
-                        window.location.href = '<?= base_url('user/recent') ?>';
-                    }
-                    clickCount = 0;
-                }, 300);
-            });
-
-            // Prevent dropdown from closing when clicking inside it
-            dropdownMenu.addEventListener('click', function(event) {
-                event.stopPropagation();
-            });
-
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function(event) {
-                if (!folderButton.contains(event.target)) {
-                    dropdownMenu.classList.remove('show');
-                }
-            });
-
-            // Ensure dropdown toggles only when clicking the ellipsis
-            dropdownMenuButton.addEventListener('click', function(event) {
-                event.stopPropagation();
-                dropdownMenu.classList.toggle('show');
-            });
-        });
     </script>
     <script>
         document.onreadystatechange = function() {
@@ -312,13 +270,29 @@
             function uploadFiles(files) {
                 for (var i = 0; i < files.length; i++) {
                     var file = files[i];
-                    var fileInfo = `
-                                    File Name: ${file.name}
-                                    File Size: ${file.size} bytes
-                                    File Type: ${file.type}
-                                    `;
-                    console.log(fileInfo);
+                    var fileInfo = {
+                        name: file.name,
+                        size: file.size,
+                        type: file.type
+                    };
 
+                    fetch('<?= base_url('user/addFiles') ?>', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(fileInfo)
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                console.log('File info saved successfully!');
+                            } else {
+                                console.error('Failed to save file info:', response.statusText);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error saving file info:', error);
+                        });
                 }
             }
         });
@@ -336,6 +310,25 @@
     </script>
     <script>
         function Delete(event) {
+            event.preventDefault(); // Menghentikan pengiriman formulir secara langsung
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This folder will be moved to the Trash",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Move to trash'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.parentElement.submit(); // Teruskan penghapusan
+                }
+            });
+        }
+    </script>
+    <script>
+        function DeleteFolder(event) {
             event.preventDefault(); // Menghentikan pengiriman formulir secara langsung
 
             Swal.fire({
@@ -362,6 +355,13 @@
                     text: '<?= session()->getFlashdata('success_message') ?>',
                 });
             <?php endif; ?>
+        });
+    </script>
+    <script>
+        var myDropzone = new Dropzone("#kt_dropzonejs_example_1", {
+            url: "<?= base_url('user/addFiles') ?>", // Set the url for your upload script location
+            paramName: "file", // The name that will be used to transfer the file
+            maxFiles: 10,
         });
     </script>
 </body>
