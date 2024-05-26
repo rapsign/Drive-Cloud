@@ -12,7 +12,7 @@ class FilesModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['file_name', 'file_size', 'file_type', 'folder_id', 'user_id'];
+    protected $allowedFields    = ['file_name', 'file_size', 'file_type', 'folder_id', 'user_id', 'deleted_at'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

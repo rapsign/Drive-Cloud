@@ -47,7 +47,13 @@ class User extends BaseController
             ->where('user_id', session()->get('id'))
             ->orderBy('deleted_at', 'DESC')
             ->findAll();
+
+        $files = $this->fileModel->onlyDeleted()
+            ->where('user_id', session()->get('id'))
+            ->orderBy('deleted_at', 'DESC')
+            ->findAll();
         $data['folders'] = $folders;
+        $data['files'] = $files;
         return view('user/trash', $data);
     }
 }

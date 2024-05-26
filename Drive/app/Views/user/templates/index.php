@@ -18,6 +18,7 @@
     <link href="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
     <link rel="stylesheet" href="https://viewerjs.org/ViewerJS/css/viewer.css">
+    <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -174,6 +175,8 @@
     <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
     <script src="https://viewerjs.org/ViewerJS/js/viewer.js"></script>
+    <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
+
 
 
     <!--   <script>
@@ -292,6 +295,25 @@
         }
     </script>
     <script>
+        function DeleteFile(event) {
+            event.preventDefault(); // Menghentikan pengiriman formulir secara langsung
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.parentElement.submit(); // Teruskan penghapusan
+                }
+            });
+        }
+    </script>
+    <script>
         $(document).ready(function() {
             <?php if (session()->getFlashdata('success_message')) : ?>
                 Swal.fire({
@@ -331,7 +353,7 @@
                         iconColor = 'red';
                         const img = document.createElement('img');
                         img.src = fileUrl;
-                        img.classList.add('img-fluid');
+                        img.classList.add('img');
                         previewContainer.appendChild(img);
                         break;
                     case '.pdf':
@@ -377,7 +399,7 @@
                     case '.ppt':
                     case '.pptx':
                         iconClass = 'fas fa-file-powerpoint';
-                        iconColor = 'orange';
+                        iconColor = 'yellow';
                         const pptIcon = document.createElement('i');
                         pptIcon.className = iconClass;
                         pptIcon.style.color = iconColor;
@@ -387,11 +409,11 @@
                     case '.zip':
                     case '.rar':
                         iconClass = 'fas fa-file-archive';
-                        iconColor = 'grey';
+                        iconColor = 'orange';
                         const archiveIcon = document.createElement('i');
-                        pptIcon.className = iconClass;
-                        pptIcon.style.color = iconColor;
-                        pptIcon.style.fontSize = '120px';
+                        archiveIcon.className = iconClass;
+                        archiveIcon.style.color = iconColor;
+                        archiveIcon.style.fontSize = '120px';
                         previewContainer.appendChild(archiveIcon);
                         break;
                     case '.mp3':
@@ -400,7 +422,7 @@
                         iconColor = 'red';
                         const audio = document.createElement('audio');
                         audio.controls = true;
-                        audio.controlsList = 'nodownload'; // Menambahkan atribut controlsList untuk menghapus tombol unduh
+                        audio.controlsList = 'nodownload noplaybackrate'; // Menambahkan atribut controlsList untuk menghapus tombol unduh
                         audio.src = fileUrl;
                         previewContainer.appendChild(audio);
                         break;
@@ -411,20 +433,21 @@
                         iconColor = 'red';
                         const video = document.createElement('video');
                         video.controls = true;
-                        video.controlsList = 'nodownload'; // Menambahkan atribut controlsList untuk menghapus tombol unduh
+                        video.controlsList = 'nofullscreen nodownload noplaybackrate';
+                        video.disablePictureInPicture = true // Menambahkan atribut controlsList untuk menghapus tombol unduh
                         video.src = fileUrl;
-                        video.classList.add('img-fluid');
+                        video.classList.add('img');
                         previewContainer.appendChild(video);
                         break;
                     default:
                         iconClass = 'fas fa-file';
                         iconColor = 'grey';
                         const defaultIcon = document.createElement('i');
-                        pptIcon.className = iconClass;
-                        pptIcon.style.color = iconColor;
-                        pptIcon.style.fontSize = '120px';
+                        defaultIcon.className = iconClass;
+                        defaultIcon.style.color = iconColor;
+                        defaultIcon.style.fontSize = '120px';
                         previewContainer.appendChild(defaultIcon);
-
+                        break;
                 }
 
                 const iconElement = document.createElement('i');

@@ -400,5 +400,8 @@
                 justify-content: center;
             }
         }
+        .card-body{
+            background-color: #e3e4e6;
+        }
         
         

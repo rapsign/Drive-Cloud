@@ -26,6 +26,8 @@ $routes->post('/user/folder/deleteFolder', 'Folder::deleteFolder', ['filter' => 
 $routes->post('/user/addFiles', 'File::addFile', ['filter' => 'auth:user']);
 $routes->post('/user/file/rename', 'File::renameFile', ['filter' => 'auth:user']);
 $routes->post('/user/file/moveToTrash', 'File::moveToTrash', ['filter' => 'auth:user']);
+$routes->post('/user/file/restoreFile', 'File::restoreFile', ['filter' => 'auth:user']);
+$routes->post('/user/file/deleteFile', 'File::deleteFile', ['filter' => 'auth:user']);
 
 // Admin
 $routes->get('/admin', 'admin::index', ['filter' => 'auth:admin']);

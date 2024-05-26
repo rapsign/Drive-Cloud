@@ -122,4 +122,22 @@ class File extends BaseController
         session()->setFlashdata('success_message', 'File restored successfully!');
         return redirect()->to('/user/trash');
     }
+
+    public function deleteFile()
+    {
+        $fileId = $this->request->getVar('fileId');
+        $username = session()->get('name');
+        $fileName = $this->request->getVar('fileName');
+        $filePath = FCPATH . 'files/' . $username . '/' . $fileName;
+
+        // Hapus file dari server
+        if (file_exists($filePath)) {
+            unlink($filePath); // Menghapus file
+            session()->setFlashdata('success_message', 'File deleted successfully!');
+            $this->fileModel->withDeleted()->where('id', $fileId)->purgeDeleted();
+            return redirect()->to('/user');
+        } else {
+            session()->setFlashdata('error_message', 'File not found!');
+        }
+    }
 }

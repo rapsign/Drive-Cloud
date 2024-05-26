@@ -133,7 +133,7 @@
                             </div>
                         </div>
                         <div class="card-body text-center">
-                            <div class="file-preview" style="width: 100%; height: 200px;"></div>
+                            <div class="file-preview" style="width: 100%; height: 220px;"></div>
                         </div>
                         <div class="card-footer text-muted text-center small">
                             Added on <?= date('F d, Y', strtotime($file['created_at'])) ?>
