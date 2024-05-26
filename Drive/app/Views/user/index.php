@@ -4,19 +4,21 @@
 <!-- Main Content -->
 <main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-md-4 content ">
     <div class="search-form">
-        <form class="form-inline">
-            <input class="form-control mr-sm-2 rounded-pill" type="search" placeholder="Search in Drive" aria-label="Search">
+        <form class="form-inline" method="get" action="<?= base_url('search') ?>">
+            <input class="form-control mr-sm-2 rounded-pill" type="search" name="q" placeholder="Search in Drive" aria-label="Search" value="<?= esc($keyword) ?>">
             <button class="btn btn-primary rounded-pill" type="submit"><i class="fas fa-search"></i></button>
         </form>
     </div>
 
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
-        <h1 class="h2">My Drive</h1>
-        <!-- <div class="btn-group mb-3" role="group">
-            <button type="button" class="btn btn-primary list-view-toggle"><i class="fas fa-list"></i></button>
-            <button type="button" class="btn btn-primary icon-view-toggle"><i class="fas fa-th-large"></i> </button>
-        </div> -->
-    </div>
+    <?php if ($keyword) : ?>
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+            <h1 class="h2">Search Results for "<?= esc($keyword) ?>"</h1>
+        </div>
+    <?php else : ?>
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+            <h1 class="h2">My Drive</h1>
+        </div>
+    <?php endif; ?>
 
     <!-- Daftar Konten -->
     <!-- Tampilan List -->
@@ -121,12 +123,18 @@
                         <span class="visually-hidden"><i class="fas fa-ellipsis-v"></i></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><button class="dropdown-item" type="button" data-toggle="modal" data-target="#renameFolder" data-id="<?= $folder['id'] ?>" data-name="<?= $folder['folder_name'] ?>"><i class="fas fa-edit mr-3"></i> Rename</button></li>
+                        <li>
+                            <a class="dropdown-item" type="button" data-toggle="modal" data-target="#renameFolder" data-id="<?= $folder['id'] ?>" data-name="<?= $folder['folder_name'] ?>">
+                                <i class="fas fa-edit mr-3"></i> Rename
+                            </a>
+                        </li>
                         <hr class="dropdown-divider">
                         <li>
                             <form action="<?= base_url('user/folder/moveToTrash') ?>" method="post" class="d-inline">
                                 <input type="hidden" name="folderSlug" value="<?= $folder['slug'] ?>">
-                                <button type="button" class="dropdown-item" onclick="Delete(event)"><i class="fas fa-trash mr-3"></i> Move To Trash</button>
+                                <a type="button" class="dropdown-item" onclick="Delete(event)">
+                                    <i class="fas fa-trash mr-3"></i> Move To Trash
+                                </a>
                             </form>
                         </li>
                     </ul>
@@ -146,6 +154,37 @@
                                 <div class="dropdown">
                                     <i class="fas fa-ellipsis-v dropdown-toggle dropdown-toggle-no-caret" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
                                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated" aria-labelledby="dropdownMenuButton1">
+                                        <!-- Dropdown with nested dropdown -->
+                                        <li class="dropdown-submenu dropright" style="margin: 0 5px 0 5px ;">
+                                            <a class="dropdown-item dropdown-toggle dropdown-toggle-no-caret" type="button">
+                                                <i class="fas fa-info mr-3"></i> Info
+                                            </a>
+                                            <ul class="dropdown-menu" style="margin-left: 5px;">
+                                                <li>
+                                                    <span class="dropdown-item small">File Name</span>
+                                                    <span class="dropdown-item "><?= $file['file_name'] ?></span>
+                                                </li>
+                                                <hr class=" dropdown-divider">
+                                                <li>
+                                                    <span class="dropdown-item small">File Size</span>
+                                                    <span class="dropdown-item "><?= formatBytes($file['file_size']) ?></span>
+                                                </li>
+                                                <hr class="dropdown-divider">
+                                                <li>
+                                                    <span class="dropdown-item small">File Type</span>
+                                                    <span class="dropdown-item "><?= shortFileType($file['file_type']) ?></span>
+                                                </li>
+                                                <hr class="dropdown-divider">
+                                                <li>
+                                                    <span class="dropdown-item small">Uploaded</span>
+                                                    <span class="dropdown-item "><?= date('F d, Y', strtotime($file['created_at'])) ?></span>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <hr class="dropdown-divider">
+                                        <!-- Tambah item dropdown untuk download -->
+                                        <li><a class="dropdown-item" href="<?= base_url('files/' . session()->get('name') . '/' . $file['file_name']) ?>" download><i class="fas fa-download mr-3"></i> Download</a></li>
+                                        <hr class="dropdown-divider">
                                         <li><button class="dropdown-item" type="button" data-toggle="modal" data-target="#renameFile" data-id="<?= $file['id'] ?>" data-name="<?= $file['file_name'] ?>"><i class="fas fa-edit mr-3"></i> Rename</button></li>
                                         <hr class="dropdown-divider">
                                         <li>

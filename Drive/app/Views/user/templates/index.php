@@ -84,6 +84,7 @@
             </nav>
 
             <!-- Main Content -->
+
             <?= $this->renderSection('page-content'); ?>
         </div>
     </div>
@@ -194,20 +195,14 @@
         });
     </script> -->
     <script>
-        $(document).ready(function() {
-            $('.dropdown-toggle').dropdown();
-        });
-    </script>
-    <script>
         document.onreadystatechange = function() {
             if (document.readyState !== "complete") {
-                document.querySelector("body").style.visibility = "hidden";
                 document.querySelector("#loading-screen").style.visibility = "visible";
             } else {
                 // Menunda penyembunyian loading screen selama 2 detik
                 setTimeout(function() {
                     document.querySelector("#loading-screen").style.display = "none";
-                    document.querySelector("body").style.visibility = "visible";
+                    document.querySelector("main").style.visibility = "visible";
                 }); // Ubah angka 2000 menjadi jumlah milidetik yang Anda inginkan
             }
         };
@@ -483,6 +478,84 @@
                 fileItem.querySelector('.file-icon').appendChild(iconElement);
             });
         });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to adjust dropdown position
+            function adjustDropdownPosition() {
+                document.querySelectorAll('.dropdown-submenu.dropright').forEach(function(element) {
+                    // Get bounding rectangle of the element
+                    var rect = element.getBoundingClientRect();
+
+                    // Check if the element is near the right edge of the viewport
+                    if (rect.right >= window.innerWidth) {
+                        // Change class from dropright to dropleft
+                        element.classList.remove('dropright');
+                        element.classList.add('dropleft');
+                    } else {
+                        // Ensure it has the correct class if it's not near the edge
+                        element.classList.remove('dropleft');
+                        element.classList.add('dropright');
+                    }
+                });
+            }
+
+            // Adjust dropdown position on page load
+            adjustDropdownPosition();
+
+            // Adjust dropdown position on window resize
+            window.addEventListener('resize', adjustDropdownPosition);
+
+            // Handle click for nested dropdowns
+            document.querySelectorAll('.dropdown-submenu .dropdown-toggle').forEach(function(element) {
+                element.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    var parent = e.target.closest('.dropdown-submenu');
+                    parent.classList.toggle('show');
+                    var subMenu = parent.querySelector('.dropdown-menu');
+                    if (subMenu) {
+                        subMenu.classList.toggle('show');
+                    }
+                });
+            });
+
+            // Close nested dropdowns when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.dropdown-menu')) {
+                    document.querySelectorAll('.dropdown-menu.show').forEach(function(menu) {
+                        menu.classList.remove('show');
+                    });
+                    document.querySelectorAll('.dropdown-submenu.show').forEach(function(submenu) {
+                        submenu.classList.remove('show');
+                    });
+                }
+            });
+
+            // Close nested dropdowns when parent dropdown is closed
+            document.querySelectorAll('.dropdown').forEach(function(dropdown) {
+                dropdown.addEventListener('hide.bs.dropdown', function() {
+                    this.querySelectorAll('.dropdown-submenu .show').forEach(function(submenu) {
+                        submenu.classList.remove('show');
+                    });
+                });
+            });
+        });
+    </script>
+    <script>
+        // Definisi fungsi formatBytes untuk mengonversi ukuran file dari byte menjadi besaran yang lebih mudah dibaca
+        function formatBytes(bytes, decimals = 2) {
+            if (bytes === 0) return '0 Bytes';
+
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
     </script>
 
 </body>

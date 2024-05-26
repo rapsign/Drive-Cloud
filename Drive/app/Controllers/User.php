@@ -22,23 +22,29 @@ class User extends BaseController
         $this->folderModel = new FolderModel();
         $this->fileModel = new FilesModel();
         $this->userModel = new UsersModel();
+        helper(['file']);
     }
     public function index()
     {
-        $files = $this->fileModel->where('user_id', session()->get('id'))
-            ->orderBy('created_at', 'DESC')
-            ->findAll();
-        $folders = $this->folderModel->where('user_id', session()->get('id'))
-            ->orderBy('created_at', 'DESC')
-            ->findAll();
+        $user_id = session()->get('id');
+        $keyword = $this->request->getGet('q');
 
+        if ($keyword) {
+            $files = $this->fileModel->search($keyword, $user_id);
+            $folders = $this->folderModel->search($keyword, $user_id);
+        } else {
+            $files = $this->fileModel->where('user_id', $user_id)
+                ->orderBy('created_at', 'DESC')
+                ->findAll();
+            $folders = $this->folderModel->where('user_id', $user_id)
+                ->orderBy('created_at', 'DESC')
+                ->findAll();
+        }
+
+        $data['keyword'] = $keyword;
         $data['folders'] = $folders;
         $data['files'] = $files;
         return view('user/index', $data);
-    }
-    public function recent()
-    {
-        return view('user/recent');
     }
     public function upload()
     {
@@ -46,15 +52,32 @@ class User extends BaseController
     }
     public function trash()
     {
-        $folders = $this->folderModel->onlyDeleted()
-            ->where('user_id', session()->get('id'))
-            ->orderBy('deleted_at', 'DESC')
-            ->findAll();
+        $user_id = session()->get('id');
+        $keyword = $this->request->getGet('q');
 
-        $files = $this->fileModel->onlyDeleted()
-            ->where('user_id', session()->get('id'))
-            ->orderBy('deleted_at', 'DESC')
-            ->findAll();
+        if ($keyword) {
+            $folders = $this->folderModel->onlyDeleted()
+                ->where('user_id', $user_id)
+                ->like('folder_name', $keyword)
+                ->orderBy('deleted_at', 'DESC')
+                ->findAll();
+            $files = $this->fileModel->onlyDeleted()
+                ->where('user_id', $user_id)
+                ->like('file_name', $keyword)
+                ->orderBy('deleted_at', 'DESC')
+                ->findAll();
+        } else {
+            $folders = $this->folderModel->onlyDeleted()
+                ->where('user_id', $user_id)
+                ->orderBy('deleted_at', 'DESC')
+                ->findAll();
+            $files = $this->fileModel->onlyDeleted()
+                ->where('user_id', $user_id)
+                ->orderBy('deleted_at', 'DESC')
+                ->findAll();
+        }
+
+        $data['keyword'] = $keyword;
         $data['folders'] = $folders;
         $data['files'] = $files;
         return view('user/trash', $data);

@@ -201,6 +201,9 @@
             /* Hide the caret */
         }
 
+        .dropdown-submenu.dropdown-toggle.dropdown-toggle-no-caret::after {
+            display: none; /* Hide the caret */
+        }
         .btn-group {
             position: relative;
             display: inline-flex;
@@ -300,7 +303,6 @@
         #loading-screen {
             position: fixed;
             z-index: 9999;
-            background: rgba(0, 0, 0, 0.7);
             top: 0;
             left: 0;
             width: 100%;

@@ -12,8 +12,10 @@ $routes->get('/logout', 'Authentication::logout');
 
 // User
 $routes->get('/user', 'User::index', ['filter' => 'auth:user']);
+$routes->get('/search', 'User::index', ['filter' => 'auth:user']);
 $routes->get('/user/upload', 'User::upload', ['filter' => 'auth:user']);
 $routes->get('/user/trash', 'User::trash', ['filter' => 'auth:user']);
+$routes->get('/trash/search', 'User::trash', ['filter' => 'auth:user']);
 $routes->get('/user/trash/emptyTrash', 'User::emptyTrash', ['filter' => 'auth:user']);
 
 // Folder

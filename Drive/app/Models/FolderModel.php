@@ -43,4 +43,11 @@ class FolderModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    public function search($keyword, $user_id)
+    {
+        return $this->where('user_id', $user_id)
+            ->like('folder_name', $keyword)
+            ->findAll();
+    }
 }

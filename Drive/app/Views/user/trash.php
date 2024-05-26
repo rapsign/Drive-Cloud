@@ -3,19 +3,21 @@
 <!-- Main Content -->
 <main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-md-4 content">
     <div class="search-form">
-        <form class="form-inline">
-            <input class="form-control mr-sm-2 rounded-pill" type="search" placeholder="Search in Drive" aria-label="Search">
+        <form class="form-inline" method="get" action="<?= base_url('trash/search') ?>">
+            <input class="form-control mr-sm-2 rounded-pill" type="search" name="q" placeholder="Search in Trash" aria-label="Search" value="<?= esc($keyword) ?>">
             <button class="btn btn-primary rounded-pill" type="submit"><i class="fas fa-search"></i></button>
         </form>
     </div>
 
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2">
-        <h1 class="h2">Trash</h1>
-        <!-- <div class="btn-group mb-3" role="group">
-            <button type="button" class="btn btn-primary list-view-toggle"><i class="fas fa-list"></i></button>
-            <button type="button" class="btn btn-primary icon-view-toggle"><i class="fas fa-th-large"></i> </button>
-        </div> -->
-    </div>
+    <?php if ($keyword) : ?>
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+            <h1 class="h2">Search Results for "<?= esc($keyword) ?>"</h1>
+        </div>
+    <?php else : ?>
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+            <h1 class="h2">My Drive</h1>
+        </div>
+    <?php endif; ?>
 
     <?php if (empty($folders) && empty($files)) : ?>
         <div class="d-flex justify-content-center align-items-center" style="height: 700px;">
