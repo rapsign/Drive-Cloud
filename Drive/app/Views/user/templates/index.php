@@ -276,39 +276,56 @@
         }
     </script>
     <script>
-        function DeleteFolder(event) {
-            event.preventDefault(); // Menghentikan pengiriman formulir secara langsung
-
+        function deleteTrash(event) {
+            event.preventDefault(); // Mencegah pengiriman formulir langsung
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
+                title: 'Delete forever?',
+                text: "All items in the trash will be deleted forever and you won't be able to restore it",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
                 cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'Delete forever'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    event.target.parentElement.submit(); // Teruskan penghapusan
+                    event.target.parentElement.submit(); // Kirim formulir untuk menghapus file
                 }
             });
         }
-    </script>
-    <script>
-        function DeleteFile(event) {
-            event.preventDefault(); // Menghentikan pengiriman formulir secara langsung
-
+        // Fungsi untuk menghapus file
+        function deleteFile(event) {
+            event.preventDefault(); // Mencegah pengiriman formulir langsung
+            var fileName = event.target.parentElement.querySelector('[name="fileName"]').value; // Dapatkan nama file
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
+                title: 'Delete forever?',
+                text: fileName + " will be deleted forever and you won't be able to restore it",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
                 cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'Delete forever'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    event.target.parentElement.submit(); // Teruskan penghapusan
+                    event.target.parentElement.submit(); // Kirim formulir untuk menghapus file
+                }
+            });
+        }
+
+        // Fungsi untuk menghapus folder
+        function deleteFolder(event) {
+            event.preventDefault(); // Mencegah pengiriman formulir langsung
+            var folderName = event.target.parentElement.querySelector('[name="folderName"]').value; // Dapatkan nama folder
+            Swal.fire({
+                title: 'Delete forever?',
+                text: folderName + " will be deleted forever and you won't be able to restore it",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'forever'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.parentElement.submit(); // Kirim formulir untuk menghapus folder
                 }
             });
         }
@@ -329,6 +346,16 @@
             url: "<?= base_url('user/addFiles') ?>", // Set the url for your upload script location
             paramName: "file", // The name that will be used to transfer the file
             maxFiles: 10,
+            init: function() {
+                this.on("complete", function(file) {
+                    // Callback function when each file upload is complete
+                    if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
+                        // Jika tidak ada file lagi yang sedang di-upload atau di-queue
+                        // Reload halaman setelah proses upload selesai
+                        location.reload();
+                    }
+                });
+            }
         });
     </script>
     <script>

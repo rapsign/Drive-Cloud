@@ -14,6 +14,7 @@ $routes->get('/logout', 'Authentication::logout');
 $routes->get('/user', 'User::index', ['filter' => 'auth:user']);
 $routes->get('/user/upload', 'User::upload', ['filter' => 'auth:user']);
 $routes->get('/user/trash', 'User::trash', ['filter' => 'auth:user']);
+$routes->get('/user/trash/emptyTrash', 'User::emptyTrash', ['filter' => 'auth:user']);
 
 // Folder
 $routes->post('/user/createFolder', 'Folder::addFolder', ['filter' => 'auth:user']);

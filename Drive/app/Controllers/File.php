@@ -55,6 +55,7 @@ class File extends BaseController
                 'file_size' => $file->getSize(),
                 'file_type' => $file->getClientMimeType(),
             ]);
+            session()->setFlashdata('success_message', 'File added successfully!');
         }
     }
     public function renameFile()
@@ -135,7 +136,7 @@ class File extends BaseController
             unlink($filePath); // Menghapus file
             session()->setFlashdata('success_message', 'File deleted successfully!');
             $this->fileModel->withDeleted()->where('id', $fileId)->purgeDeleted();
-            return redirect()->to('/user');
+            return redirect()->to('/user/trash');
         } else {
             session()->setFlashdata('error_message', 'File not found!');
         }

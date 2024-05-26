@@ -130,7 +130,7 @@ class Folder extends BaseController
         $this->folderModel->withDeleted()->where('id', $folderId)->purgeDeleted();
 
         session()->setFlashdata('success_message', 'Folder deleted successfully!');
-        return redirect()->to('/user');
+        return redirect()->to('/user/trash');
     }
 
     // Fungsi untuk menghapus direktori dan semua isinya

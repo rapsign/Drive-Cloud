@@ -85,63 +85,89 @@
     <!-- Tampilan ikon -->
     <hr>
     <div class="icon-view fade-in">
-        <h6>Folders</h6>
-        <?php foreach ($folders as $folder) : ?>
-            <div class="btn-group">
-                <a href="<?= base_url('user/recent') ?>" class="btn btn-secondary">
-                    <i class="fas fa-folder fa-lg mr-2"></i> <!-- Icon with additional classes -->
-                    <span class="btn-text"><?= $folder['folder_name'] ?></span>
-                </a>
-                <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false" style="width: 10px;">
-                    <span class="visually-hidden"><i class="fas fa-ellipsis-v"></i></span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li><button class="dropdown-item" type="button" data-toggle="modal" data-target="#renameFolder" data-id="<?= $folder['id'] ?>" data-name="<?= $folder['folder_name'] ?>"><i class="fas fa-edit mr-3"></i> Rename</button></li>
-                    <hr class="dropdown-divider">
-                    <li>
-                        <form action="<?= base_url('user/folder/moveToTrash') ?>" method="post" class="d-inline">
-                            <input type="hidden" name="folderSlug" value="<?= $folder['slug'] ?>">
-                            <button type="button" class="dropdown-item" onclick="Delete(event)"><i class="fas fa-trash mr-3"></i> Move To Trash</button>
-                        </form>
-                    </li>
-                </ul>
-            </div>
-        <?php endforeach; ?>
-        <hr>
-        <h6>Files</h6>
-        <div class="row">
-            <?php foreach ($files as $file) : ?>
-                <div class="col-md-3 col-6 file-item">
-                    <div class="card">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center">
-                                <span class="file-icon"></span>
-                                <span class="file-name small"><?= $file['file_name'] ?></span>
-                            </div>
-                            <div class="dropdown">
-                                <i class="fas fa-ellipsis-v dropdown-toggle dropdown-toggle-no-caret" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
-                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated" aria-labelledby="dropdownMenuButton1">
-                                    <li><button class="dropdown-item" type="button" data-toggle="modal" data-target="#renameFile" data-id="<?= $file['id'] ?>" data-name="<?= $file['file_name'] ?>"><i class="fas fa-edit mr-3"></i> Rename</button></li>
-                                    <hr class="dropdown-divider">
-                                    <li>
-                                        <form action="<?= base_url('user/file/moveToTrash') ?>" method="post" class="d-inline">
-                                            <input type="hidden" name="fileId" value="<?= $file['id'] ?>">
-                                            <button type="button" class="dropdown-item" onclick="fileDelete(event)"><i class="fas fa-trash mr-3"></i> Move To Trash</button>
-                                        </form>
-                                    </li>
+        <?php if (empty($folders) && empty($files)) : ?>
+            <div class="text-center">
+                <form class="form" action="#" method="post">
+                    <!--begin::Input group-->
+                    <div class="fv-row">
+                        <!--begin::Dropzone-->
+                        <div class="dropzone" id="kt_dropzonejs_example_1" style="border: 3px dashed #007bff;">
+                            <!--begin::Message-->
+                            <div class="dz-message needsclick">
+                                <i class="ki-duotone ki-file-up fs-3x text-primary"><span class="path1"></span><span class="path2"></span></i>
+
+                                <!--begin::Info-->
+                                <div class="ms-4">
+                                    <h3 class="fs-5 fw-bold text-gray-900 mb-3">Drop files here or click to upload.</h3>
+                                    <span class="fs-7 fw-semibold text-gray-500">Upload up to 10 files</span>
                                 </div>
+                                <!--end::Info-->
                             </div>
                         </div>
-                        <div class="card-body text-center">
-                            <div class="file-preview" style="width: 100%; height: 220px;"></div>
-                        </div>
-                        <div class="card-footer text-muted text-center small">
-                            Added on <?= date('F d, Y', strtotime($file['created_at'])) ?>
-                        </div>
+                        <!--end::Dropzone-->
                     </div>
+                    <!--end::Input group-->
+                </form>
+            </div>
+        <?php else : ?>
+            <h6>Folders</h6>
+            <?php foreach ($folders as $folder) : ?>
+                <div class="btn-group">
+                    <a href="<?= base_url('user/recent') ?>" class="btn btn-secondary">
+                        <i class="fas fa-folder fa-lg mr-2"></i> <!-- Icon with additional classes -->
+                        <span class="btn-text"><?= $folder['folder_name'] ?></span>
+                    </a>
+                    <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false" style="width: 10px;">
+                        <span class="visually-hidden"><i class="fas fa-ellipsis-v"></i></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><button class="dropdown-item" type="button" data-toggle="modal" data-target="#renameFolder" data-id="<?= $folder['id'] ?>" data-name="<?= $folder['folder_name'] ?>"><i class="fas fa-edit mr-3"></i> Rename</button></li>
+                        <hr class="dropdown-divider">
+                        <li>
+                            <form action="<?= base_url('user/folder/moveToTrash') ?>" method="post" class="d-inline">
+                                <input type="hidden" name="folderSlug" value="<?= $folder['slug'] ?>">
+                                <button type="button" class="dropdown-item" onclick="Delete(event)"><i class="fas fa-trash mr-3"></i> Move To Trash</button>
+                            </form>
+                        </li>
+                    </ul>
                 </div>
             <?php endforeach; ?>
-        </div>
+            <hr>
+            <h6>Files</h6>
+            <div class="row">
+                <?php foreach ($files as $file) : ?>
+                    <div class="col-md-3 col-6 file-item">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <span class="file-icon"></span>
+                                    <span class="file-name small"><?= $file['file_name'] ?></span>
+                                </div>
+                                <div class="dropdown">
+                                    <i class="fas fa-ellipsis-v dropdown-toggle dropdown-toggle-no-caret" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated" aria-labelledby="dropdownMenuButton1">
+                                        <li><button class="dropdown-item" type="button" data-toggle="modal" data-target="#renameFile" data-id="<?= $file['id'] ?>" data-name="<?= $file['file_name'] ?>"><i class="fas fa-edit mr-3"></i> Rename</button></li>
+                                        <hr class="dropdown-divider">
+                                        <li>
+                                            <form action="<?= base_url('user/file/moveToTrash') ?>" method="post" class="d-inline">
+                                                <input type="hidden" name="fileId" value="<?= $file['id'] ?>">
+                                                <button type="button" class="dropdown-item" onclick="fileDelete(event)"><i class="fas fa-trash mr-3"></i> Move To Trash</button>
+                                            </form>
+                                        </li>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body text-center">
+                                <div class="file-preview" style="width: 100%; height: 220px;"></div>
+                            </div>
+                            <div class="card-footer text-muted text-center small">
+                                Added on <?= date('F d, Y', strtotime($file['created_at'])) ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+            </div>
     </div>
 
 

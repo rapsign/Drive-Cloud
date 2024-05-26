@@ -50,4 +50,9 @@ class UsersModel extends Model
             ->get()
             ->getResultArray();
     }
+
+    public function getUsernameById($userId)
+    {
+        return $this->where('id', $userId)->get()->getRow('name');
+    }
 }
