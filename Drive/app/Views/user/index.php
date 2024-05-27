@@ -14,10 +14,12 @@
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
             <h1 class="h2">Search Results for "<?= esc($keyword) ?>"</h1>
         </div>
+        <hr>
     <?php else : ?>
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
             <h1 class="h2">My Drive</h1>
         </div>
+        <hr>
     <?php endif; ?>
 
     <!-- Daftar Konten -->
@@ -85,7 +87,6 @@
     </div> -->
 
     <!-- Tampilan ikon -->
-    <hr>
     <div class="icon-view fade-in">
         <?php if (empty($folders) && empty($files)) : ?>
             <div class="text-center">
@@ -184,6 +185,8 @@
                                         <hr class="dropdown-divider">
                                         <!-- Tambah item dropdown untuk download -->
                                         <li><a class="dropdown-item" href="<?= base_url('files/' . session()->get('name') . '/' . $file['file_name']) ?>" download><i class="fas fa-download mr-3"></i> Download</a></li>
+                                        <hr class="dropdown-divider">
+                                        <li><button class="dropdown-item" type="button" data-toggle="modal" data-target="#moveFile" data-id="<?= $file['id'] ?>" data-name="<?= $file['file_name'] ?>"><i class="fas fa-folder-open mr-3"></i> Move</button></li>
                                         <hr class="dropdown-divider">
                                         <li><button class="dropdown-item" type="button" data-toggle="modal" data-target="#renameFile" data-id="<?= $file['id'] ?>" data-name="<?= $file['file_name'] ?>"><i class="fas fa-edit mr-3"></i> Rename</button></li>
                                         <hr class="dropdown-divider">

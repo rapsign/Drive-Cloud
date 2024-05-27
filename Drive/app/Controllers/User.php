@@ -33,10 +33,10 @@ class User extends BaseController
             $files = $this->fileModel->search($keyword, $user_id);
             $folders = $this->folderModel->search($keyword, $user_id);
         } else {
-            $files = $this->fileModel->where('user_id', $user_id)
+            $files = $this->fileModel->where('user_id', $user_id,)->where('folder_id is null')
                 ->orderBy('created_at', 'DESC')
                 ->findAll();
-            $folders = $this->folderModel->where('user_id', $user_id)
+            $folders = $this->folderModel->where('user_id', $user_id,)->where('parent_id is null')
                 ->orderBy('created_at', 'DESC')
                 ->findAll();
         }
@@ -48,7 +48,25 @@ class User extends BaseController
     }
     public function upload()
     {
-        return view('user/upload');
+        $user_id = session()->get('id');
+        $keyword = $this->request->getGet('q');
+
+        if ($keyword) {
+            $files = $this->fileModel->search($keyword, $user_id);
+            $folders = $this->folderModel->search($keyword, $user_id);
+        } else {
+            $files = $this->fileModel->where('user_id', $user_id,)->where('folder_id is null')
+                ->orderBy('created_at', 'DESC')
+                ->findAll();
+            $folders = $this->folderModel->where('user_id', $user_id,)->where('parent_id is null')
+                ->orderBy('created_at', 'DESC')
+                ->findAll();
+        }
+
+        $data['keyword'] = $keyword;
+        $data['folders'] = $folders;
+        $data['files'] = $files;
+        return view('user/upload', $data);
     }
     public function trash()
     {

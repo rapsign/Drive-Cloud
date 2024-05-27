@@ -50,4 +50,9 @@ class FolderModel extends Model
             ->like('folder_name', $keyword)
             ->findAll();
     }
+    public function getFolderBySlug($slug)
+    {
+        $folder = $this->where('slug', $slug)->first();
+        return $folder;
+    }
 }

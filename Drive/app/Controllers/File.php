@@ -4,16 +4,19 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\FilesModel;
+use App\Models\FolderModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class File extends BaseController
 {
 
     protected $fileModel;
+    protected $folderModel;
 
     public function __construct()
     {
         $this->fileModel = new FilesModel();
+        $this->folderModel = new FolderModel();
     }
     public function addFile()
     {
@@ -140,5 +143,45 @@ class File extends BaseController
         } else {
             session()->setFlashdata('error_message', 'File not found!');
         }
+    }
+
+    public function moveFile()
+    {
+        $fileId = $this->request->getPost('file_id');
+        $targetFolderSlug = $this->request->getPost('target_folder');
+        $fileName = $this->request->getPost('file_name');
+        $username = session()->get('name');
+        $folder = $this->folderModel->getFolderBySlug($targetFolderSlug);
+
+        $fileDir = FCPATH . 'files/' . $username . '/' . $fileName;
+        $userDir = FCPATH . 'files/' . $username . '/';
+        $targetDir = $userDir . $folder['folder_name'];
+
+        $newFileName = $fileName; // Nama file baru, default sama dengan yang ada
+        $file = new \CodeIgniter\Files\File($fileDir);
+        // Cek apakah file dengan nama yang sama sudah ada di folder tujuan
+        $i = 1;
+        while (is_file($targetDir . '/' . $newFileName)) {
+            // Jika file dengan nama yang sama ditemukan, tambahkan _1, _2, dst. ke nama file
+            $path_parts = pathinfo($file);
+            $newFileName = $path_parts['filename'] . '_' . $i . '.' . $path_parts['extension'];
+            $i++;
+        }
+
+        // Move file to target directory with new file name
+        if ($file->move($targetDir . '/', $newFileName)) {
+            // Simpan informasi file yang dipindahkan ke basis data
+            $this->fileModel->save([
+                'id' => $fileId,
+                'file_name' => $newFileName,
+                'folder_id' => $folder['id'],
+            ]);
+
+            session()->setFlashdata('success_message', 'File moved successfully!');
+        } else {
+            session()->setFlashdata('error_message', 'Failed to move file!');
+        }
+
+        return redirect()->to('/user');
     }
 }
