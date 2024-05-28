@@ -116,7 +116,7 @@
             <h6>Folders</h6>
             <?php foreach ($folders as $folder) : ?>
                 <div class="btn-group">
-                    <a href="<?= base_url('user/recent') ?>" class="btn btn-secondary">
+                    <a href="<?= base_url('user/folder/') . $folder['slug'] ?>" class="btn btn-secondary">
                         <i class="fas fa-folder fa-lg mr-2"></i> <!-- Icon with additional classes -->
                         <span class="btn-text"><?= $folder['folder_name'] ?></span>
                     </a>

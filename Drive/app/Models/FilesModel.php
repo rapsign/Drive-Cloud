@@ -50,4 +50,9 @@ class FilesModel extends Model
             ->like('file_name', $keyword)
             ->findAll();
     }
+    public function getAllFilesWithFolderName()
+    {
+        return $this->select('files.id, files.file_name, files.file_size, files.file_type, folders.folder_name as folder_name, files.user_id, files.deleted_at, files.created_at, files.updated_at')
+            ->join('folders', 'folders.id = files.folder_id');
+    }
 }

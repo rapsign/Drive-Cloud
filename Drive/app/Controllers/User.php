@@ -39,11 +39,16 @@ class User extends BaseController
             $folders = $this->folderModel->where('user_id', $user_id,)->where('parent_id is null')
                 ->orderBy('created_at', 'DESC')
                 ->findAll();
+            $allFolders = $this->folderModel->where('user_id', $user_id)
+                ->orderBy('created_at', 'DESC')
+                ->findAll();
         }
 
         $data['keyword'] = $keyword;
         $data['folders'] = $folders;
         $data['files'] = $files;
+        $data['allFolders'] = $allFolders;
+
         return view('user/index', $data);
     }
     public function upload()
@@ -61,11 +66,15 @@ class User extends BaseController
             $folders = $this->folderModel->where('user_id', $user_id,)->where('parent_id is null')
                 ->orderBy('created_at', 'DESC')
                 ->findAll();
+            $allFolders = $this->folderModel->where('user_id', $user_id)
+                ->orderBy('created_at', 'DESC')
+                ->findAll();
         }
 
         $data['keyword'] = $keyword;
         $data['folders'] = $folders;
         $data['files'] = $files;
+        $data['allFolders'] = $allFolders;
         return view('user/upload', $data);
     }
     public function trash()
@@ -93,10 +102,14 @@ class User extends BaseController
                 ->where('user_id', $user_id)
                 ->orderBy('deleted_at', 'DESC')
                 ->findAll();
+            $allFolders = $this->folderModel->onlyDeleted()
+                ->orderBy('created_at', 'DESC')
+                ->findAll();
         }
 
         $data['keyword'] = $keyword;
         $data['folders'] = $folders;
+        $data['allFolders'] = $allFolders;
         $data['files'] = $files;
         return view('user/trash', $data);
     }
@@ -145,5 +158,36 @@ class User extends BaseController
             (is_dir("$dir/$file")) ? $this->deleteDirectory("$dir/$file") : unlink("$dir/$file");
         }
         rmdir($dir);
+    }
+
+    public function folder($slug)
+    {
+        $user_id = session()->get('id');
+        $keyword = $this->request->getGet('q');
+        $folderId = $this->folderModel->getFolderBySlug($slug);
+
+        if ($keyword) {
+            $files = $this->fileModel->search($keyword, $user_id);
+            $folders = $this->folderModel->search($keyword, $user_id);
+        } else {
+            $files = $this->fileModel->getAllFilesWithFolderName()
+                ->where('files.user_id', $user_id)
+                ->where('files.folder_id', $folderId['id'])
+                ->orderBy('files.created_at', 'DESC')
+                ->findAll();
+
+            $folders = $this->folderModel->where('user_id', $user_id,)->where('parent_id', $folderId['id'])
+                ->orderBy('created_at', 'DESC')
+                ->findAll();
+            $allFolders = $this->folderModel->where('user_id', $user_id,)
+                ->orderBy('created_at', 'DESC')
+                ->findAll();
+        }
+
+        $data['keyword'] = $keyword;
+        $data['folders'] = $folders;
+        $data['allFolders'] = $allFolders;
+        $data['files'] = $files;
+        return view('user/folder', $data);
     }
 }

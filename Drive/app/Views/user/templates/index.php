@@ -176,11 +176,8 @@
                         <input type="hidden" id="selected-folder" name="target_folder">
                         <input type="hidden" id="file-name" name="file_name">
                         <div class="form-group">
-                            <label for="file-name">File Name</label>
-                        </div>
-                        <div class="form-group">
                             <ul class="list-group list-group-flush" id="folder-list">
-                                <?php foreach ($folders as $folder) : ?>
+                                <?php foreach ($allFolders as $folder) : ?>
                                     <li class="list-group-item" data-folder="<?= $folder['slug'] ?>">
                                         <i class="fas fa-folder fa-lg mr-2"></i>
                                         <span class="btn-text"><?= $folder['folder_name'] ?></span>
@@ -197,6 +194,7 @@
             </div>
         </div>
     </div>
+
 
 
 
@@ -424,12 +422,19 @@
     document.addEventListener("DOMContentLoaded", function() {
         document.querySelectorAll('.file-item').forEach(fileItem => {
             const fileNameElement = fileItem.querySelector('.file-name');
+            const folderNameElement = fileItem.querySelector('.folder-name');
             const fileName = fileNameElement.textContent.trim();
-            console.log(fileName)
+            let folderName = null;
+            if (folderNameElement) {
+                folderName = folderNameElement.textContent.trim();
+            }
             const fileExtension = fileName.slice(fileName.lastIndexOf('.')).toLowerCase();
             const previewContainer = fileItem.querySelector('.file-preview');
-            const fileUrl = '<?= base_url('files/') ?>' + '<?= session()->get('name') ?>' + '/' + fileName;
-
+            let fileUrl = '<?= base_url('files/') ?>' + '<?= session()->get('name') ?>' + '/' + fileName;
+            if (folderName) {
+                fileUrl += folderName + '/' + fileName;
+            }
+            fileUrl += fileName;
             let iconClass = '';
             let iconColor = '';
 
