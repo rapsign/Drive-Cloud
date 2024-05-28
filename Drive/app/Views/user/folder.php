@@ -84,7 +84,35 @@
         </div>
     </div> -->
 
+    <!--begin::Form-->
+    <form class="form" action="#" style="display: none;" id="addFileForm" method="post">
+        <!--begin::Input group-->
+        <div class="fv-row">
+            <!--begin::Dropzone-->
+            <div class="dropzone" id="kt_dropzonejs_example_2" style="border: 3px dashed #007bff;">
+                <!--begin::Message-->
+                <div class="dz-message needsclick">
+                    <i class="ki-duotone ki-file-up fs-3x text-primary"><span class="path1"></span><span class="path2"></span></i>
+
+                    <!--begin::Info-->
+                    <div class="ms-4">
+                        <h3 class="fs-5 fw-bold text-gray-900 mb-3">Drop files here or click to upload.</h3>
+                        <span class="fs-7 fw-semibold text-gray-500">Upload up to 10 files</span>
+                    </div>
+                    <!--end::Info-->
+                </div>
+            </div>
+            <!--end::Dropzone-->
+        </div>
+        <!--end::Input group-->
+    </form>
+    <!--end::Form-->
     <!-- Tampilan ikon -->
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 mt-3">
+        <h1 class="h2">My Drive > <?= $folder_name ?></h1>
+        <button class="btn btn-primary" id="addFileButton">+</button>
+    </div>
+    <hr>
     <h6 class="mt-5">Files</h6>
     <div class="row">
         <?php foreach ($files as $file) : ?>

@@ -419,6 +419,28 @@
     });
 </script>
 <script>
+    var urlSegments = window.location.pathname.split('/');
+    var lastSegment = urlSegments[urlSegments.length - 1];
+    var url = "<?= base_url('user/addFiles/') ?>" + lastSegment;
+    var myDropzone = new Dropzone("#kt_dropzonejs_example_2", {
+        url: url, // Set the url for your upload script location
+        paramName: "file", // The name that will be used to transfer the file
+        maxFiles: 10,
+        init: function() {
+            this.on("complete", function(file) {
+                // Callback function when each file upload is complete
+                if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
+                    // Jika tidak ada file lagi yang sedang di-upload atau di-queue
+                    // Reload halaman setelah proses upload selesai
+                    location.reload();
+                }
+            });
+        }
+    });
+
+    console.log(url); // Output the URL to the console
+</script>
+<script>
     document.addEventListener("DOMContentLoaded", function() {
         document.querySelectorAll('.file-item').forEach(fileItem => {
             const fileNameElement = fileItem.querySelector('.file-name');
@@ -615,7 +637,19 @@
         });
     });
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the button and form elements
+        const addFileButton = document.getElementById('addFileButton');
+        const addFileForm = document.getElementById('addFileForm');
 
+        // Add click event listener to the button
+        addFileButton.addEventListener('click', function() {
+            // Toggle the visibility of the form
+            addFileForm.style.display = addFileForm.style.display === 'none' ? 'block' : 'none';
+        });
+    });
+</script>
 </body>
 
 </html>

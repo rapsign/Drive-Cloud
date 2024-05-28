@@ -61,13 +61,58 @@ class File extends BaseController
             session()->setFlashdata('success_message', 'File added successfully!');
         }
     }
+
+    public function addFileInFolder($slug)
+    {
+        $files = $this->request->getFiles();
+        $folder = $this->folderModel->where('slug', $slug)->first();
+
+        foreach ($files as $file) {
+            // Dapatkan informasi pengguna
+            $userId = session()->get('id');
+            $username = session()->get('name');
+
+            // Tentukan direktori untuk menyimpan file
+            $userDir = FCPATH . 'files/' . $username . '/' . $folder['folder_name'];
+
+            // Buat direktori jika belum ada
+            if (!is_dir($userDir)) {
+                mkdir($userDir, 0777, true);
+            }
+
+            // Dapatkan nama file asli
+            $originalName = $file->getName();
+
+            // Inisialisasi nama file baru
+            $newName = $originalName;
+
+            // Periksa apakah file dengan nama yang sama sudah ada
+            $counter = 1;
+            while (file_exists($userDir . '/' . $newName)) {
+                $newName = pathinfo($originalName, PATHINFO_FILENAME) . '_' . $counter . '.' . pathinfo($originalName, PATHINFO_EXTENSION);
+                $counter++;
+            }
+
+            // Pindahkan file ke direktori dengan nama baru
+            $file->move($userDir, $newName);
+            // Simpan informasi file ke database
+            $this->fileModel->save([
+                'user_id' => $userId,
+                'file_name' => $newName,
+                'file_size' => $file->getSize(),
+                'file_type' => $file->getClientMimeType(),
+                'file_path' => $userDir . '/',
+                'folder_id' => $folder['id']
+            ]);
+            session()->setFlashdata('success_message', 'File added successfully!');
+        }
+    }
     public function renameFile()
     {
         $fileId = $this->request->getVar('id');
         $newFileName = $this->request->getVar('file_name');
         $fileExt = $this->request->getVar('ext');
         $username = session()->get('name');
-
         // Get old file details from the database
         $file = $this->fileModel->find($fileId);
         if (!$file) {
@@ -109,7 +154,7 @@ class File extends BaseController
             session()->setFlashdata('error_message', 'Failed to rename the file.');
         }
 
-        return redirect()->to('/user');
+        return redirect()->back();
     }
     public function moveToTrash()
     {

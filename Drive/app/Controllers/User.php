@@ -200,6 +200,7 @@ class User extends BaseController
         $data['folders'] = $folders;
         $data['allFolders'] = $allFolders;
         $data['files'] = $files;
+        $data['folder_name'] = $folderId['folder_name'];
         return view('user/folder', $data);
     }
 }

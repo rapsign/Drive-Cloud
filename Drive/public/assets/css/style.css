@@ -209,7 +209,17 @@
             display: inline-flex;
             vertical-align: middle;
         }
-        
+            /* CSS for wipe animation */
+        .form-wipe {
+            transition: height 0.5s ease-in-out;
+            overflow: hidden;
+        }
+
+        /* CSS for fade-in animation */
+        .form-fade {
+            transition: opacity 0.5s ease-in-out;
+            opacity: 0;
+        }
         .btn-secondary {
             background-color: #e9ecef; /* Light gray background */
             color: #212529; /* Text color */
