@@ -27,6 +27,10 @@ class CreateFilesTable extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => '255',
             ],
+            'file_path' => [
+                'type' => 'VARCHAR',
+                'constraint' => '255',
+            ],
             'folder_id' => [
                 'type' => 'INT',
                 'constraint' => 11,

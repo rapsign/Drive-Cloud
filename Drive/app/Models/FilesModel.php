@@ -12,7 +12,7 @@ class FilesModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['file_name', 'file_size', 'file_type', 'folder_id', 'user_id', 'deleted_at'];
+    protected $allowedFields    = ['file_name', 'file_size', 'file_type', 'folder_id', 'user_id', 'file_path', 'deleted_at'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -54,5 +54,10 @@ class FilesModel extends Model
     {
         return $this->select('files.id, files.file_name, files.file_size, files.file_type, folders.folder_name as folder_name, files.user_id, files.deleted_at, files.created_at, files.updated_at')
             ->join('folders', 'folders.id = files.folder_id');
+    }
+
+    public function getFileById($id)
+    {
+        return $this->onlyDeleted()->where('id', $id)->first();
     }
 }

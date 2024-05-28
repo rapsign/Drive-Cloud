@@ -32,6 +32,9 @@ class User extends BaseController
         if ($keyword) {
             $files = $this->fileModel->search($keyword, $user_id);
             $folders = $this->folderModel->search($keyword, $user_id);
+            $allFolders = $this->folderModel->where('user_id', $user_id)
+                ->orderBy('created_at', 'DESC')
+                ->findAll();
         } else {
             $files = $this->fileModel->where('user_id', $user_id,)->where('folder_id is null')
                 ->orderBy('created_at', 'DESC')
@@ -59,6 +62,9 @@ class User extends BaseController
         if ($keyword) {
             $files = $this->fileModel->search($keyword, $user_id);
             $folders = $this->folderModel->search($keyword, $user_id);
+            $allFolders = $this->folderModel->where('user_id', $user_id)
+                ->orderBy('created_at', 'DESC')
+                ->findAll();
         } else {
             $files = $this->fileModel->where('user_id', $user_id,)->where('folder_id is null')
                 ->orderBy('created_at', 'DESC')
@@ -92,6 +98,9 @@ class User extends BaseController
                 ->where('user_id', $user_id)
                 ->like('file_name', $keyword)
                 ->orderBy('deleted_at', 'DESC')
+                ->findAll();
+            $allFolders = $this->folderModel->where('user_id', $user_id)
+                ->orderBy('created_at', 'DESC')
                 ->findAll();
         } else {
             $folders = $this->folderModel->onlyDeleted()
@@ -169,6 +178,9 @@ class User extends BaseController
         if ($keyword) {
             $files = $this->fileModel->search($keyword, $user_id);
             $folders = $this->folderModel->search($keyword, $user_id);
+            $allFolders = $this->folderModel->where('user_id', $user_id)
+                ->orderBy('created_at', 'DESC')
+                ->findAll();
         } else {
             $files = $this->fileModel->getAllFilesWithFolderName()
                 ->where('files.user_id', $user_id)

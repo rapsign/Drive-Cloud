@@ -432,7 +432,7 @@
             const previewContainer = fileItem.querySelector('.file-preview');
             let fileUrl = '<?= base_url('files/') ?>' + '<?= session()->get('name') ?>' + '/' + fileName;
             if (folderName) {
-                fileUrl += folderName + '/' + fileName;
+                fileUrl += folderName + fileName;
             }
             fileUrl += fileName;
             let iconClass = '';

@@ -50,13 +50,13 @@ class File extends BaseController
 
             // Pindahkan file ke direktori dengan nama baru
             $file->move($userDir, $newName);
-
             // Simpan informasi file ke database
             $this->fileModel->save([
                 'user_id' => $userId,
                 'file_name' => $newName,
                 'file_size' => $file->getSize(),
                 'file_type' => $file->getClientMimeType(),
+                'file_path' => $userDir . '/'
             ]);
             session()->setFlashdata('success_message', 'File added successfully!');
         }
@@ -76,20 +76,23 @@ class File extends BaseController
         }
 
         $oldFileName = $file['file_name'];
-        $baseFilePath = FCPATH . 'files/' . $username . '/';
-        $oldFilePath = $baseFilePath . $oldFileName;
-        $newFilePath = $baseFilePath . $newFileName . '.' . $fileExt;
+        $baseFilePath = $file['file_path'];
+        $oldFilePath = $baseFilePath . '/' . $oldFileName;
+        $newFilePath = $baseFilePath . '/' . $newFileName . '.' . $fileExt;
 
         // Check if the new file name is the same as the old one
         if ($newFileName === pathinfo($oldFileName, PATHINFO_FILENAME)) {
             session()->setFlashdata('error_message', 'New file name is the same as the old one.');
             return redirect()->to('/user');
         }
+        $newFileNameWithCounter = $newFileName;
+        // Append suffix if the new file already exists
 
-        // Check if the new file already exists
-        if (file_exists($newFilePath)) {
-            session()->setFlashdata('error_message', 'A file with the same name already exists.');
-            return redirect()->to('/user');
+        $counter = 1;
+        while (file_exists($newFilePath)) {
+            $newFileNameWithCounter = $newFileName . '_' . $counter;
+            $newFilePath = $baseFilePath . $newFileNameWithCounter . '.' . $fileExt;
+            $counter++;
         }
 
         // Attempt to rename the file
@@ -97,7 +100,8 @@ class File extends BaseController
             // Update database only if rename is successful
             $this->fileModel->save([
                 'id' => $fileId,
-                'file_name' => $newFileName . '.' . $fileExt,
+                'file_name' => $newFileNameWithCounter . '.' . $fileExt,
+                'file_path' => $baseFilePath
             ]);
 
             session()->setFlashdata('success_message', 'File renamed successfully!');
@@ -130,9 +134,10 @@ class File extends BaseController
     public function deleteFile()
     {
         $fileId = $this->request->getVar('fileId');
+        $file = $this->fileModel->getFileById($fileId);
         $username = session()->get('name');
         $fileName = $this->request->getVar('fileName');
-        $filePath = FCPATH . 'files/' . $username . '/' . $fileName;
+        $filePath = $file['file_path'];
 
         // Hapus file dari server
         if (file_exists($filePath)) {
@@ -150,11 +155,12 @@ class File extends BaseController
     {
         $fileId = $this->request->getPost('file_id');
         $targetFolderSlug = $this->request->getPost('target_folder');
+        $file = $this->fileModel->where('id', $fileId)->first();
         $fileName = $this->request->getPost('file_name');
         $username = session()->get('name');
         $folder = $this->folderModel->getFolderBySlug($targetFolderSlug);
 
-        $fileDir = FCPATH . 'files/' . $username . '/' . $fileName;
+        $fileDir = $file['file_path'] . '/' . $fileName;
         $userDir = FCPATH . 'files/' . $username . '/';
         $targetDir = $userDir . $folder['folder_name'];
 
@@ -179,49 +185,7 @@ class File extends BaseController
                 'id' => $fileId,
                 'file_name' => $newFileName,
                 'folder_id' => $folder['id'],
-            ]);
-
-            session()->setFlashdata('success_message', 'File moved successfully!');
-        } else {
-            session()->setFlashdata('error_message', 'Failed to move file!');
-        }
-
-        return redirect()->to('/user');
-    }
-    public function moveFileInFolder($slug)
-    {
-        $fileId = $this->request->getPost('file_id');
-        $targetFolderSlug = $this->request->getPost('target_folder');
-        $fileName = $this->request->getPost('file_name');
-        $username = session()->get('name');
-        $folder = $this->folderModel->getFolderBySlug($targetFolderSlug);
-        $folderName =
-
-            $fileDir = FCPATH . 'files/' . $username . '/' . $fileName;
-        $userDir = FCPATH . 'files/' . $username . '/';
-        $targetDir = $userDir . $folder['folder_name'];
-
-        $newFileName = $fileName; // Nama file baru, default sama dengan yang ada
-        $file = new \CodeIgniter\Files\File($fileDir);
-        // Cek apakah file dengan nama yang sama sudah ada di folder tujuan
-        $i = 1;
-        while (is_file($targetDir . '/' . $newFileName)) {
-            // Jika file dengan nama yang sama ditemukan, tambahkan _1, _2, dst. ke nama file
-            $path_parts = pathinfo($fileDir); // Menggunakan $fileDir di sini
-            $newFileName = $path_parts['filename'] . '_' . $i . '.' . $path_parts['extension'];
-            $i++;
-        }
-
-        // Move file to target directory with new file name
-        if ($file->move($targetDir . '/', $newFileName)) {
-            // Perbarui nilai $fileDir setelah pemindahan file
-            $fileDir = $targetDir . '/' . $newFileName;
-
-            // Simpan informasi file yang dipindahkan ke basis data
-            $this->fileModel->save([
-                'id' => $fileId,
-                'file_name' => $newFileName,
-                'folder_id' => $folder['id'],
+                'file_path' => $targetDir
             ]);
 
             session()->setFlashdata('success_message', 'File moved successfully!');
