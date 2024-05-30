@@ -52,7 +52,7 @@ class FilesModel extends Model
     }
     public function getAllFilesWithFolderName()
     {
-        return $this->select('files.id, files.file_name, files.file_size, files.file_type, folders.folder_name as folder_name, files.user_id, files.deleted_at, files.created_at, files.updated_at')
+        return $this->select('files.id, files.file_name, files.file_size, files.file_type, files.file_path,  folders.folder_name as folder_name, files.user_id, files.deleted_at, files.created_at, files.updated_at')
             ->join('folders', 'folders.id = files.folder_id');
     }
 

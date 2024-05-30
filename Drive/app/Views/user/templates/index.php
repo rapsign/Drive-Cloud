@@ -194,6 +194,41 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="moveFolder" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="staticBackdropLabel">Move "<span id="folder-name-display"></span>"</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="moveFolderForm" method="post" action="/moveFolder">
+                        <input type="hidden" id="folder-id" name="folder_id">
+                        <input type="text" id="selected" name="target_folder">
+                        <input type="hidden" id="folder-name" name="folder_name">
+                        <div class="form-group">
+                            <ul class="list-group list-group-flush" id="folder-move-list">
+                                <?php foreach ($allFolders as $folder) : ?>
+                                    <li class="list-group-item" data-folder="<?= $folder['slug'] ?>">
+                                        <i class="fas fa-folder fa-lg mr-2"></i>
+                                        <span class="btn-text"><?= $folder['folder_name'] ?></span>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="move-folder-button" disabled form="moveFolderForm">Move</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
 
 
@@ -212,22 +247,6 @@
     <script src="https://viewerjs.org/ViewerJS/js/viewer.js"></script>
     <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
 
-
-
-    <!--   <script>
-        // JavaScript untuk mengganti tampilan
-        $(document).ready(function() {
-            $('.list-view-toggle').click(function() {
-                $('.list-view').show();
-                $('.icon-view').hide();
-            });
-
-            $('.icon-view-toggle').click(function() {
-                $('.list-view').hide();
-                $('.icon-view').show();
-            });
-        });
-    </script> -->
     <script>
         document.onreadystatechange = function() {
             if (document.readyState !== "complete") {
@@ -296,360 +315,391 @@
             }
         });
     </script>
-</body>
-<script>
-    function Delete(event) {
-        event.preventDefault(); // Menghentikan pengiriman formulir secara langsung
+    <script>
+        $(document).ready(function() {
+            $('#moveFolder').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget);
+                var id = button.data('id');
+                var name = button.data('name');
 
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "This folder will be moved to the Trash",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Move to trash'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                event.target.parentElement.submit(); // Teruskan penghapusan
-            }
-        });
-    }
-</script>
-<script>
-    function fileDelete(event) {
-        event.preventDefault(); // Menghentikan pengiriman formulir secara langsung
+                var modal = $(this);
+                modal.find('#folder-id').val(id);
+                modal.find('#folder-name').val(name);
+                modal.find('#folder-name-display').text(name);
+                modal.find('#selected').val('');
+                $('#move-folder-button').prop('disabled', true);
+                $('#folder-move-list .list-group-item').removeClass('active');
+            });
 
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "This file will be moved to the Trash",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Move to trash'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                event.target.parentElement.submit(); // Teruskan penghapusan
-            }
-        });
-    }
-</script>
-<script>
-    function deleteTrash(event) {
-        event.preventDefault(); // Mencegah pengiriman formulir langsung
-        Swal.fire({
-            title: 'Delete forever?',
-            text: "All items in the trash will be deleted forever and you won't be able to restore it",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Delete forever'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                event.target.parentElement.submit(); // Kirim formulir untuk menghapus file
-            }
-        });
-    }
-    // Fungsi untuk menghapus file
-    function deleteFile(event) {
-        event.preventDefault(); // Mencegah pengiriman formulir langsung
-        var fileName = event.target.parentElement.querySelector('[name="fileName"]').value; // Dapatkan nama file
-        Swal.fire({
-            title: 'Delete forever?',
-            text: fileName + " will be deleted forever and you won't be able to restore it",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Delete forever'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                event.target.parentElement.submit(); // Kirim formulir untuk menghapus file
-            }
-        });
-    }
+            $('#folder-move-list').on('click', '.list-group-item', function() {
+                $('#folder-move-list .list-group-item').removeClass('active');
+                $(this).addClass('active');
+                var selectedFolder = $(this).data('folder');
+                $('#selected').val(selectedFolder); // Debug log
+                $('#move-folder-button').prop('disabled', false);
+            });
 
-    // Fungsi untuk menghapus folder
-    function deleteFolder(event) {
-        event.preventDefault(); // Mencegah pengiriman formulir langsung
-        var folderName = event.target.parentElement.querySelector('[name="folderName"]').value; // Dapatkan nama folder
-        Swal.fire({
-            title: 'Delete forever?',
-            text: folderName + " will be deleted forever and you won't be able to restore it",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'forever'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                event.target.parentElement.submit(); // Kirim formulir untuk menghapus folder
-            }
+            $('#moveFolderForm').on('submit', function(event) {
+                if ($('#selected').val() === '') {
+                    event.preventDefault();
+                    alert('Please select a folder to move the folder.');
+                }
+            });
         });
-    }
-</script>
-<script>
-    $(document).ready(function() {
-        <?php if (session()->getFlashdata('success_message')) : ?>
+    </script>
+    <script>
+        function Delete(event) {
+            event.preventDefault(); // Menghentikan pengiriman formulir secara langsung
+
             Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: '<?= session()->getFlashdata('success_message') ?>',
-            });
-        <?php endif; ?>
-    });
-</script>
-<script>
-    var myDropzone = new Dropzone("#kt_dropzonejs_example_1", {
-        url: "<?= base_url('user/addFiles') ?>", // Set the url for your upload script location
-        paramName: "file", // The name that will be used to transfer the file
-        maxFiles: 10,
-        init: function() {
-            this.on("complete", function(file) {
-                // Callback function when each file upload is complete
-                if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
-                    // Jika tidak ada file lagi yang sedang di-upload atau di-queue
-                    // Reload halaman setelah proses upload selesai
-                    location.reload();
+                title: 'Are you sure?',
+                text: "This folder will be moved to the Trash",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Move to trash'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.parentElement.submit(); // Teruskan penghapusan
                 }
             });
         }
-    });
-</script>
-<script>
-    var urlSegments = window.location.pathname.split('/');
-    var lastSegment = urlSegments[urlSegments.length - 1];
-    var url = "<?= base_url('user/addFiles/') ?>" + lastSegment;
-    var myDropzone = new Dropzone("#kt_dropzonejs_example_2", {
-        url: url, // Set the url for your upload script location
-        paramName: "file", // The name that will be used to transfer the file
-        maxFiles: 10,
-        init: function() {
-            this.on("complete", function(file) {
-                // Callback function when each file upload is complete
-                if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
-                    // Jika tidak ada file lagi yang sedang di-upload atau di-queue
-                    // Reload halaman setelah proses upload selesai
-                    location.reload();
+    </script>
+    <script>
+        function fileDelete(event) {
+            event.preventDefault(); // Menghentikan pengiriman formulir secara langsung
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This file will be moved to the Trash",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Move to trash'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.parentElement.submit(); // Teruskan penghapusan
                 }
             });
         }
-    });
-
-    console.log(url); // Output the URL to the console
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        document.querySelectorAll('.file-item').forEach(fileItem => {
-            const fileNameElement = fileItem.querySelector('.file-name');
-            const folderNameElement = fileItem.querySelector('.folder-name');
-            const fileName = fileNameElement.textContent.trim();
-            let folderName = null;
-            if (folderNameElement) {
-                folderName = folderNameElement.textContent.trim();
-            }
-            const fileExtension = fileName.slice(fileName.lastIndexOf('.')).toLowerCase();
-            const previewContainer = fileItem.querySelector('.file-preview');
-            let fileUrl = '<?= base_url('files/') ?>' + '<?= session()->get('name') ?>' + '/' + fileName;
-            if (folderName) {
-                fileUrl += folderName + fileName;
-            }
-            fileUrl += fileName;
-            let iconClass = '';
-            let iconColor = '';
-
-            switch (fileExtension) {
-                case '.jpg':
-                case '.jpeg':
-                case '.png':
-                case '.gif':
-                    iconClass = 'fas fa-file-image';
-                    iconColor = 'red';
-                    const img = document.createElement('img');
-                    img.src = fileUrl;
-                    img.classList.add('img');
-                    previewContainer.appendChild(img);
-                    break;
-                case '.pdf':
-                    iconClass = 'fas fa-file-pdf';
-                    iconColor = 'red';
-                    const pdfIcon = document.createElement('i');
-                    pdfIcon.className = iconClass;
-                    pdfIcon.style.color = iconColor;
-                    pdfIcon.style.fontSize = '120px';
-                    previewContainer.appendChild(pdfIcon);
-                    break;
-                case '.txt':
-                    iconClass = 'fas fa-file-alt';
-                    iconColor = 'blue';
-                    fetch(fileUrl)
-                        .then(response => response.text())
-                        .then(data => {
-                            const textPreview = document.createElement('pre');
-                            textPreview.textContent = data;
-                            previewContainer.appendChild(textPreview);
-                        });
-                    break;
-                case '.doc':
-                case '.docx':
-                    iconClass = 'fas fa-file-word';
-                    iconColor = 'blue';
-                    const wordIcon = document.createElement('i');
-                    wordIcon.className = iconClass;
-                    wordIcon.style.color = iconColor;
-                    wordIcon.style.fontSize = '120px';
-                    previewContainer.appendChild(wordIcon);
-                    break;
-                case '.xls':
-                case '.xlsx':
-                    iconClass = 'fas fa-file-excel';
-                    iconColor = 'green';
-                    const excelIcon = document.createElement('i');
-                    excelIcon.className = iconClass;
-                    excelIcon.style.color = iconColor;
-                    excelIcon.style.fontSize = '120px';
-                    previewContainer.appendChild(excelIcon);
-                    break;
-                case '.ppt':
-                case '.pptx':
-                    iconClass = 'fas fa-file-powerpoint';
-                    iconColor = 'yellow';
-                    const pptIcon = document.createElement('i');
-                    pptIcon.className = iconClass;
-                    pptIcon.style.color = iconColor;
-                    pptIcon.style.fontSize = '120px';
-                    previewContainer.appendChild(pptIcon);
-                    break;
-                case '.zip':
-                case '.rar':
-                    iconClass = 'fas fa-file-archive';
-                    iconColor = 'orange';
-                    const archiveIcon = document.createElement('i');
-                    archiveIcon.className = iconClass;
-                    archiveIcon.style.color = iconColor;
-                    archiveIcon.style.fontSize = '120px';
-                    previewContainer.appendChild(archiveIcon);
-                    break;
-                case '.mp3':
-                case '.wav':
-                    iconClass = 'fas fa-file-audio';
-                    iconColor = 'red';
-                    const audio = document.createElement('audio');
-                    audio.controls = true;
-                    audio.controlsList = 'nodownload noplaybackrate'; // Menambahkan atribut controlsList untuk menghapus tombol unduh
-                    audio.src = fileUrl;
-                    previewContainer.appendChild(audio);
-                    break;
-                case '.mp4':
-                case '.avi':
-                case '.mkv':
-                    iconClass = 'fas fa-file-video';
-                    iconColor = 'red';
-                    const video = document.createElement('video');
-                    video.controls = true;
-                    video.controlsList = 'nofullscreen nodownload noplaybackrate';
-                    video.disablePictureInPicture = true // Menambahkan atribut controlsList untuk menghapus tombol unduh
-                    video.src = fileUrl;
-                    video.classList.add('img');
-                    previewContainer.appendChild(video);
-                    break;
-                default:
-                    iconClass = 'fas fa-file';
-                    iconColor = 'grey';
-                    const defaultIcon = document.createElement('i');
-                    defaultIcon.className = iconClass;
-                    defaultIcon.style.color = iconColor;
-                    defaultIcon.style.fontSize = '120px';
-                    previewContainer.appendChild(defaultIcon);
-                    break;
-            }
-
-            const iconElement = document.createElement('i');
-            iconElement.className = iconClass;
-            iconElement.style.color = iconColor;
-            fileItem.querySelector('.file-icon').appendChild(iconElement);
-        });
-    });
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Function to adjust dropdown position
-        function adjustDropdownPosition() {
-            document.querySelectorAll('.dropdown-submenu.dropright').forEach(function(element) {
-                // Get bounding rectangle of the element
-                var rect = element.getBoundingClientRect();
-
-                // Check if the element is near the right edge of the viewport
-                if (rect.right >= window.innerWidth) {
-                    // Change class from dropright to dropleft
-                    element.classList.remove('dropright');
-                    element.classList.add('dropleft');
-                } else {
-                    // Ensure it has the correct class if it's not near the edge
-                    element.classList.remove('dropleft');
-                    element.classList.add('dropright');
+    </script>
+    <script>
+        function deleteTrash(event) {
+            event.preventDefault(); // Mencegah pengiriman formulir langsung
+            Swal.fire({
+                title: 'Delete forever?',
+                text: "All items in the trash will be deleted forever and you won't be able to restore it",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Delete forever'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.parentElement.submit(); // Kirim formulir untuk menghapus file
+                }
+            });
+        }
+        // Fungsi untuk menghapus file
+        function deleteFile(event) {
+            event.preventDefault(); // Mencegah pengiriman formulir langsung
+            var fileName = event.target.parentElement.querySelector('[name="fileName"]').value; // Dapatkan nama file
+            Swal.fire({
+                title: 'Delete forever?',
+                text: fileName + " will be deleted forever and you won't be able to restore it",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Delete forever'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.parentElement.submit(); // Kirim formulir untuk menghapus file
                 }
             });
         }
 
-        // Adjust dropdown position on page load
-        adjustDropdownPosition();
-
-        // Adjust dropdown position on window resize
-        window.addEventListener('resize', adjustDropdownPosition);
-
-        // Handle click for nested dropdowns
-        document.querySelectorAll('.dropdown-submenu .dropdown-toggle').forEach(function(element) {
-            element.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-
-                var parent = e.target.closest('.dropdown-submenu');
-                parent.classList.toggle('show');
-                var subMenu = parent.querySelector('.dropdown-menu');
-                if (subMenu) {
-                    subMenu.classList.toggle('show');
+        // Fungsi untuk menghapus folder
+        function deleteFolder(event) {
+            event.preventDefault(); // Mencegah pengiriman formulir langsung
+            var folderName = event.target.parentElement.querySelector('[name="folderName"]').value; // Dapatkan nama folder
+            Swal.fire({
+                title: 'Delete forever?',
+                text: folderName + " will be deleted forever and you won't be able to restore it",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'forever'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.parentElement.submit(); // Kirim formulir untuk menghapus folder
                 }
             });
-        });
-
-        // Close nested dropdowns when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.dropdown-menu')) {
-                document.querySelectorAll('.dropdown-menu.show').forEach(function(menu) {
-                    menu.classList.remove('show');
+        }
+    </script>
+    <script>
+        $(document).ready(function() {
+            <?php if (session()->getFlashdata('success_message')) : ?>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: '<?= session()->getFlashdata('success_message') ?>',
                 });
-                document.querySelectorAll('.dropdown-submenu.show').forEach(function(submenu) {
-                    submenu.classList.remove('show');
+            <?php endif; ?>
+        });
+    </script>
+    <script>
+        var myDropzone = new Dropzone("#kt_dropzonejs_example_1", {
+            url: "<?= base_url('user/addFiles') ?>", // Set the url for your upload script location
+            paramName: "file", // The name that will be used to transfer the file
+            maxFiles: 10,
+            init: function() {
+                this.on("complete", function(file) {
+                    // Callback function when each file upload is complete
+                    if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
+                        // Jika tidak ada file lagi yang sedang di-upload atau di-queue
+                        // Reload halaman setelah proses upload selesai
+                        location.reload();
+                    }
+                });
+            }
+        });
+    </script>
+    <script>
+        var urlSegments = window.location.pathname.split('/');
+        var lastSegment = urlSegments[urlSegments.length - 1];
+        var url = "<?= base_url('user/addFiles/') ?>" + lastSegment;
+        var myDropzone = new Dropzone("#kt_dropzonejs_example_2", {
+            url: url, // Set the url for your upload script location
+            paramName: "file", // The name that will be used to transfer the file
+            maxFiles: 10,
+            init: function() {
+                this.on("complete", function(file) {
+                    // Callback function when each file upload is complete
+                    if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
+                        // Jika tidak ada file lagi yang sedang di-upload atau di-queue
+                        // Reload halaman setelah proses upload selesai
+                        location.reload();
+                    }
                 });
             }
         });
 
-        // Close nested dropdowns when parent dropdown is closed
-        document.querySelectorAll('.dropdown').forEach(function(dropdown) {
-            dropdown.addEventListener('hide.bs.dropdown', function() {
-                this.querySelectorAll('.dropdown-submenu .show').forEach(function(submenu) {
-                    submenu.classList.remove('show');
+        console.log(url); // Output the URL to the console
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll('.file-item').forEach(fileItem => {
+                const fileNameElement = fileItem.querySelector('.file-name');
+                const folderNameElement = fileItem.querySelector('.folder-name');
+                const fileName = fileNameElement.textContent.trim();
+                let folderName = null;
+                if (folderNameElement) {
+                    folderName = folderNameElement.textContent.trim();
+                }
+                const fileExtension = fileName.slice(fileName.lastIndexOf('.')).toLowerCase();
+                const previewContainer = fileItem.querySelector('.file-preview');
+                let fileUrl = '<?= base_url('files/') ?>' + '<?= session()->get('name') ?>' + '/' + fileName;
+                if (folderName) {
+                    fileUrl += folderName + fileName;
+                }
+                fileUrl += fileName;
+                let iconClass = '';
+                let iconColor = '';
+
+                switch (fileExtension) {
+                    case '.jpg':
+                    case '.jpeg':
+                    case '.png':
+                    case '.gif':
+                        iconClass = 'fas fa-file-image';
+                        iconColor = 'red';
+                        const img = document.createElement('img');
+                        img.src = fileUrl;
+                        img.classList.add('img');
+                        previewContainer.appendChild(img);
+                        break;
+                    case '.pdf':
+                        iconClass = 'fas fa-file-pdf';
+                        iconColor = 'red';
+                        const pdfIcon = document.createElement('i');
+                        pdfIcon.className = iconClass;
+                        pdfIcon.style.color = iconColor;
+                        pdfIcon.style.fontSize = '120px';
+                        previewContainer.appendChild(pdfIcon);
+                        break;
+                    case '.txt':
+                        iconClass = 'fas fa-file-alt';
+                        iconColor = 'blue';
+                        fetch(fileUrl)
+                            .then(response => response.text())
+                            .then(data => {
+                                const textPreview = document.createElement('pre');
+                                textPreview.textContent = data;
+                                previewContainer.appendChild(textPreview);
+                            });
+                        break;
+                    case '.doc':
+                    case '.docx':
+                        iconClass = 'fas fa-file-word';
+                        iconColor = 'blue';
+                        const wordIcon = document.createElement('i');
+                        wordIcon.className = iconClass;
+                        wordIcon.style.color = iconColor;
+                        wordIcon.style.fontSize = '120px';
+                        previewContainer.appendChild(wordIcon);
+                        break;
+                    case '.xls':
+                    case '.xlsx':
+                        iconClass = 'fas fa-file-excel';
+                        iconColor = 'green';
+                        const excelIcon = document.createElement('i');
+                        excelIcon.className = iconClass;
+                        excelIcon.style.color = iconColor;
+                        excelIcon.style.fontSize = '120px';
+                        previewContainer.appendChild(excelIcon);
+                        break;
+                    case '.ppt':
+                    case '.pptx':
+                        iconClass = 'fas fa-file-powerpoint';
+                        iconColor = 'yellow';
+                        const pptIcon = document.createElement('i');
+                        pptIcon.className = iconClass;
+                        pptIcon.style.color = iconColor;
+                        pptIcon.style.fontSize = '120px';
+                        previewContainer.appendChild(pptIcon);
+                        break;
+                    case '.zip':
+                    case '.rar':
+                        iconClass = 'fas fa-file-archive';
+                        iconColor = 'orange';
+                        const archiveIcon = document.createElement('i');
+                        archiveIcon.className = iconClass;
+                        archiveIcon.style.color = iconColor;
+                        archiveIcon.style.fontSize = '120px';
+                        previewContainer.appendChild(archiveIcon);
+                        break;
+                    case '.mp3':
+                    case '.wav':
+                        iconClass = 'fas fa-file-audio';
+                        iconColor = 'red';
+                        const audio = document.createElement('audio');
+                        audio.controls = true;
+                        audio.controlsList = 'nodownload noplaybackrate'; // Menambahkan atribut controlsList untuk menghapus tombol unduh
+                        audio.src = fileUrl;
+                        previewContainer.appendChild(audio);
+                        break;
+                    case '.mp4':
+                    case '.avi':
+                    case '.mkv':
+                        iconClass = 'fas fa-file-video';
+                        iconColor = 'red';
+                        const video = document.createElement('video');
+                        video.controls = true;
+                        video.controlsList = 'nofullscreen nodownload noplaybackrate';
+                        video.disablePictureInPicture = true // Menambahkan atribut controlsList untuk menghapus tombol unduh
+                        video.src = fileUrl;
+                        video.classList.add('img');
+                        previewContainer.appendChild(video);
+                        break;
+                    default:
+                        iconClass = 'fas fa-file';
+                        iconColor = 'grey';
+                        const defaultIcon = document.createElement('i');
+                        defaultIcon.className = iconClass;
+                        defaultIcon.style.color = iconColor;
+                        defaultIcon.style.fontSize = '120px';
+                        previewContainer.appendChild(defaultIcon);
+                        break;
+                }
+
+                const iconElement = document.createElement('i');
+                iconElement.className = iconClass;
+                iconElement.style.color = iconColor;
+                fileItem.querySelector('.file-icon').appendChild(iconElement);
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to adjust dropdown position
+            function adjustDropdownPosition() {
+                document.querySelectorAll('.dropdown-submenu.dropright').forEach(function(element) {
+                    // Get bounding rectangle of the element
+                    var rect = element.getBoundingClientRect();
+
+                    // Check if the element is near the right edge of the viewport
+                    if (rect.right >= window.innerWidth) {
+                        // Change class from dropright to dropleft
+                        element.classList.remove('dropright');
+                        element.classList.add('dropleft');
+                    } else {
+                        // Ensure it has the correct class if it's not near the edge
+                        element.classList.remove('dropleft');
+                        element.classList.add('dropright');
+                    }
+                });
+            }
+
+            // Adjust dropdown position on page load
+            adjustDropdownPosition();
+
+            // Adjust dropdown position on window resize
+            window.addEventListener('resize', adjustDropdownPosition);
+
+            // Handle click for nested dropdowns
+            document.querySelectorAll('.dropdown-submenu .dropdown-toggle').forEach(function(element) {
+                element.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    var parent = e.target.closest('.dropdown-submenu');
+                    parent.classList.toggle('show');
+                    var subMenu = parent.querySelector('.dropdown-menu');
+                    if (subMenu) {
+                        subMenu.classList.toggle('show');
+                    }
+                });
+            });
+
+            // Close nested dropdowns when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.dropdown-menu')) {
+                    document.querySelectorAll('.dropdown-menu.show').forEach(function(menu) {
+                        menu.classList.remove('show');
+                    });
+                    document.querySelectorAll('.dropdown-submenu.show').forEach(function(submenu) {
+                        submenu.classList.remove('show');
+                    });
+                }
+            });
+
+            // Close nested dropdowns when parent dropdown is closed
+            document.querySelectorAll('.dropdown').forEach(function(dropdown) {
+                dropdown.addEventListener('hide.bs.dropdown', function() {
+                    this.querySelectorAll('.dropdown-submenu .show').forEach(function(submenu) {
+                        submenu.classList.remove('show');
+                    });
                 });
             });
         });
-    });
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Get the button and form elements
-        const addFileButton = document.getElementById('addFileButton');
-        const addFileForm = document.getElementById('addFileForm');
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get the button and form elements
+            const addFileButton = document.getElementById('addFileButton');
+            const addFileForm = document.getElementById('addFileForm');
 
-        // Add click event listener to the button
-        addFileButton.addEventListener('click', function() {
-            // Toggle the visibility of the form
-            addFileForm.style.display = addFileForm.style.display === 'none' ? 'block' : 'none';
+            // Add click event listener to the button
+            addFileButton.addEventListener('click', function() {
+                // Toggle the visibility of the form
+                addFileForm.style.display = addFileForm.style.display === 'none' ? 'block' : 'none';
+            });
         });
-    });
-</script>
+    </script>
 </body>
 
 </html>

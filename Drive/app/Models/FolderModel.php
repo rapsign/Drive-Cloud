@@ -12,7 +12,7 @@ class FolderModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['folder_name', 'user_id', 'slug', 'deleted_at'];
+    protected $allowedFields    = ['folder_name', 'user_id', 'slug', 'deleted_at', 'folder_path', 'parent_id'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -54,5 +54,23 @@ class FolderModel extends Model
     {
         $folder = $this->where('slug', $slug)->first();
         return $folder;
+    }
+    public function getFoldersToDelete($folderId)
+    {
+        $foldersToDelete = [];
+
+        // Get the folder
+        $folder = $this->find($folderId);
+        if ($folder) {
+            $foldersToDelete[] = $folder;
+
+            // Get the subfolders recursively
+            $subfolders = $this->where('parent_id', $folderId)->findAll();
+            foreach ($subfolders as $subfolder) {
+                $foldersToDelete = array_merge($foldersToDelete, $this->getFoldersToDelete($subfolder['id']));
+            }
+        }
+
+        return $foldersToDelete;
     }
 }

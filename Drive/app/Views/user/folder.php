@@ -112,6 +112,37 @@
         <h1 class="h2">My Drive > <?= $folder_name ?></h1>
         <button class="btn btn-primary" id="addFileButton">+</button>
     </div>
+    <h6>Folders</h6>
+    <?php foreach ($folders as $folder) : ?>
+        <div class="btn-group">
+            <a href="<?= base_url('user/folder/') . $folder['slug'] ?>" class="btn btn-secondary">
+                <i class="fas fa-folder fa-lg mr-2"></i> <!-- Icon with additional classes -->
+                <span class="btn-text"><?= $folder['folder_name'] ?></span>
+            </a>
+            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false" style="width: 10px;">
+                <span class="visually-hidden"><i class="fas fa-ellipsis-v"></i></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a class="dropdown-item" type="button" data-toggle="modal" data-target="#renameFolder" data-id="<?= $folder['id'] ?>" data-name="<?= $folder['folder_name'] ?>">
+                        <i class="fas fa-edit mr-3"></i> Rename
+                    </a>
+                </li>
+                <hr class="dropdown-divider">
+                <li><button class="dropdown-item" type="button" data-toggle="modal" data-target="#moveFolder" data-id="<?= $folder['id'] ?>" data-name="<?= $folder['folder_name'] ?>"><i class="fas fa-folder-open mr-3"></i> Move</button></li>
+                <hr class="dropdown-divider">
+
+                <li>
+                    <form action="<?= base_url('user/folder/moveToTrash') ?>" method="post" class="d-inline">
+                        <input type="hidden" name="folderSlug" value="<?= $folder['slug'] ?>">
+                        <a type="button" class="dropdown-item" onclick="Delete(event)">
+                            <i class="fas fa-trash mr-3"></i> Move To Trash
+                        </a>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    <?php endforeach; ?>
     <hr>
     <h6 class="mt-5">Files</h6>
     <div class="row">
@@ -160,7 +191,7 @@
                                 </li>
                                 <hr class="dropdown-divider">
                                 <!-- Tambah item dropdown untuk download -->
-                                <li><a class="dropdown-item" href="<?= base_url('files/' . session()->get('name') . '/' . $file['folder_name'] . '/' . $file['file_name']) ?>" download><i class="fas fa-download mr-3"></i> Download</a></li>
+                                <li><a class="dropdown-item" href="<?= base_url('download' . '/' . $file['file_name']) ?>"><i class="fas fa-download mr-3"></i> Download</a></li>
                                 <hr class="dropdown-divider">
                                 <li><button class="dropdown-item" type="button" data-toggle="modal" data-target="#moveFile" data-id="<?= $file['id'] ?>" data-name="<?= $file['file_name'] ?>"><i class="fas fa-folder-open mr-3"></i> Move</button></li>
                                 <hr class="dropdown-divider">

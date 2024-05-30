@@ -73,7 +73,7 @@ class File extends BaseController
             $username = session()->get('name');
 
             // Tentukan direktori untuk menyimpan file
-            $userDir = FCPATH . 'files/' . $username . '/' . $folder['folder_name'];
+            $userDir = $folder['folder_path'] . '/' . $folder['folder_name'];
 
             // Buat direktori jika belum ada
             if (!is_dir($userDir)) {
@@ -239,5 +239,30 @@ class File extends BaseController
         }
 
         return redirect()->to('/user');
+    }
+
+    public function downloadFile($fileName)
+    {
+        $file = $this->fileModel->where('file_name', $fileName)->first();
+        // Lokasi file untuk di-download
+        $filePath = $file['file_path'] . '/' . $fileName;
+
+        // Pastikan file ada
+        if (file_exists($filePath)) {
+            // Konfigurasi header untuk tipe konten
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename="' . $fileName . '"');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($filePath));
+
+            // Baca file
+            readfile($filePath);
+            exit;
+        } else {
+            // File tidak ditemukan
+            die('File not found.');
+        }
     }
 }

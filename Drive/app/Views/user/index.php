@@ -130,6 +130,9 @@
                             </a>
                         </li>
                         <hr class="dropdown-divider">
+                        <li><button class="dropdown-item" type="button" data-toggle="modal" data-target="#moveFolder" data-id="<?= $folder['id'] ?>" data-name="<?= $folder['folder_name'] ?>"><i class="fas fa-folder-open mr-3"></i> Move</button></li>
+                        <hr class="dropdown-divider">
+
                         <li>
                             <form action="<?= base_url('user/folder/moveToTrash') ?>" method="post" class="d-inline">
                                 <input type="hidden" name="folderSlug" value="<?= $folder['slug'] ?>">

@@ -90,7 +90,7 @@ class User extends BaseController
 
         if ($keyword) {
             $folders = $this->folderModel->onlyDeleted()
-                ->where('user_id', $user_id)
+                ->where('user_id', $user_id)->where('parent_id is null')
                 ->like('folder_name', $keyword)
                 ->orderBy('deleted_at', 'DESC')
                 ->findAll();
@@ -104,7 +104,7 @@ class User extends BaseController
                 ->findAll();
         } else {
             $folders = $this->folderModel->onlyDeleted()
-                ->where('user_id', $user_id)
+                ->where('user_id', $user_id)->where('parent_id is null')
                 ->orderBy('deleted_at', 'DESC')
                 ->findAll();
             $files = $this->fileModel->onlyDeleted()

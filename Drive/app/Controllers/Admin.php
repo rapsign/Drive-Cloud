@@ -10,19 +10,32 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 class Admin extends BaseController
 {
     protected $userModel;
+    /**
+     * Constructor for Admin Controller.
+     */
 
     public function __construct()
     {
         $this->userModel = new UsersModel();
+        /**
+         * Displays the main admin page with a list of users.
+         *
+         * @return ResponseInterface
+         */
     }
     public function index()
     {
         $data['users'] = $this->userModel->getUsers();
         return view('admin/index', $data);
     }
+    /**
+     * Handles user registration.
+     *
+     * @return ResponseInterface
+     */
     public function register()
     {
-        // Mendefinisikan rules validasi
+        // Validation rules for registration
         $validationRules = [
             'username' => [
                 'rules' => 'required|numeric|min_length[3]|max_length[20]|is_unique[users.username]',
@@ -59,33 +72,39 @@ class Admin extends BaseController
             ]
         ];
 
-        // Memvalidasi input
+        // Validate input
         if (!$this->validate($validationRules)) {
-            // Jika validasi gagal
+            // Redirect back with errors if validation fails
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors())->with('showModalAdd', true);
         }
 
-        // Jika validasi berhasil
+        // Successful validation, proceed with registration
         $this->userModel->save([
             'username' => $this->request->getVar('username'),
             'name' => $this->request->getVar('name'),
             'role_id' => 2,
             'password' => password_hash($this->request->getVar('password'), PASSWORD_BCRYPT),
         ],);
+        // Create a folder for the new user
         $foldername = $this->request->getVar('name');
         $folderPath = FCPATH . 'files/' . $foldername;
         mkdir($folderPath, 0777, true);
-
+        // Redirect with success message
         session()->setFlashdata('success_message', 'Registration successful!');
         return redirect()->to('/admin');
     }
-
+    /**
+     * Changes the role of a user.
+     *
+     * @return ResponseInterface
+     */
     public function changeRole()
     {
+        // Get user_id and new role_id from POST request
         $userId = $this->request->getPost('user_id');
         $newRoleId = $this->request->getPost('role_id');
 
-        // Validasi input
+        // Validate input
         $validation = \Config\Services::validation();
         $validation->setRules([
             'user_id' => 'required|numeric',
@@ -93,33 +112,35 @@ class Admin extends BaseController
         ]);
 
         if (!$validation->withRequest($this->request)->run()) {
-            // Kembali dengan error jika validasi gagal
             if ($newRoleId === null) {
                 return redirect()->back()->withInput()->with('roleError', 'Please select a role')->with('showModalRole', true);
             } else {
-                // Dapatkan pesan kesalahan validasi
                 $errors = $validation->getErrors();
                 return redirect()->back()->withInput()->with('errors', $errors)->with('showModalRole', true);
             }
         }
 
-        // Update role_id di database
+        // Update role_id in the database
         $this->userModel->update($userId, ['role_id' => $newRoleId]);
 
-        // Set flashdata untuk pesan sukses
+        // Redirect with success message
         session()->setFlashdata('success_message', 'Role updated successfully!');
         return redirect()->back();
     }
-
+    /**
+     * Deletes a user and associated folder.
+     *
+     * @return ResponseInterface
+     */
     public function deleteUser()
     {
+        // Get user ID and name from request
         $userId = $this->request->getVar('userId');
         $name = $this->request->getVar('name');
 
-        // Pastikan ID pengguna yang akan dihapus valid
-        // Pastikan ID pengguna yang akan dihapus valid
+        // Validate user ID
         if (!empty($userId)) {
-            // Lakukan penghapusan pengguna dari database
+            // Delete user from database and associated folder
             $deleted = $this->userModel->delete($userId);
             if ($deleted) {
                 $foldername = $name;
@@ -127,20 +148,22 @@ class Admin extends BaseController
                 rmdir($folderPath);
                 session()->setFlashdata('success_message', 'User deleted successfully!');
             } else {
-                // Kirim pesan kesalahan jika gagal menghapus pengguna
                 session()->setFlashdata('error_message', 'Failed to delete user!');
             }
         } else {
-            // Kirim pesan kesalahan jika ID pengguna kosong
             session()->setFlashdata('error_message', 'Invalid user ID!');
         }
-
-        // Redirect kembali ke halaman sebelumnya
+        // Redirect back
         return redirect()->back();
     }
+    /**
+     * Adds users from an Excel file.
+     *
+     * @return ResponseInterface
+     */
     public function addUsersFromExcel()
     {
-        // Validasi unggahan file
+        // Validate uploaded Excel file
         $validation = \Config\Services::validation();
         $validation->setRules([
             'excelFile' => [
@@ -154,29 +177,25 @@ class Admin extends BaseController
         ]);
 
         if (!$validation->withRequest($this->request)->run()) {
-            // Kembali ke halaman sebelumnya dengan pesan kesalahan jika validasi gagal
             return redirect()->back()->withInput()->with('errors', $validation->getErrors());
         }
 
-        // Ambil file Excel yang diunggah
+        // Read Excel file and add users
         $excelFile = $this->request->getFile('excelFile');
-
-        // Load file Excel menggunakan PhpSpreadsheet
-        $reader = IOFactory::createReader('Xlsx'); // Ubah sesuai ekstensi file Excel
+        $reader = IOFactory::createReader('Xlsx');
         $spreadsheet = $reader->load($excelFile->getTempName());
         $worksheet = $spreadsheet->getActiveSheet();
 
-        // Looping baris-baris Excel, mulai dari baris kedua (baris pertama biasanya berisi header)
         foreach ($worksheet->getRowIterator(2) as $row) {
             $rowData = [];
             $cellIterator = $row->getCellIterator();
             $cellIterator->setIterateOnlyExistingCells(false); // Loop through all cells, even if cell value is not set
 
             foreach ($cellIterator as $cell) {
-                $rowData[] = $cell->getValue(); // Mengambil nilai dari setiap sel dalam baris
+                $rowData[] = $cell->getValue();
             }
 
-            // Simpan data pengguna ke dalam database
+            // Create a folder for each new user
             $username = $rowData[0]; // Misalnya kolom pertama adalah username
             $name = $rowData[1]; // Misalnya kolom kedua adalah nama
             $password = $rowData[2]; // Misalnya kolom ketiga adalah password
