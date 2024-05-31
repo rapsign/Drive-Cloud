@@ -187,7 +187,7 @@
                                         </li>
                                         <hr class="dropdown-divider">
                                         <!-- Tambah item dropdown untuk download -->
-                                        <li><a class="dropdown-item" href="<?= base_url('files/' . session()->get('name') . '/' . $file['file_name']) ?>" download><i class="fas fa-download mr-3"></i> Download</a></li>
+                                        <li><a class="dropdown-item" href="<?= base_url('download' . '/' . $file['file_name']) ?>"><i class="fas fa-download mr-3"></i> Download</a></li>
                                         <hr class="dropdown-divider">
                                         <li><button class="dropdown-item" type="button" data-toggle="modal" data-target="#moveFile" data-id="<?= $file['id'] ?>" data-name="<?= $file['file_name'] ?>"><i class="fas fa-folder-open mr-3"></i> Move</button></li>
                                         <hr class="dropdown-divider">

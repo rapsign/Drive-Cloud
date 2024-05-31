@@ -73,7 +73,7 @@ class File extends BaseController
             $username = session()->get('name');
 
             // Tentukan direktori untuk menyimpan file
-            $userDir = $folder['folder_path'] . '/' . $folder['folder_name'];
+            $userDir = $folder['folder_path'] . $folder['folder_name'];
 
             // Buat direktori jika belum ada
             if (!is_dir($userDir)) {
@@ -117,7 +117,7 @@ class File extends BaseController
         $file = $this->fileModel->find($fileId);
         if (!$file) {
             session()->setFlashdata('error_message', 'File not found!');
-            return redirect()->to('/user');
+            return redirect()->back();
         }
 
         $oldFileName = $file['file_name'];
@@ -161,7 +161,7 @@ class File extends BaseController
         $fileId = $this->request->getVar('fileId');
         $this->fileModel->where('id', $fileId)->delete();
         session()->setFlashdata('success_message', 'File move to trash');
-        return redirect()->to('/user');
+        return redirect()->back();
     }
     public function restoreFile()
     {
@@ -173,7 +173,7 @@ class File extends BaseController
         ]);
 
         session()->setFlashdata('success_message', 'File restored successfully!');
-        return redirect()->to('/user/trash');
+        return redirect()->back();
     }
 
     public function deleteFile()
@@ -182,8 +182,7 @@ class File extends BaseController
         $file = $this->fileModel->getFileById($fileId);
         $username = session()->get('name');
         $fileName = $this->request->getVar('fileName');
-        $filePath = $file['file_path'];
-
+        $filePath = $file['file_path'] . $fileName;
         // Hapus file dari server
         if (file_exists($filePath)) {
             unlink($filePath); // Menghapus file
@@ -206,7 +205,7 @@ class File extends BaseController
         $folder = $this->folderModel->getFolderBySlug($targetFolderSlug);
 
         $fileDir = $file['file_path'] . '/' . $fileName;
-        $userDir = FCPATH . 'files/' . $username . '/';
+        $userDir = $folder['folder_path'];
         $targetDir = $userDir . $folder['folder_name'];
 
         $newFileName = $fileName; // Nama file baru, default sama dengan yang ada
@@ -238,7 +237,7 @@ class File extends BaseController
             session()->setFlashdata('error_message', 'Failed to move file!');
         }
 
-        return redirect()->to('/user');
+        return redirect()->back();
     }
 
     public function downloadFile($fileName)

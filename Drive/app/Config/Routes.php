@@ -18,9 +18,10 @@ $routes->get('/user/trash', 'User::trash', ['filter' => 'auth:user']);
 $routes->get('/trash/search', 'User::trash', ['filter' => 'auth:user']);
 $routes->get('/user/trash/emptyTrash', 'User::emptyTrash', ['filter' => 'auth:user']);
 $routes->get('/user/folder/(:segment)', 'User::folder/$1', ['filter' => 'auth:user']);
-
+$routes->get('/user/trash/folder/(:segment)', 'User::folderTrash/$1', ['filter' => 'auth:user']);
 // Folder
 $routes->post('/user/createFolder', 'Folder::addFolder', ['filter' => 'auth:user']);
+$routes->post('/user/createFolder/(:segment)', 'Folder::addFolderInFolder/$1', ['filter' => 'auth:user']);
 $routes->post('/user/folder/rename', 'Folder::renameFolder', ['filter' => 'auth:user']);
 $routes->post('/user/folder/moveToTrash', 'Folder::moveToTrash', ['filter' => 'auth:user']);
 $routes->post('/user/folder/restoreFolder', 'Folder::restoreFolder', ['filter' => 'auth:user']);
@@ -36,7 +37,7 @@ $routes->post('/user/file/moveToTrash', 'File::moveToTrash', ['filter' => 'auth:
 $routes->post('/user/file/restoreFile', 'File::restoreFile', ['filter' => 'auth:user']);
 $routes->post('/user/file/deleteFile', 'File::deleteFile', ['filter' => 'auth:user']);
 $routes->post('/moveFile', 'File::moveFile', ['filter' => 'auth:user']);
-$routes->get('/download/(:segment)', 'File::downloadFile', ['filter' => 'auth:user']);
+$routes->get('/download/(:segment)', 'File::downloadFile/$1', ['filter' => 'auth:user']);
 
 // Admin
 $routes->get('/admin', 'admin::index', ['filter' => 'auth:admin']);

@@ -88,6 +88,10 @@
             <?= $this->renderSection('page-content'); ?>
         </div>
     </div>
+    <?php
+    // Assume $folder_name is set somewhere in your code
+    $folder_slug = isset($folder_slug) ? $folder_slug : '';
+    ?>
     <div class="modal fade " id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -98,7 +102,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="<?= base_url('user/createFolder') ?>" method="post">
+                    <form action="<?= base_url('user/createFolder/' . ($folder_slug ? $folder_slug : '')) ?>" method="post">
                         <div class="form-group">
                             <input type="hidden" name="userId" value="<?= session()->get('id') ?>">
                             <input type="text" class="form-control" id="folder" name="folder" value="Untitled folder">
@@ -206,10 +210,11 @@
                 <div class="modal-body">
                     <form id="moveFolderForm" method="post" action="/moveFolder">
                         <input type="hidden" id="folder-id" name="folder_id">
-                        <input type="text" id="selected" name="target_folder">
+                        <input type="hidden" id="selected" name="target_folder">
                         <input type="hidden" id="folder-name" name="folder_name">
                         <div class="form-group">
                             <ul class="list-group list-group-flush" id="folder-move-list">
+
                                 <?php foreach ($allFolders as $folder) : ?>
                                     <li class="list-group-item" data-folder="<?= $folder['slug'] ?>">
                                         <i class="fas fa-folder fa-lg mr-2"></i>
@@ -447,6 +452,10 @@
                     icon: 'success',
                     title: 'Success',
                     text: '<?= session()->getFlashdata('success_message') ?>',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        location.reload();
+                    }
                 });
             <?php endif; ?>
         });

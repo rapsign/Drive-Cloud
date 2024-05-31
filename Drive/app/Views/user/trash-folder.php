@@ -15,7 +15,7 @@
         </div>
     <?php else : ?>
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
-            <h1 class="h2">Trash</h1>
+            <h1 class="h2">Trash > <?= $folder_name ?></h1>
         </div>
     <?php endif; ?>
 
@@ -106,7 +106,7 @@
             <h6>Folders</h6>
             <?php foreach ($folders as $folder) : ?>
                 <div class="btn-group">
-                    <a href="#" class="btn btn-secondary">
+                    <a href="<?= base_url('user/trash/folder/') . $folder['slug'] ?>" class="btn btn-secondary">
                         <i class="fas fa-folder fa-lg mr-2"></i> <!-- Icon with additional classes -->
                         <span class="btn-text"><?= $folder['folder_name'] ?></span>
                     </a>
@@ -114,13 +114,6 @@
                         <span class="visually-hidden"><i class="fas fa-ellipsis-v"></i></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li>
-                            <form action="<?= base_url('user/folder/restoreFolder') ?>" method="post" style="display: inline;">
-                                <input type="hidden" name="folderId" value="<?php echo esc($folder['id']); ?>">
-                                <button type="submit" class="dropdown-item"><i class="fas fa-undo mr-3"></i> Restore</button>
-                            </form>
-                        </li>
-                        <hr class="dropdown-divider">
                         <li>
                             <form action="<?= base_url('user/folder/deleteFolder') ?>" method="post" class="d-inline">
                                 <input type="hidden" name="folderId" value="<?= $folder['id'] ?>">
@@ -145,13 +138,6 @@
                                 <div class="dropdown">
                                     <i class="fas fa-ellipsis-v dropdown-toggle dropdown-toggle-no-caret" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
                                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated" aria-labelledby="dropdownMenuButton1">
-                                        <li>
-                                            <form action="<?= base_url('user/file/restoreFile') ?>" method="post" style="display: inline;">
-                                                <input type="hidden" name="fileId" value="<?= ($file['id']); ?>">
-                                                <button type="submit" class="dropdown-item"><i class="fas fa-undo mr-3"></i> Restore</button>
-                                            </form>
-                                        </li>
-                                        <hr class="dropdown-divider">
                                         <li>
                                             <form action="<?= base_url('user/file/deleteFile') ?>" method="post" class="d-inline">
                                                 <input type="hidden" name="fileId" value="<?= $file['id'] ?>">

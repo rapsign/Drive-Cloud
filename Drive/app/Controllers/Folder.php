@@ -57,6 +57,49 @@ class Folder extends BaseController
         session()->setFlashdata('success_message', 'Folder added successfully!');
         return redirect()->to('/user');
     }
+    public function addFolderInFolder($slug)
+    {
+        helper('text');
+
+        $foldername = $this->request->getVar('folder');
+        $userId = $this->request->getVar('userId');
+        $username = session()->get('name');
+        $folder = $this->folderModel->getFolderBySlug($slug);
+
+        // Check if the folder exists
+        if (!$folder) {
+            session()->setFlashdata('error_message', 'Parent folder not found.');
+            return redirect()->back();
+        }
+
+        // Path dasar untuk folder pengguna
+        $baseFolderPath = rtrim($folder['folder_path'], '/') . '/' . $folder['folder_name'];
+        $folderPath = $baseFolderPath . '/' . $foldername;
+
+        // Tambahkan nomor di belakang nama folder jika sudah ada
+        $counter = 2;
+        while (is_dir($folderPath)) {
+            $foldername = $this->request->getVar('folder') . '_' . $counter;
+            $folderPath = $baseFolderPath . '/' . $foldername;
+            $counter++;
+        }
+
+        // Simpan data folder ke database
+        $this->folderModel->save([
+            'folder_name' => $foldername,
+            'user_id' => $userId,
+            'slug' => random_string('alnum', 35),
+            'folder_path' => rtrim($baseFolderPath, '/') . '/',
+            'parent_id' => $folder['id']
+        ]);
+
+        // Buat folder di sistem file
+        mkdir($folderPath, 0777, true);
+
+        // Set flashdata dan redirect
+        session()->setFlashdata('success_message', 'Folder added successfully!');
+        return redirect()->back();
+    }
 
     public function renameFolder()
     {
@@ -103,47 +146,119 @@ class Folder extends BaseController
     {
         $folderSlug = $this->request->getVar('folderSlug');
         $folder = $this->folderModel->getFolderBySlug($folderSlug);
-        $this->folderModel->where('slug', $folderSlug)->delete();
-        $this->folderModel->where('parent_id', $folder['id'])->delete();
-        session()->setFlashdata('success_message', 'Folder move to trash');
+        if ($folder) {
+            $this->deleteFolderAndContents($folder['id']);
+            session()->setFlashdata('success_message', 'Folder and its contents moved to trash');
+        } else {
+            session()->setFlashdata('error_message', 'Folder not found');
+        }
         return redirect()->to('/user');
+    }
+
+    private function deleteFolderAndContents($folderId)
+    {
+        // Get all subfolders of the folder
+        $subFolders = $this->folderModel->withDeleted()->where('parent_id', $folderId)->findAll();
+        foreach ($subFolders as $subFolder) {
+            // Recursively delete subfolders and their contents
+            $this->deleteFolderAndContents($subFolder['id']);
+        }
+
+        // Get all files in the folder
+        $files = $this->fileModel->where('folder_id', $folderId)->findAll();
+
+        // Delete all files in the folder
+        foreach ($files as $file) {
+
+            // Hapus file dari database
+            $this->fileModel->delete($file['id']);
+        }
+
+        // Finally, delete the folder itself
+        $this->folderModel->delete($folderId);
     }
     public function restoreFolder()
     {
         $folderId = $this->request->getVar('folderId');
-        $subFolders = $this->folderModel->withDeleted()->where('parent_id', $folderId)->findAll();
 
-        $this->folderModel->save([
-            'id' => $folderId,
-            'deleted_at' => null,
-        ]);
-        foreach ($subFolders as $subFolder) {
-            $this->folderModel->save([
-                'id' => $subFolder['id'],
-                'deleted_at' => null,
-            ]);
-        }
+        // Memulihkan folder utama
+        $this->restoreFolderAndContents($folderId);
 
         session()->setFlashdata('success_message', 'Folder restored successfully!');
         return redirect()->to('/user/trash');
     }
+
+    // Fungsi untuk memulihkan folder dan semua subfolder serta file-file terkait secara rekursif
+    private function restoreFolderAndContents($folderId)
+    {
+        // Memulihkan folder
+        $this->folderModel->save([
+            'id' => $folderId,
+            'deleted_at' => null,
+        ]);
+
+        // Memulihkan file-file terkait dengan folder
+        $this->restoreFilesInFolder($folderId);
+
+        // Memulihkan subfolder secara rekursif
+        $subFolders = $this->folderModel->withDeleted()->where('parent_id', $folderId)->findAll();
+        foreach ($subFolders as $subFolder) {
+            $this->restoreFolderAndContents($subFolder['id']);
+        }
+    }
+
+    // Fungsi untuk memulihkan file-file yang terkait dengan folder
+    private function restoreFilesInFolder($folderId)
+    {
+        // Mengambil semua file yang terkait dengan folder
+        $files = $this->fileModel->withDeleted()->where('folder_id', $folderId)->findAll();
+
+        // Memulihkan setiap file
+        foreach ($files as $file) {
+            $this->fileModel->save([
+                'id' => $file['id'],
+                'deleted_at' => null,
+            ]);
+        }
+    }
+
+
     public function deleteFolder()
     {
         $folderId = $this->request->getVar('folderId');
         $username = session()->get('name');
+        $folder = $this->folderModel->onlyDeleted()->where('id', $folderId)->first();
 
+        // Periksa apakah folder ada sebelum menghapusnya
+        if ($folder) {
+            $folderName = $this->request->getVar('folderName');
+            $folderPath = $folder['folder_path'] . $folderName;
 
-        $folderName = $this->request->getVar('folderName');
-        $folderPath = FCPATH . 'files/' . $username . '/' . $folderName;
+            // Hapus direktori dan isinya dari sistem file
+            $this->deleteDirectory($folderPath);
 
-        // Hapus direktori dan isinya dari sistem file
-        $this->deleteDirectory($folderPath);
+            // Hapus folder dan subfolder dari database secara permanen
+            $this->deleteFolderAndContentsPermanently($folderId);
 
-        // Soft delete folder dari database
-        $this->folderModel->withDeleted()->where('id', $folderId)->purgeDeleted();
-        $this->folderModel->withDeleted()->where('parent_id', $folderId)->purgeDeleted();
-        session()->setFlashdata('success_message', 'Folder deleted successfully!');
+            session()->setFlashdata('success_message', 'Folder deleted successfully!');
+        } else {
+            session()->setFlashdata('error_message', 'Folder not found!');
+        }
         return redirect()->to('/user/trash');
+    }
+
+    // Fungsi untuk menghapus folder dan semua subfolder dari database secara permanen
+    private function deleteFolderAndContentsPermanently($folderId)
+    {
+        // Get all subfolders of the folder
+        $subFolders = $this->folderModel->withDeleted()->where('parent_id', $folderId)->findAll();
+        foreach ($subFolders as $subFolder) {
+            // Recursively delete subfolders
+            $this->deleteFolderAndContentsPermanently($subFolder['id']);
+        }
+
+        // Finally, permanently delete the folder itself
+        $this->folderModel->withDeleted()->where('id', $folderId)->purgeDeleted(); // true parameter untuk menghapus secara permanen
     }
 
     // Fungsi untuk menghapus direktori dan semua isinya
@@ -159,6 +274,7 @@ class Folder extends BaseController
         }
         rmdir($dir);
     }
+
     public function moveFolder()
     {
         $folderId = $this->request->getPost('folder_id');
@@ -169,7 +285,7 @@ class Folder extends BaseController
         $targetFolder = $this->folderModel->getFolderBySlug($targetFolderSlug);
 
         $folderDir = $folder['folder_path'] . '/' . $folder['folder_name'];
-        $targetDir = FCPATH . 'files/' . $username . '/' . $targetFolder['folder_name'];
+        $targetDir = $targetFolder['folder_path'] . $targetFolder['folder_name'] . '/';
 
         $newFolderName = $folderName;
         $i = 1;

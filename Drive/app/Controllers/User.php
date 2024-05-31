@@ -90,7 +90,7 @@ class User extends BaseController
 
         if ($keyword) {
             $folders = $this->folderModel->onlyDeleted()
-                ->where('user_id', $user_id)->where('parent_id is null')
+                ->where('user_id', $user_id)
                 ->like('folder_name', $keyword)
                 ->orderBy('deleted_at', 'DESC')
                 ->findAll();
@@ -104,7 +104,7 @@ class User extends BaseController
                 ->findAll();
         } else {
             $folders = $this->folderModel->onlyDeleted()
-                ->where('user_id', $user_id)->where('parent_id is null')
+                ->where('user_id', $user_id)
                 ->orderBy('deleted_at', 'DESC')
                 ->findAll();
             $files = $this->fileModel->onlyDeleted()
@@ -201,6 +201,47 @@ class User extends BaseController
         $data['allFolders'] = $allFolders;
         $data['files'] = $files;
         $data['folder_name'] = $folderId['folder_name'];
+        $data['folder_slug'] = $folderId['slug'];
         return view('user/folder', $data);
+    }
+    public function folderTrash($slug)
+    {
+        $user_id = session()->get('id');
+        $keyword = $this->request->getGet('q');
+        $folder = $this->folderModel->onlyDeleted()->getFolderBySlug($slug);
+        if ($keyword) {
+            $folders = $this->folderModel->onlyDeleted()
+                ->where('user_id', $user_id)->where('parent_id', $folder['id'])
+                ->like('folder_name', $keyword)
+                ->orderBy('deleted_at', 'DESC')
+                ->findAll();
+            $files = $this->fileModel->onlyDeleted()->where('folder_id', $folder['id'])
+                ->where('user_id', $user_id)
+                ->like('file_name', $keyword)
+                ->orderBy('deleted_at', 'DESC')
+                ->findAll();
+            $allFolders = $this->folderModel->where('user_id', $user_id)
+                ->orderBy('created_at', 'DESC')
+                ->findAll();
+        } else {
+            $folders = $this->folderModel->onlyDeleted()
+                ->where('user_id', $user_id)->where('parent_id', $folder['id'])
+                ->orderBy('deleted_at', 'DESC')
+                ->findAll();
+            $files = $this->fileModel->onlyDeleted()->where('folder_id', $folder['id'])
+                ->where('user_id', $user_id)
+                ->orderBy('deleted_at', 'DESC')
+                ->findAll();
+            $allFolders = $this->folderModel->onlyDeleted()
+                ->orderBy('created_at', 'DESC')
+                ->findAll();
+        }
+
+        $data['keyword'] = $keyword;
+        $data['folders'] = $folders;
+        $data['allFolders'] = $allFolders;
+        $data['files'] = $files;
+        $data['folder_name'] = $folder['folder_name'];
+        return view('user/trash-folder', $data);
     }
 }
