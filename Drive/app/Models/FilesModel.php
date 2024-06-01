@@ -60,4 +60,8 @@ class FilesModel extends Model
     {
         return $this->onlyDeleted()->where('id', $id)->first();
     }
+    public function getTotalFileSize($user_id)
+    {
+        return $this->where('user_id', $user_id)->selectSum('file_size')->get()->getRow()->file_size;
+    }
 }

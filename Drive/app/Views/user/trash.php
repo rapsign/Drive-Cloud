@@ -106,10 +106,10 @@
             <h6>Folders</h6>
             <?php foreach ($folders as $folder) : ?>
                 <div class="btn-group">
-                    <a href="#" class="btn btn-secondary">
+                    <button class="btn btn-secondary not-clickable">
                         <i class="fas fa-folder fa-lg mr-2"></i> <!-- Icon with additional classes -->
                         <span class="btn-text"><?= $folder['folder_name'] ?></span>
-                    </a>
+                    </button>
                     <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false" style="width: 10px;">
                         <span class="visually-hidden"><i class="fas fa-ellipsis-v"></i></span>
                     </button>

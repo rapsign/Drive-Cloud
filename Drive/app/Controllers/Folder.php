@@ -111,7 +111,7 @@ class Folder extends BaseController
         $folder = $this->folderModel->find($folderId);
         if (!$folder) {
             session()->setFlashdata('error_message', 'Folder not found!');
-            return redirect()->to('/user');
+            return redirect()->back();
         }
 
         $oldFolderName = $folder['folder_name'];
@@ -139,7 +139,7 @@ class Folder extends BaseController
         ]);
 
         session()->setFlashdata('success_message', 'Folder renamed successfully!');
-        return redirect()->to('/user');
+        return redirect()->back();
     }
 
     public function moveToTrash()
@@ -152,7 +152,7 @@ class Folder extends BaseController
         } else {
             session()->setFlashdata('error_message', 'Folder not found');
         }
-        return redirect()->to('/user');
+        return redirect()->back();
     }
 
     private function deleteFolderAndContents($folderId)
@@ -312,7 +312,7 @@ class Folder extends BaseController
             session()->setFlashdata('error_message', 'Failed to move folder!');
         }
 
-        return redirect()->to('/user');
+        return redirect()->back();
     }
 
     private function moveDirectory($src, $dst)
@@ -350,6 +350,69 @@ class Folder extends BaseController
             $oldSubfolderPath = FCPATH . 'folders/' . session()->get('name') . '/' . $subfolder['folder_name'];
             $newSubfolderPath = $newFolderPath . '/' . $subfolder['folder_name'];
             $this->updateFilePaths($subfolder['id'], $newFolderId, $newSubfolderPath);
+        }
+    }
+    public function download()
+    {
+        $folderId = $this->request->getPost('folderId');
+
+        // Fetch folder details
+        $folder = $this->folderModel->find($folderId);
+
+        if (!$folder) {
+            return redirect()->back()->with('error_message', 'Folder not found.');
+        }
+
+        $folderPath = $folder['folder_path'] . $folder['folder_name']; // Adjust the path as needed
+
+        if (!is_dir($folderPath)) {
+            return redirect()->back()->with('error_message', 'Folder not found on the server.');
+        }
+
+        // Create a zip archive of the folder
+        $zip = new \ZipArchive();
+        $zipFileName = $folder['folder_name'] . '.zip';
+        $zipFilePath = $folder['folder_path'] . $zipFileName;
+
+        if ($zip->open($zipFilePath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+            return redirect()->back()->with('error_message', 'Could not create zip file.');
+        }
+
+        $this->addFolderToZip($folderPath, $zip, strlen($folder['folder_path']));
+        $zip->close();
+
+        $response = $this->response->download($zipFilePath, null)->setFileName($zipFileName);
+
+        // Clean up the zip file after sending the response
+        register_shutdown_function(function () use ($zipFilePath) {
+            if (file_exists($zipFilePath)) {
+                unlink($zipFilePath);
+            }
+        });
+
+        return $response;
+    }
+    private function addFolderToZip($folderPath, &$zip, $baseLength)
+    {
+        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($folderPath), \RecursiveIteratorIterator::LEAVES_ONLY);
+
+        $hasFiles = false;
+        foreach ($files as $name => $file) {
+            // Skip directories (they would be added automatically)
+            if (!$file->isDir()) {
+                $hasFiles = true;
+                // Get the relative path
+                $filePath = $file->getRealPath();
+                $relativePath = substr($filePath, $baseLength);
+
+                // Add the file to the zip archive
+                $zip->addFile($filePath, $relativePath);
+            }
+        }
+
+        // If no files were added, create an empty directory in the zip
+        if (!$hasFiles) {
+            $zip->addEmptyDir(substr($folderPath, $baseLength));
         }
     }
 }

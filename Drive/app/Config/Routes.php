@@ -27,7 +27,7 @@ $routes->post('/user/folder/moveToTrash', 'Folder::moveToTrash', ['filter' => 'a
 $routes->post('/user/folder/restoreFolder', 'Folder::restoreFolder', ['filter' => 'auth:user']);
 $routes->post('/user/folder/deleteFolder', 'Folder::deleteFolder', ['filter' => 'auth:user']);
 $routes->post('/moveFolder', 'Folder::moveFolder', ['filter' => 'auth:user']);
-
+$routes->post('/user/folder/download', 'Folder::download', ['filter' => 'auth:user']);
 
 // Files
 $routes->post('/user/addFiles', 'File::addFile', ['filter' => 'auth:user']);

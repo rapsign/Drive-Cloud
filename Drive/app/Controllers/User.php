@@ -28,7 +28,7 @@ class User extends BaseController
     {
         $user_id = session()->get('id');
         $keyword = $this->request->getGet('q');
-
+        $size = $this->fileModel->getTotalFileSize($user_id);
         if ($keyword) {
             $files = $this->fileModel->search($keyword, $user_id);
             $folders = $this->folderModel->search($keyword, $user_id);
@@ -51,6 +51,7 @@ class User extends BaseController
         $data['folders'] = $folders;
         $data['files'] = $files;
         $data['allFolders'] = $allFolders;
+        $data['size'] = $size;
 
         return view('user/index', $data);
     }
@@ -58,6 +59,7 @@ class User extends BaseController
     {
         $user_id = session()->get('id');
         $keyword = $this->request->getGet('q');
+        $size = $this->fileModel->getTotalFileSize($user_id);
 
         if ($keyword) {
             $files = $this->fileModel->search($keyword, $user_id);
@@ -81,13 +83,14 @@ class User extends BaseController
         $data['folders'] = $folders;
         $data['files'] = $files;
         $data['allFolders'] = $allFolders;
+        $data['size'] = $size;
         return view('user/upload', $data);
     }
     public function trash()
     {
         $user_id = session()->get('id');
         $keyword = $this->request->getGet('q');
-
+        $size = $this->fileModel->getTotalFileSize($user_id);
         if ($keyword) {
             $folders = $this->folderModel->onlyDeleted()
                 ->where('user_id', $user_id)
@@ -120,6 +123,7 @@ class User extends BaseController
         $data['folders'] = $folders;
         $data['allFolders'] = $allFolders;
         $data['files'] = $files;
+        $data['size'] = $size;
         return view('user/trash', $data);
     }
 
@@ -174,6 +178,7 @@ class User extends BaseController
         $user_id = session()->get('id');
         $keyword = $this->request->getGet('q');
         $folderId = $this->folderModel->getFolderBySlug($slug);
+        $size = $this->fileModel->getTotalFileSize($user_id);
 
         if ($keyword) {
             $files = $this->fileModel->search($keyword, $user_id);
@@ -202,46 +207,7 @@ class User extends BaseController
         $data['files'] = $files;
         $data['folder_name'] = $folderId['folder_name'];
         $data['folder_slug'] = $folderId['slug'];
+        $data['size'] = $size;
         return view('user/folder', $data);
-    }
-    public function folderTrash($slug)
-    {
-        $user_id = session()->get('id');
-        $keyword = $this->request->getGet('q');
-        $folder = $this->folderModel->onlyDeleted()->getFolderBySlug($slug);
-        if ($keyword) {
-            $folders = $this->folderModel->onlyDeleted()
-                ->where('user_id', $user_id)->where('parent_id', $folder['id'])
-                ->like('folder_name', $keyword)
-                ->orderBy('deleted_at', 'DESC')
-                ->findAll();
-            $files = $this->fileModel->onlyDeleted()->where('folder_id', $folder['id'])
-                ->where('user_id', $user_id)
-                ->like('file_name', $keyword)
-                ->orderBy('deleted_at', 'DESC')
-                ->findAll();
-            $allFolders = $this->folderModel->where('user_id', $user_id)
-                ->orderBy('created_at', 'DESC')
-                ->findAll();
-        } else {
-            $folders = $this->folderModel->onlyDeleted()
-                ->where('user_id', $user_id)->where('parent_id', $folder['id'])
-                ->orderBy('deleted_at', 'DESC')
-                ->findAll();
-            $files = $this->fileModel->onlyDeleted()->where('folder_id', $folder['id'])
-                ->where('user_id', $user_id)
-                ->orderBy('deleted_at', 'DESC')
-                ->findAll();
-            $allFolders = $this->folderModel->onlyDeleted()
-                ->orderBy('created_at', 'DESC')
-                ->findAll();
-        }
-
-        $data['keyword'] = $keyword;
-        $data['folders'] = $folders;
-        $data['allFolders'] = $allFolders;
-        $data['files'] = $files;
-        $data['folder_name'] = $folder['folder_name'];
-        return view('user/trash-folder', $data);
     }
 }

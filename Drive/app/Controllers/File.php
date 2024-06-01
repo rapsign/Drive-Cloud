@@ -22,44 +22,62 @@ class File extends BaseController
     {
         $files = $this->request->getFiles();
 
-        foreach ($files as $file) {
-            // Dapatkan informasi pengguna
-            $userId = session()->get('id');
-            $username = session()->get('name');
+        // Check if session data exists
+        $userId = session()->get('id');
+        $username = session()->get('name');
+        if (!$userId || !$username) {
+            // Handle session data absence
+            session()->setFlashdata('error_message', 'Session data not found!');
+            return;
+        }
 
-            // Tentukan direktori untuk menyimpan file
+        // Get total file size for the user
+        $size = $this->fileModel->getTotalFileSize($userId);
+        $maxStorage = 16106127360; // 15 GB in bytes
+
+        foreach ($files as $file) {
+            // Check if adding the file exceeds storage limit
+            if ($size + $file->getSize() > $maxStorage) {
+                session()->setFlashdata('error_message', 'Your storage is full!');
+                return;
+            }
+
+            // Determine directory to save file
             $userDir = FCPATH . 'files/' . $username;
 
-            // Buat direktori jika belum ada
+            // Create directory if not exists
             if (!is_dir($userDir)) {
                 mkdir($userDir, 0777, true);
             }
 
-            // Dapatkan nama file asli
+            // Get original file name
             $originalName = $file->getName();
 
-            // Inisialisasi nama file baru
+            // Initialize new file name
             $newName = $originalName;
 
-            // Periksa apakah file dengan nama yang sama sudah ada
+            // Ensure unique file name
             $counter = 1;
-            while (file_exists($userDir . '/' . $newName)) {
+            while (file_exists($userDir . DIRECTORY_SEPARATOR . $newName)) {
                 $newName = pathinfo($originalName, PATHINFO_FILENAME) . '_' . $counter . '.' . pathinfo($originalName, PATHINFO_EXTENSION);
                 $counter++;
             }
 
-            // Pindahkan file ke direktori dengan nama baru
+            // Move file to directory with new name
             $file->move($userDir, $newName);
-            // Simpan informasi file ke database
+
+            // Save file information to database
             $this->fileModel->save([
                 'user_id' => $userId,
                 'file_name' => $newName,
                 'file_size' => $file->getSize(),
                 'file_type' => $file->getClientMimeType(),
-                'file_path' => $userDir . '/'
+                'file_path' => $userDir . DIRECTORY_SEPARATOR
             ]);
-            session()->setFlashdata('success_message', 'File added successfully!');
         }
+
+        // Display success message
+        session()->setFlashdata('success_message', 'File(s) added successfully!');
     }
 
     public function addFileInFolder($slug)
@@ -67,46 +85,56 @@ class File extends BaseController
         $files = $this->request->getFiles();
         $folder = $this->folderModel->where('slug', $slug)->first();
 
-        foreach ($files as $file) {
-            // Dapatkan informasi pengguna
-            $userId = session()->get('id');
-            $username = session()->get('name');
+        if (!$folder) {
+            // Handle folder not found
+            session()->setFlashdata('error_message', 'Folder not found!');
+            return;
+        }
 
-            // Tentukan direktori untuk menyimpan file
+        // Get user information
+        $userId = session()->get('id');
+        $username = session()->get('name');
+
+        foreach ($files as $file) {
+            // Determine directory to save file
             $userDir = $folder['folder_path'] . $folder['folder_name'];
 
-            // Buat direktori jika belum ada
+            // Create directory if not exists
             if (!is_dir($userDir)) {
                 mkdir($userDir, 0777, true);
             }
 
-            // Dapatkan nama file asli
+            // Get original file name
             $originalName = $file->getName();
 
-            // Inisialisasi nama file baru
+            // Initialize new file name
             $newName = $originalName;
 
-            // Periksa apakah file dengan nama yang sama sudah ada
+            // Ensure unique file name
             $counter = 1;
-            while (file_exists($userDir . '/' . $newName)) {
+            while (file_exists($userDir . DIRECTORY_SEPARATOR . $newName)) {
                 $newName = pathinfo($originalName, PATHINFO_FILENAME) . '_' . $counter . '.' . pathinfo($originalName, PATHINFO_EXTENSION);
                 $counter++;
             }
 
-            // Pindahkan file ke direktori dengan nama baru
+            // Move file to directory with new name
             $file->move($userDir, $newName);
-            // Simpan informasi file ke database
+
+            // Save file information to database
             $this->fileModel->save([
                 'user_id' => $userId,
                 'file_name' => $newName,
                 'file_size' => $file->getSize(),
                 'file_type' => $file->getClientMimeType(),
-                'file_path' => $userDir . '/',
+                'file_path' => $userDir . DIRECTORY_SEPARATOR,
                 'folder_id' => $folder['id']
             ]);
-            session()->setFlashdata('success_message', 'File added successfully!');
         }
+
+        // Display success message
+        session()->setFlashdata('success_message', 'File(s) added successfully!');
     }
+
     public function renameFile()
     {
         $fileId = $this->request->getVar('id');

@@ -141,6 +141,15 @@
                                 </a>
                             </form>
                         </li>
+                        <hr class="dropdown-divider">
+                        <li>
+                            <form action="<?= base_url('user/folder/download') ?>" method="post" class="d-inline">
+                                <input type="hidden" name="folderId" value="<?= $folder['id'] ?>">
+                                <button type="submit" class="dropdown-item">
+                                    <i class="fas fa-download mr-3"></i> Download
+                                </button>
+                            </form>
+                        </li>
                     </ul>
                 </div>
             <?php endforeach; ?>

@@ -79,6 +79,16 @@
                                 <i class="fas fa-sign-out-alt"></i> logout
                             </a>
                         </li>
+                        <li class="nav-item mt-3">
+                            <div>
+                                <span class="span-progress">Storage</span>
+                                <div class="progress">
+                                    <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                                </div>
+                                <span class="span-progress"><?= formatBytes($size) ?> of 15GB used</span>
+                            </div>
+
+                        </li>
                     </ul>
                 </div>
             </nav>
@@ -452,10 +462,17 @@
                     icon: 'success',
                     title: 'Success',
                     text: '<?= session()->getFlashdata('success_message') ?>',
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        location.reload();
-                    }
+                });
+            <?php endif; ?>
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            <?php if (session()->getFlashdata('error_message')) : ?>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: '<?= session()->getFlashdata('error_message') ?>',
                 });
             <?php endif; ?>
         });
@@ -465,6 +482,7 @@
             url: "<?= base_url('user/addFiles') ?>", // Set the url for your upload script location
             paramName: "file", // The name that will be used to transfer the file
             maxFiles: 10,
+            maxFilesize: null,
             init: function() {
                 this.on("complete", function(file) {
                     // Callback function when each file upload is complete
@@ -496,8 +514,6 @@
                 });
             }
         });
-
-        console.log(url); // Output the URL to the console
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -708,6 +724,28 @@
                 addFileForm.style.display = addFileForm.style.display === 'none' ? 'block' : 'none';
             });
         });
+    </script>
+    <script>
+        // Ambil elemen progress bar
+        var progressBar = document.getElementById('progressBar');
+
+        // Fungsi untuk mengatur persentase progres bar
+        function setProgress(percent) {
+            // Bulatkan nilai persentase menjadi bilangan bulat
+            var roundedPercent = Math.round(percent);
+            progressBar.style.width = roundedPercent + '%';
+            progressBar.innerHTML = roundedPercent + '%';
+        }
+
+        // Kustom angka
+        var currentNumber = <?= $size ?>;
+        var totalNumber = 16106127360;
+
+        // Hitung persentase
+        var percent = (currentNumber / totalNumber) * 100;
+
+        // Atur progres bar dengan persentase yang dihitung
+        setProgress(percent);
     </script>
 </body>
 
