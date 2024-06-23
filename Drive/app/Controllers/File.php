@@ -43,7 +43,7 @@ class File extends BaseController
             }
 
             // Determine directory to save file
-            $userDir = FCPATH . 'files/' . $username;
+            $userDir = FCPATH . 'files' .  DIRECTORY_SEPARATOR  . $username;
 
             // Create directory if not exists
             if (!is_dir($userDir)) {
@@ -72,7 +72,7 @@ class File extends BaseController
                 'file_name' => $newName,
                 'file_size' => $file->getSize(),
                 'file_type' => $file->getClientMimeType(),
-                'file_path' => $userDir . DIRECTORY_SEPARATOR
+                'file_path' => 'files' .  DIRECTORY_SEPARATOR . $username .  DIRECTORY_SEPARATOR,
             ]);
         }
 
@@ -97,7 +97,7 @@ class File extends BaseController
 
         foreach ($files as $file) {
             // Determine directory to save file
-            $userDir = $folder['folder_path'] . $folder['folder_name'];
+            $userDir = FCPATH . $folder['folder_path'] . $folder['folder_name'];
 
             // Create directory if not exists
             if (!is_dir($userDir)) {
@@ -126,7 +126,7 @@ class File extends BaseController
                 'file_name' => $newName,
                 'file_size' => $file->getSize(),
                 'file_type' => $file->getClientMimeType(),
-                'file_path' => $userDir . DIRECTORY_SEPARATOR,
+                'file_path' =>  $folder['folder_path'] . $folder['folder_name'] . DIRECTORY_SEPARATOR,
                 'folder_id' => $folder['id']
             ]);
         }
@@ -150,8 +150,8 @@ class File extends BaseController
 
         $oldFileName = $file['file_name'];
         $baseFilePath = $file['file_path'];
-        $oldFilePath = $baseFilePath . '/' . $oldFileName;
-        $newFilePath = $baseFilePath . '/' . $newFileName . '.' . $fileExt;
+        $oldFilePath = FCPATH .  DIRECTORY_SEPARATOR . $baseFilePath . DIRECTORY_SEPARATOR . $oldFileName;
+        $newFilePath = FCPATH .  DIRECTORY_SEPARATOR . $baseFilePath . DIRECTORY_SEPARATOR . $newFileName . '.' . $fileExt;
 
         // Check if the new file name is the same as the old one
         if ($newFileName === pathinfo($oldFileName, PATHINFO_FILENAME)) {
@@ -164,7 +164,7 @@ class File extends BaseController
         $counter = 1;
         while (file_exists($newFilePath)) {
             $newFileNameWithCounter = $newFileName . '_' . $counter;
-            $newFilePath = $baseFilePath . $newFileNameWithCounter . '.' . $fileExt;
+            $newFilePath = FCPATH .  DIRECTORY_SEPARATOR . $baseFilePath . $newFileNameWithCounter . '.' . $fileExt;
             $counter++;
         }
 
@@ -210,7 +210,7 @@ class File extends BaseController
         $file = $this->fileModel->getFileById($fileId);
         $username = session()->get('name');
         $fileName = $this->request->getVar('fileName');
-        $filePath = $file['file_path'] . $fileName;
+        $filePath = FCPATH . $file['file_path'] . $fileName;
         // Hapus file dari server
         if (file_exists($filePath)) {
             unlink($filePath); // Menghapus file
@@ -232,15 +232,15 @@ class File extends BaseController
         $username = session()->get('name');
         $folder = $this->folderModel->getFolderBySlug($targetFolderSlug);
 
-        $fileDir = $file['file_path'] . '/' . $fileName;
-        $userDir = $folder['folder_path'];
+        $fileDir = FCPATH .  DIRECTORY_SEPARATOR . $file['file_path'] . DIRECTORY_SEPARATOR . $fileName;
+        $userDir = FCPATH .  DIRECTORY_SEPARATOR . $folder['folder_path'];
         $targetDir = $userDir . $folder['folder_name'];
 
         $newFileName = $fileName; // Nama file baru, default sama dengan yang ada
         $file = new \CodeIgniter\Files\File($fileDir);
         // Cek apakah file dengan nama yang sama sudah ada di folder tujuan
         $i = 1;
-        while (is_file($targetDir . '/' . $newFileName)) {
+        while (is_file($targetDir . DIRECTORY_SEPARATOR . $newFileName)) {
             // Jika file dengan nama yang sama ditemukan, tambahkan _1, _2, dst. ke nama file
             $path_parts = pathinfo($fileDir); // Menggunakan $fileDir di sini
             $newFileName = $path_parts['filename'] . '_' . $i . '.' . $path_parts['extension'];
@@ -248,16 +248,16 @@ class File extends BaseController
         }
 
         // Move file to target directory with new file name
-        if ($file->move($targetDir . '/', $newFileName)) {
+        if ($file->move($targetDir . DIRECTORY_SEPARATOR, $newFileName)) {
             // Perbarui nilai $fileDir setelah pemindahan file
-            $fileDir = $targetDir . '/' . $newFileName;
+            $fileDir = $targetDir . DIRECTORY_SEPARATOR . $newFileName;
 
             // Simpan informasi file yang dipindahkan ke basis data
             $this->fileModel->save([
                 'id' => $fileId,
                 'file_name' => $newFileName,
                 'folder_id' => $folder['id'],
-                'file_path' => $targetDir
+                'file_path' => $folder['folder_path'] . $folder['folder_name'] . DIRECTORY_SEPARATOR
             ]);
 
             session()->setFlashdata('success_message', 'File moved successfully!');
@@ -272,7 +272,7 @@ class File extends BaseController
     {
         $file = $this->fileModel->where('file_name', $fileName)->first();
         // Lokasi file untuk di-download
-        $filePath = $file['file_path'] . '/' . $fileName;
+        $filePath = FCPATH . $file['file_path'] . DIRECTORY_SEPARATOR . $fileName;
 
         // Pastikan file ada
         if (file_exists($filePath)) {

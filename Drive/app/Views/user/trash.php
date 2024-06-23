@@ -140,6 +140,7 @@
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <div class="d-flex align-items-center">
                                     <span class="file-icon"></span>
+                                    <span class="file-url" hidden><?= $file['file_path'] ?></span>
                                     <span class="file-name small"><?= $file['file_name'] ?></span>
                                 </div>
                                 <div class="dropdown">

@@ -519,6 +519,7 @@
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll('.file-item').forEach(fileItem => {
                 const fileNameElement = fileItem.querySelector('.file-name');
+                const fileUrlElement = fileItem.querySelector('.file-url');
                 const folderNameElement = fileItem.querySelector('.folder-name');
                 const fileName = fileNameElement.textContent.trim();
                 let folderName = null;
@@ -527,11 +528,8 @@
                 }
                 const fileExtension = fileName.slice(fileName.lastIndexOf('.')).toLowerCase();
                 const previewContainer = fileItem.querySelector('.file-preview');
-                let fileUrl = '<?= base_url('files/') ?>' + '<?= session()->get('name') ?>' + '/' + fileName;
-                if (folderName) {
-                    fileUrl += folderName + fileName;
-                }
-                fileUrl += fileName;
+                let fileUrl = '<?= base_url() ?>' + fileUrlElement.textContent.trim() + fileName;
+
                 let iconClass = '';
                 let iconColor = '';
 
@@ -560,11 +558,19 @@
                         iconClass = 'fas fa-file-alt';
                         iconColor = 'blue';
                         fetch(fileUrl)
-                            .then(response => response.text())
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                }
+                                return response.text();
+                            })
                             .then(data => {
                                 const textPreview = document.createElement('pre');
                                 textPreview.textContent = data;
                                 previewContainer.appendChild(textPreview);
+                            })
+                            .catch(error => {
+                                console.error('Error fetching text file:', error);
                             });
                         break;
                     case '.doc':
@@ -613,7 +619,7 @@
                         iconColor = 'red';
                         const audio = document.createElement('audio');
                         audio.controls = true;
-                        audio.controlsList = 'nodownload noplaybackrate'; // Menambahkan atribut controlsList untuk menghapus tombol unduh
+                        audio.controlsList = 'nodownload noplaybackrate';
                         audio.src = fileUrl;
                         previewContainer.appendChild(audio);
                         break;
@@ -625,7 +631,7 @@
                         const video = document.createElement('video');
                         video.controls = true;
                         video.controlsList = 'nofullscreen nodownload noplaybackrate';
-                        video.disablePictureInPicture = true // Menambahkan atribut controlsList untuk menghapus tombol unduh
+                        video.disablePictureInPicture = true;
                         video.src = fileUrl;
                         video.classList.add('img');
                         previewContainer.appendChild(video);
@@ -648,6 +654,7 @@
             });
         });
     </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Function to adjust dropdown position

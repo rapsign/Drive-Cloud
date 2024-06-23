@@ -31,7 +31,7 @@ class Folder extends BaseController
         $username = session()->get('name');
 
         // Path dasar untuk folder pengguna
-        $baseFolderPath = FCPATH . 'files/' . $username . '/';
+        $baseFolderPath = FCPATH . 'files' . DIRECTORY_SEPARATOR . $username . DIRECTORY_SEPARATOR;
         $folderPath = $baseFolderPath . $foldername;
 
         // Tambahkan nomor di belakang nama folder jika sudah ada
@@ -47,7 +47,7 @@ class Folder extends BaseController
             'folder_name' => $foldername,
             'user_id' => $userId,
             'slug' => random_string('alnum', 35),
-            'folder_path' => $baseFolderPath
+            'folder_path' => 'files' . DIRECTORY_SEPARATOR . $username . DIRECTORY_SEPARATOR
         ]);
 
         // Buat folder di sistem file
@@ -73,14 +73,14 @@ class Folder extends BaseController
         }
 
         // Path dasar untuk folder pengguna
-        $baseFolderPath = rtrim($folder['folder_path'], '/') . '/' . $folder['folder_name'];
-        $folderPath = $baseFolderPath . '/' . $foldername;
+        $baseFolderPath = FCPATH . $folder['folder_path'] . $folder['folder_name'] . DIRECTORY_SEPARATOR;
+        $folderPath = $baseFolderPath . $foldername;
 
         // Tambahkan nomor di belakang nama folder jika sudah ada
         $counter = 2;
         while (is_dir($folderPath)) {
             $foldername = $this->request->getVar('folder') . '_' . $counter;
-            $folderPath = $baseFolderPath . '/' . $foldername;
+            $folderPath = $baseFolderPath . $foldername;
             $counter++;
         }
 
@@ -89,7 +89,7 @@ class Folder extends BaseController
             'folder_name' => $foldername,
             'user_id' => $userId,
             'slug' => random_string('alnum', 35),
-            'folder_path' => rtrim($baseFolderPath, '/') . '/',
+            'folder_path' => $folder['folder_path'] . $folder['folder_name'] . DIRECTORY_SEPARATOR,
             'parent_id' => $folder['id']
         ]);
 
@@ -115,9 +115,9 @@ class Folder extends BaseController
         }
 
         $oldFolderName = $folder['folder_name'];
-        $baseFolderPath = $folder['folder_path'];
-        $oldFolderPath = $baseFolderPath . '/' . $oldFolderName;
-        $newFolderPath = $baseFolderPath . '/' . $newFolderName;
+        $baseFolderPath = FCPATH . $folder['folder_path'];
+        $oldFolderPath = $baseFolderPath .  DIRECTORY_SEPARATOR   . $oldFolderName;
+        $newFolderPath = $baseFolderPath . DIRECTORY_SEPARATOR . $newFolderName;
 
         // Tambahkan nomor di belakang nama folder jika sudah ada
         $counter = 2;
@@ -279,32 +279,37 @@ class Folder extends BaseController
     {
         $folderId = $this->request->getPost('folder_id');
         $targetFolderSlug = $this->request->getPost('target_folder');
-        $folder = $this->folderModel->where('id', $folderId)->first();
+        $folder = $this->folderModel->find($folderId);
         $folderName = $this->request->getPost('folder_name');
         $username = session()->get('name');
         $targetFolder = $this->folderModel->getFolderBySlug($targetFolderSlug);
 
-        $folderDir = $folder['folder_path'] . '/' . $folder['folder_name'];
-        $targetDir = $targetFolder['folder_path'] . $targetFolder['folder_name'] . '/';
+        if (!$folder || !$targetFolder) {
+            session()->setFlashdata('error_message', 'Invalid folder or target folder!');
+            return redirect()->back();
+        }
+
+        // Construct full paths to source and target folders
+        $folderDir = $folder['folder_path'] . DIRECTORY_SEPARATOR . $folder['folder_name'];
+        $targetDir = $targetFolder['folder_path'] . $targetFolder['folder_name'] . DIRECTORY_SEPARATOR;
 
         $newFolderName = $folderName;
         $i = 1;
-        while (is_dir($targetDir . '/' . $newFolderName)) {
+        while (is_dir($targetDir . $newFolderName)) {
             $newFolderName = $folderName . '_' . $i;
             $i++;
         }
 
         // Move folder and its contents to target directory with new folder name
-        if ($this->moveDirectory($folderDir, $targetDir . '/' . $newFolderName)) {
+        if ($this->moveDirectory($folderDir, $targetDir . $newFolderName)) {
             // Update file paths in the database for all files within the moved folder
-            $this->updateFilePaths($folder['id'], $targetFolder['id'], $targetDir . '/' . $newFolderName);
+            $this->updateFilePaths($folderId, $targetFolder['id'], $targetDir . $newFolderName);
 
             // Update folder information in the database
-            $this->folderModel->save([
-                'id' => $folderId,
+            $this->folderModel->update($folderId, [
                 'folder_name' => $newFolderName,
                 'parent_id' => $targetFolder['id'],
-                'folder_path' => $targetDir
+                'folder_path' => $targetFolder['folder_path'] . $targetFolder['folder_name'] . DIRECTORY_SEPARATOR
             ]);
 
             session()->setFlashdata('success_message', 'Folder moved successfully!');
@@ -317,19 +322,37 @@ class Folder extends BaseController
 
     private function moveDirectory($src, $dst)
     {
+        if (!is_dir($src)) {
+            return false;
+        }
+
+        @mkdir($dst); // Use @ to suppress warnings if directory already exists
         $dir = opendir($src);
-        @mkdir($dst);
+        if (!$dir) {
+            return false;
+        }
+
         while (false !== ($file = readdir($dir))) {
-            if (($file != '.') && ($file != '..')) {
-                if (is_dir($src . '/' . $file)) {
-                    $this->moveDirectory($src . '/' . $file, $dst . '/' . $file);
+            if ($file != '.' && $file != '..') {
+                $srcFile = $src . DIRECTORY_SEPARATOR . $file;
+                $dstFile = $dst . DIRECTORY_SEPARATOR . $file;
+                if (is_dir($srcFile)) {
+                    if (!$this->moveDirectory($srcFile, $dstFile)) {
+                        closedir($dir);
+                        return false;
+                    }
                 } else {
-                    rename($src . '/' . $file, $dst . '/' . $file);
+                    if (!rename($srcFile, $dstFile)) {
+                        closedir($dir);
+                        return false;
+                    }
                 }
             }
         }
+
         closedir($dir);
-        rmdir($src);
+        @rmdir($src); // Use @ to suppress warnings if directory is not empty
+
         return true;
     }
 
@@ -338,20 +361,20 @@ class Folder extends BaseController
         $files = $this->fileModel->where('folder_id', $oldFolderId)->findAll();
         foreach ($files as $file) {
             $filePath = str_replace($file['file_path'], $newFolderPath, $file['file_path']);
-            $this->fileModel->save([
-                'id' => $file['id'],
-                'file_path' => $filePath,
+            $this->fileModel->update($file['id'], [
+                'file_path' => $filePath . DIRECTORY_SEPARATOR,
             ]);
         }
 
         // Recursively update subfolders' files paths
         $subfolders = $this->folderModel->where('parent_id', $oldFolderId)->findAll();
         foreach ($subfolders as $subfolder) {
-            $oldSubfolderPath = FCPATH . 'folders/' . session()->get('name') . '/' . $subfolder['folder_name'];
-            $newSubfolderPath = $newFolderPath . '/' . $subfolder['folder_name'];
+            $oldSubfolderPath = $subfolder['folder_path'] . $subfolder['folder_name'];
+            $newSubfolderPath = $newFolderPath . DIRECTORY_SEPARATOR . $subfolder['folder_name'];
             $this->updateFilePaths($subfolder['id'], $newFolderId, $newSubfolderPath);
         }
     }
+
     public function download()
     {
         $folderId = $this->request->getPost('folderId');
@@ -363,7 +386,7 @@ class Folder extends BaseController
             return redirect()->back()->with('error_message', 'Folder not found.');
         }
 
-        $folderPath = $folder['folder_path'] . $folder['folder_name']; // Adjust the path as needed
+        $folderPath = FCPATH . $folder['folder_path'] . $folder['folder_name']; // Adjust the path as needed
 
         if (!is_dir($folderPath)) {
             return redirect()->back()->with('error_message', 'Folder not found on the server.');
@@ -372,13 +395,13 @@ class Folder extends BaseController
         // Create a zip archive of the folder
         $zip = new \ZipArchive();
         $zipFileName = $folder['folder_name'] . '.zip';
-        $zipFilePath = $folder['folder_path'] . $zipFileName;
+        $zipFilePath = FCPATH . $folder['folder_path'] . $zipFileName;
 
         if ($zip->open($zipFilePath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
             return redirect()->back()->with('error_message', 'Could not create zip file.');
         }
 
-        $this->addFolderToZip($folderPath, $zip, strlen($folder['folder_path']));
+        $this->addFolderToZip($folderPath, $zip, strlen(FCPATH . $folder['folder_path']));
         $zip->close();
 
         $response = $this->response->download($zipFilePath, null)->setFileName($zipFileName);

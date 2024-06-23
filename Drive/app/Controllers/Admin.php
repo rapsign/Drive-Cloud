@@ -87,7 +87,7 @@ class Admin extends BaseController
         ],);
         // Create a folder for the new user
         $foldername = $this->request->getVar('name');
-        $folderPath = FCPATH . 'files/' . $foldername;
+        $folderPath = FCPATH . 'files' . DIRECTORY_SEPARATOR  . $foldername;
         mkdir($folderPath, 0777, true);
         // Redirect with success message
         session()->setFlashdata('success_message', 'Registration successful!');

@@ -162,6 +162,7 @@
                         <div class="d-flex align-items-center">
                             <span class="file-icon"></span>
                             <span class="file-name small"><?= $file['file_name'] ?></span>
+                            <span class="file-url" hidden><?= $file['file_path'] ?></span>
                         </div>
                         <div class="dropdown">
                             <i class="fas fa-ellipsis-v dropdown-toggle dropdown-toggle-no-caret" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>

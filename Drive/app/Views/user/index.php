@@ -163,6 +163,7 @@
                                 <div class="d-flex align-items-center">
                                     <span class="file-icon"></span>
                                     <span class="file-name small"><?= $file['file_name'] ?></span>
+                                    <span class="file-url" hidden><?= $file['file_path'] ?></span>
                                 </div>
                                 <div class="dropdown">
                                     <i class="fas fa-ellipsis-v dropdown-toggle dropdown-toggle-no-caret" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
@@ -212,7 +213,8 @@
                                 </div>
                             </div>
                             <div class="card-body text-center">
-                                <div class="file-preview" style="width: 100%; height: 220px;"></div>
+                                <div class="file-preview" style="width: 100%; height: 220px;">
+                                </div>
                             </div>
                             <div class="card-footer text-muted text-center small">
                                 Added on <?= date('F d, Y', strtotime($file['created_at'])) ?>
