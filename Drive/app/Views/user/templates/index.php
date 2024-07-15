@@ -28,10 +28,10 @@
         </div>
     </div>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-danger">
         <a class="navbar-brand" href="<?= base_url() ?>">
-            <span class="d-none d-md-inline">Cloud Storage</span>
-            <img src="<?= base_url() ?>/assets/img/logo-white.png" class="d-inline d-md-none" alt="Drive Logo" height="30">
+            <span class="d-none d-md-inline">Cloud Storage UIGM</span>
+            <img src="<?= base_url() ?>/assets/img/logo.png" class="d-inline d-md-none" alt="Drive Logo" style="height: 3rem;">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -45,13 +45,13 @@
                 <div class="sidebar-sticky">
                     <ul class="nav flex-column">
                         <li class="nav-item disabled">
-                            <a class="nav-link active" href="<?= base_url() ?>">
+                            <a class="nav-link active" href="<?= base_url('user') ?>">
                                 Cloud Storage
                             </a>
                         </li>
                         <li class="nav-item">
                             <div class="dropdown nav-link">
-                                <button class="btn btn-plus dropdown-toggle dropdown-toggle-no-caret" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-plus"></i> New</button>
+                                <button class="btn btn-plus bg-danger dropdown-toggle dropdown-toggle-no-caret" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-plus"></i> New</button>
                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated" aria-labelledby="dropdownMenuButton1">
                                     <a class="dropdown-item" href="<?= base_url('user/upload') ?>"><i class="fas fa-upload"></i> File Upload</a>
                                     <div class="dropdown-divider"></div> <!-- Divider line -->
@@ -97,7 +97,16 @@
 
             <?= $this->renderSection('page-content'); ?>
         </div>
+        <footer class="py-3 my-4">
+            <ul class="nav justify-content-center border-bottom border-top p-3 mb-3">
+            <li class=""><a href="<?= base_url('user') ?>" class="mx-2 text-dark">Home</a></li>
+            <li class=""><a href="<?= base_url('/user/trash') ?>" class="mx-2 text-dark">Trash</a></li>
+            <li class=""><a href="https://www.uigm.ac.id/" class="mx-2 text-dark">About</a></li>
+            </ul>
+            <p class="text-center text-body-secondary">&copy; 2024 created by rrain. All rights reserved</p>
+        </footer>
     </div>
+    
     <?php
     // Assume $folder_name is set somewhere in your code
     $folder_slug = isset($folder_slug) ? $folder_slug : '';

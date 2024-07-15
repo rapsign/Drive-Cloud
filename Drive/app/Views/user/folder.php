@@ -6,7 +6,7 @@
     <div class="search-form">
         <form class="form-inline" method="get" action="<?= base_url('search') ?>">
             <input class="form-control mr-sm-2 rounded-pill" type="search" name="q" placeholder="Search in Drive" aria-label="Search" value="<?= esc($keyword) ?>">
-            <button class="btn btn-primary rounded-pill" type="submit"><i class="fas fa-search"></i></button>
+            <button class="btn btn-danger bg-danger rounded-pill" type="submit"><i class="fas fa-search"></i></button>
         </form>
     </div>
 

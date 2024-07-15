@@ -86,7 +86,7 @@
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-light bg-primary">
+    <nav class="navbar navbar-light bg-danger">
         <div class="container">
             <a class="navbar-brand">Cloud Storage</a>
             <a href="<?= base_url('logout') ?>" type="button" class="btn text-white my-2 my-sm-0"><i class="fas fa-sign-out-alt"></i></a>
@@ -104,7 +104,7 @@
         </div>
 
         <!-- User List Table -->
-        <table id="myTable" class="table table-striped table-sm " style="width:100%">
+        <table id="myTable" class="table table-striped table-sm" style="width:100%">
             <thead>
                 <tr>
                     <th class="text-center">NO</th>
@@ -281,6 +281,7 @@
     <script>
         $(document).ready(function() {
             $('#myTable').DataTable();
+            responsive: true
         });
     </script>
     <script type="text/javascript">

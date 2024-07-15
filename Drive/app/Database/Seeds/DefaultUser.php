@@ -11,7 +11,7 @@ class DefaultUser extends Seeder
         $data = [
             [
                 'username' => 'admin',
-                'name' => 'Administrator',
+                'name' => 'Administrator UIGM',
                 'password' => password_hash('admin123', PASSWORD_DEFAULT), // Contoh: enkripsi kata sandi
                 'role_id' => 1,
                 'created_at' => date('Y-m-d H:i:s'),
