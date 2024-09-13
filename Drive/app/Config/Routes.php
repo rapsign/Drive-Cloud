@@ -41,6 +41,7 @@ $routes->get('/download/(:segment)', 'File::downloadFile/$1', ['filter' => 'auth
 
 // Admin
 $routes->get('/admin', 'admin::index', ['filter' => 'auth:admin']);
+$routes->get('/admin/log', 'admin::log', ['filter' => 'auth:admin']);
 $routes->post('/admin/register', 'admin::register', ['filter' => 'auth:admin']);
 $routes->post('/admin/changeRole', 'admin::changeRole', ['filter' => 'auth:admin']);
 $routes->post('/admin/deleteUser', 'admin::deleteUser', ['filter' => 'auth:admin']);

@@ -1,100 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - User List</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css" />
-    <!-- SweetAlert2 CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <style>
-        /* Embedded CSS styles */
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-        }
-
-        .main-content {
-            margin-top: 60px;
-            /* Adjust according to your navbar height */
-        }
-
-        .navbar-brand,
-        .navbar-nav .nav-link {
-            color: white !important;
-            /* White color */
-        }
-
-        .table {
-            width: 100%;
-            margin-bottom: 1rem;
-            color: #212529;
-            border-collapse: collapse;
-            padding: 0px;
-        }
-
-        .table th,
-        .table td {
-            padding: .75rem;
-            vertical-align: top;
-            border-top: 1px solid #dee2e6;
-        }
-
-        .table thead th {
-            vertical-align: bottom;
-            border-bottom: 2px solid #dee2e6;
-        }
-
-        .table tbody+tbody {
-            border-top: 2px solid #dee2e6;
-        }
-
-        .table-sm th,
-        .table-sm td {
-            padding: .7rem;
-        }
-
-        .table-bordered {
-            border: 1px solid #dee2e6;
-        }
-
-        .table-bordered th,
-        .table-bordered td {
-            border: 1px solid #dee2e6;
-        }
-
-        .table-bordered thead th,
-        .table-bordered thead td {
-            border-bottom-width: 2px;
-        }
-
-        .table-striped tbody tr:nth-of-type(odd) {
-            background-color: rgba(0, 0, 0, .05);
-        }
-
-        .table-hover tbody tr:hover {
-            background-color: rgba(0, 0, 0, .075);
-        }
-    </style>
-</head>
-
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-light bg-danger">
-        <div class="container">
-            <a class="navbar-brand">Cloud Storage</a>
-            <a href="<?= base_url('logout') ?>" type="button" class="btn text-white my-2 my-sm-0"><i class="fas fa-sign-out-alt"></i></a>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <div class="container main-content">
+<?= $this->extend('admin/templates/index'); ?>
+<?= $this->section('page-content'); ?>
+<div class="container main-content">
         <div class="pt-3 pb-2 mb-3 border-bottom">
             <h1 class="h2">Users</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
@@ -104,6 +10,7 @@
         </div>
 
         <!-- User List Table -->
+        <div class="table-responsive">
         <table id="myTable" class="table table-striped table-sm" style="width:100%">
             <thead>
                 <tr>
@@ -143,6 +50,7 @@
                 </tr>
             </tfoot>
         </table>
+        </div>
     </div>
     <!-- Modal -->
     <div class="modal fade" id="addUser" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -253,100 +161,4 @@
             </div>
         </div>
     </div>
-
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js"></script>
-    <!-- SweetAlert2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <!-- Script to open the modal if there are validation errors -->
-    <script type="text/javascript">
-        $(document).ready(function() {
-            <?php if (session('showModal')) : ?>
-                $('#registerModal').modal('show');
-            <?php endif; ?>
-
-            <?php if (session()->getFlashdata('success_message')) : ?>
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: '<?= session()->getFlashdata('success_message') ?>',
-                });
-            <?php endif; ?>
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-            $('#myTable').DataTable();
-            responsive: true
-        });
-    </script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            <?php if (session('showModalAdd')) : ?>
-                $('#addUser').modal('show');
-            <?php endif; ?>
-        });
-    </script>
-    <script type="text/javascript">
-        function submitChangeRoleForm() {
-            document.getElementById('changeRoleForm').submit();
-        }
-
-        $(document).ready(function() {
-            <?php if (session()->getFlashdata('success_message')) : ?>
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: '<?= session()->getFlashdata('success_message') ?>',
-                });
-            <?php endif; ?>
-
-            <?php if (session('showModalRole')) : ?>
-                $('#editModal').modal('show');
-            <?php endif; ?>
-        });
-
-        // Example function to set user_id and open modal, call this function with appropriate user_id when needed
-        function openEditModal(userId) {
-            document.getElementById('user_id').value = userId;
-            $('#editModal').modal('show');
-        }
-    </script>
-    <script>
-        function confirmDelete(event) {
-            event.preventDefault(); // Menghentikan pengiriman formulir secara langsung
-
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    event.target.parentElement.submit(); // Teruskan penghapusan
-                }
-            });
-        }
-    </script>
-    <script>
-        <?php if (session()->has('errors')) : ?>
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: '<?php echo implode('<br>', session('errors')) ?>',
-            });
-        <?php endif ?>
-    </script>
-
-
-
-</body>
-
-</html>
+    <?= $this->endSection(); ?>

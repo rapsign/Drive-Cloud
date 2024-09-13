@@ -29,14 +29,19 @@
     </div>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-danger">
-        <a class="navbar-brand" href="<?= base_url() ?>">
-            <span class="d-none d-md-inline">Cloud Storage UIGM</span>
-            <img src="<?= base_url() ?>/assets/img/logo.png" class="d-inline d-md-none" alt="Drive Logo" style="height: 3rem;">
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </nav>
+    <a class="navbar-brand" href="<?= base_url() ?>">
+        <span class="d-none d-md-inline">Cloud Storage UIGM</span>
+        <img src="<?= base_url() ?>/assets/img/logo.png" class="d-inline d-md-none" alt="Drive Logo" style="height: 3rem;">
+    </a>
+
+    <!-- Add the ml-auto class to push this element to the right -->
+    <span class="d-none d-sm-inline ml-auto "><?= session('name') ?></span>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+
 
     <div class="container-fluid">
         <div class="row">
@@ -46,7 +51,7 @@
                     <ul class="nav flex-column">
                         <li class="nav-item disabled">
                             <a class="nav-link active" href="<?= base_url('user') ?>">
-                                Cloud Storage
+                            <?= session('name') ?>
                             </a>
                         </li>
                         <li class="nav-item">

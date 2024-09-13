@@ -386,13 +386,12 @@ class Folder extends BaseController
             return redirect()->back()->with('error_message', 'Folder not found.');
         }
 
-        $folderPath = FCPATH . $folder['folder_path'] . $folder['folder_name']; // Adjust the path as needed
+        $folderPath = FCPATH . $folder['folder_path'] . $folder['folder_name']; 
 
         if (!is_dir($folderPath)) {
             return redirect()->back()->with('error_message', 'Folder not found on the server.');
         }
 
-        // Create a zip archive of the folder
         $zip = new \ZipArchive();
         $zipFileName = $folder['folder_name'] . '.zip';
         $zipFilePath = FCPATH . $folder['folder_path'] . $zipFileName;

@@ -3,6 +3,8 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\FilesModel;
+use App\Models\FolderModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\UsersModel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -10,6 +12,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 class Admin extends BaseController
 {
     protected $userModel;
+    protected $fileModel;
+    protected $folderModel;
     /**
      * Constructor for Admin Controller.
      */
@@ -17,6 +21,8 @@ class Admin extends BaseController
     public function __construct()
     {
         $this->userModel = new UsersModel();
+        $this->fileModel = new FilesModel();
+        $this->folderModel = new FolderModel();
         /**
          * Displays the main admin page with a list of users.
          *
@@ -137,15 +143,16 @@ class Admin extends BaseController
         // Get user ID and name from request
         $userId = $this->request->getVar('userId');
         $name = $this->request->getVar('name');
-
+    
         // Validate user ID
         if (!empty($userId)) {
-            // Delete user from database and associated folder
             $deleted = $this->userModel->delete($userId);
             if ($deleted) {
-                $foldername = $name;
-                $folderPath = FCPATH . 'files/' . $foldername;
-                rmdir($folderPath);
+                $folderPath = FCPATH . 'files' . DIRECTORY_SEPARATOR  . $name;
+    
+                // Delete the folder and its contents
+                $this->deleteFolderRecursively($folderPath);
+    
                 session()->setFlashdata('success_message', 'User deleted successfully!');
             } else {
                 session()->setFlashdata('error_message', 'Failed to delete user!');
@@ -156,6 +163,26 @@ class Admin extends BaseController
         // Redirect back
         return redirect()->back();
     }
+    
+    private function deleteFolderRecursively($folderPath)
+    {
+        if (is_dir($folderPath)) {
+            $items = array_diff(scandir($folderPath), array('.', '..'));
+            foreach ($items as $item) {
+                $this->deleteFolderRecursively($folderPath . DIRECTORY_SEPARATOR . $item);
+            }
+            // Check if folder still exists before attempting to remove
+            if (is_dir($folderPath)) {
+                rmdir($folderPath);
+            }
+        } else {
+            if (file_exists($folderPath)) {
+                unlink($folderPath);
+            }
+        }
+    }
+    
+    
     /**
      * Adds users from an Excel file.
      *
@@ -245,5 +272,21 @@ class Admin extends BaseController
         // Tampilkan pesan sukses jika berhasil
         session()->setFlashdata('success_message', 'Users added successfully!');
         return redirect()->back();
+    }
+
+    public function log()
+    {
+        $fileLogs = $this->fileModel->select('files.id, files.file_name, users.name, files.created_at, files.updated_at')
+                              ->join('users', 'users.id = files.user_id')
+                              ->findAll();
+        
+        $folderLogs = $this->folderModel->select('folders.id, folders.folder_name, users.name, folders.created_at, folders.updated_at')
+                                  ->join('users', 'users.id = folders.user_id')
+                                  ->findAll();
+        $data = [
+            'fileLogs' => $fileLogs,
+            'folderLogs' => $folderLogs
+        ];
+        return view('admin/log', $data);
     }
 }
