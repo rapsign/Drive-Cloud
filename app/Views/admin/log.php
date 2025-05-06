@@ -18,6 +18,7 @@
                     <th class="text-center">User</th>
                     <th class="text-center">Created At</th>
                     <th class="text-center">Updated At</th>
+                    <th class="text-center">Deleted At</th>
                 </tr>
             </thead>
             <tbody>
@@ -29,7 +30,8 @@
                         <td class="text-center "><?= $fileLog['file_name'] ?></td>
                         <td class="text-center "><?= $fileLog['name'] ?></td>
                         <td class="text-center "><?= $fileLog['created_at'] ?></td>
-                        <td class="text-center "><?= $fileLog['updated_at'] ? $fileLog['updated_at'] : '-' ?></td> <!-- Check if updated -->
+                        <td class="text-center "><?= $fileLog['updated_at'] ? $fileLog['updated_at'] : '-' ?></td> 
+                        <td class="text-center "><?= $fileLog['deleted_at'] ?></td>
                     </tr>
                 <?php endforeach; ?>
 
@@ -41,7 +43,8 @@
                         <td class="text-center "><?= $folderLog['folder_name'] ?></td>
                         <td class="text-center "><?= $folderLog['name'] ?></td>
                         <td class="text-center "><?= $folderLog['created_at'] ?></td>
-                        <td class="text-center "><?= $folderLog['updated_at'] ? $folderLog['updated_at'] : '-' ?></td> <!-- Check if updated -->
+                        <td class="text-center "><?= $folderLog['updated_at'] ? $folderLog['updated_at'] : '-' ?></td> 
+                        <td class="text-center "><?= $folderLog['deleted_at'] ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

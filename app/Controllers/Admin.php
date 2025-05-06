@@ -276,12 +276,14 @@ class Admin extends BaseController
 
     public function log()
     {
-        $fileLogs = $this->fileModel->select('files.id, files.file_name, users.name, files.created_at, files.updated_at')
+        $fileLogs = $this->fileModel->select('files.id, files.file_name,  users.name, files.created_at, files.updated_at, files.deleted_at')
                               ->join('users', 'users.id = files.user_id')
+                              ->withDeleted()
                               ->findAll();
         
-        $folderLogs = $this->folderModel->select('folders.id, folders.folder_name, users.name, folders.created_at, folders.updated_at')
+        $folderLogs = $this->folderModel->select('folders.id, folders.folder_name, users.name, folders.created_at, folders.updated_at, folders.deleted_at')
                                   ->join('users', 'users.id = folders.user_id')
+                                  ->withDeleted()
                                   ->findAll();
         $data = [
             'fileLogs' => $fileLogs,
