@@ -2,11 +2,11 @@
 <?= $this->section('page-content'); ?>
 
 <!-- Main Content -->
-<main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-md-4 content ">
+<main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-md-4 content">
     <div class="search-form">
         <form class="form-inline" method="get" action="<?= base_url('search') ?>">
             <input class="form-control mr-sm-2 rounded-pill" type="search" name="q" placeholder="Search in Drive" aria-label="Search" value="<?= esc($keyword) ?>">
-            <button class="btn btn-danger bg-danger rounded-pill" type="submit"><i class="fas fa-search"></i></button>
+            <button class="btn btn-primary rounded-pill" type="submit"><i class="fas fa-search"></i></button>
         </form>
     </div>
 
@@ -89,10 +89,10 @@
     <!-- Tampilan ikon -->
     <div class="icon-view fade-in">
         <?php if (empty($folders) && empty($files)) : ?>
-            <div class="text-center">
+            <div class="text-center ">
                 <form class="form" action="#" method="post">
                     <!--begin::Input group-->
-                    <div class="fv-row">
+                    <div class="fv-row  ">
                         <!--begin::Dropzone-->
                         <div class="dropzone" id="kt_dropzonejs_example_1" style="border: 3px dashed #007bff;">
                             <!--begin::Message-->

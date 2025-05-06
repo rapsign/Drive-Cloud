@@ -49,7 +49,7 @@
     <div class="login-container">
         <div class="text-center my-5">
             <img src="<?= base_url() ?>/assets/img/logo.png" class="d-inline" alt="Drive Logo" width="200">
-            <h3 class="font-weight-bold mt-3 font-italic text-danger"> CLOUD <span class="font-italic text-dark"> STORAGE</span></h3>
+            <h3 class="font-weight-bold mt-3 font-italic text-primary"> CLOUD <span class="font-italic text-dark"> STORAGE</span></h3>
         </div>
         <form action="<?= base_url('login') ?>" method="post">
             <?= csrf_field() ?>
@@ -71,7 +71,7 @@
                     </div>
                 <?php endif; ?>
             </div>
-            <button type="submit" class="btn btn-danger btn-block mb-3">Login</button>
+            <button type="submit" class="btn btn-primary btn-block mb-3">Login</button>
         </form>
     </div>
 

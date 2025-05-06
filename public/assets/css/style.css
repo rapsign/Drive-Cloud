@@ -1,428 +1,405 @@
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: #f8f9fa;
+}
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-        }
+.navbar {
+  background-color: #4285f4;
+  color: white;
+  position: fixed; /* Mengatur posisi tetap */
+  top: 0; /* Menetapkan posisi di bagian atas */
+  left: 0; /* Menetapkan posisi di bagian kiri */
+  right: 0; /* Menetapkan posisi di bagian kanan */
+  z-index: 1100; /* Pastikan navbar berada di atas konten */
+}
 
-        .navbar {
-            background-color: #4285f4;
-            color: white;
-            position: fixed; /* Mengatur posisi tetap */
-            top: 0; /* Menetapkan posisi di bagian atas */
-            left: 0; /* Menetapkan posisi di bagian kiri */
-            right: 0; /* Menetapkan posisi di bagian kanan */
-            z-index: 1100; /* Pastikan navbar berada di atas konten */
-        }
+.navbar-brand,
+.nav-link {
+  color: white !important;
+}
 
-        .navbar-brand,
-        .nav-link {
-            color: white !important;
-        }
+/* CSS untuk tampilan daftar */
+.list-view .file-item {
+  display: block;
+}
 
-        /* CSS untuk tampilan daftar */
-        .list-view .file-item {
-            display: block;
-        }
+/* CSS untuk tampilan ikon */
+.icon-view .file-item {
+  display: inline-block;
+}
+main {
+  margin-top: 80px;
+  height: 100%;
+}
 
-        /* CSS untuk tampilan ikon */
-        .icon-view .file-item {
-            display: inline-block;
-        }
-        main{
-            margin-top: 80px;
-        }
+.sidebar {
+  background-color: #ffffff;
+  border-right: 1px solid #dee2e6;
+  padding: 20px 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 1000;
+  overflow-y: auto;
+  width: 250px;
+  /* lebar sidebar */
+}
 
-        .sidebar {
-            background-color: #ffffff;
-            border-right: 1px solid #dee2e6;
-            padding: 20px 0;
-            position: fixed;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            z-index: 1000;
-            overflow-y: auto;
-            width: 250px;
-            /* lebar sidebar */
-        }
+.sidebar .nav-link {
+  color: black !important;
+}
 
-        .sidebar .nav-link {
-            color: black !important;
-        }
+.sidebar .nav-link i {
+  margin-right: 10px;
+}
 
-        .sidebar .nav-link i {
-            margin-right: 10px;
-        }
+.content {
+  padding: 20px;
+  margin-left: 250px;
+  /* Adjust based on your sidebar width */
+}
 
-        .content {
-            padding: 20px;
-            margin-left: 250px;
-            /* Adjust based on your sidebar width */
-        }
+.file-item {
+  margin-bottom: 15px;
+}
 
-        .file-item {
-            margin-bottom: 15px;
-        }
+.file-icon {
+  font-size: 48px;
+  margin-bottom: 5px;
+  margin-left: 20px;
+}
 
-        .file-icon {
-            font-size: 48px;
-            margin-bottom: 5px;
-            margin-left: 20px;
+.file-icon-i {
+  margin-right: 20px;
+}
 
-        }
+.card-header {
+  padding: 12px 16px; /* Padding atas dan bawah 12px, kiri dan kanan 16px */
+  border-bottom: 1px solid #d8dbe0; /* Garis bawah header */
+  background-color: #ffffff; /* Warna latar belakang header */
+  border-radius: 8px 8px 0 0; /* Sudut header */
+}
 
-        .file-icon-i {
+.card-footer {
+  padding: 12px 16px; /* Padding atas dan bawah 12px, kiri dan kanan 16px */
+  border-top: 1px solid #d8dbe0; /* Garis atas footer */
+  background-color: #ffffff; /* Warna latar belakang footer */
+  border-radius: 0 0 8px 8px; /* Sudut footer */
+}
 
-            margin-right: 20px;
-        }
+.card {
+  margin-top: 10px;
+  font-size: small;
+  background-color: #f8f9fa; /* Warna latar belakang */
+  border: 2px solid #d8dbe0; /* Warna garis tepi */
+  border-radius: 8px; /* Sudut border */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Bayangan */
+}
 
+.search-form {
+  margin-bottom: 20px;
+}
 
+.search-form input[type="search"] {
+  border-radius: 30px;
+  /* More rounded corners */
+  padding: 25px 20px;
+  /* Adjust padding as needed */
+  border: none;
+  box-shadow: none;
+  /* Remove default input styles */
+  width: 80%;
+  /* Full width input */
+}
 
-        
-        .card-header {
-            padding: 12px 16px; /* Padding atas dan bawah 12px, kiri dan kanan 16px */
-            border-bottom: 1px solid #d8dbe0; /* Garis bawah header */
-            background-color: #ffffff; /* Warna latar belakang header */
-            border-radius: 8px 8px 0 0; /* Sudut header */
-        }
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
 
-        .card-footer {
-            padding: 12px 16px; /* Padding atas dan bawah 12px, kiri dan kanan 16px */
-            border-top: 1px solid #d8dbe0; /* Garis atas footer */
-            background-color: #ffffff; /* Warna latar belakang footer */
-            border-radius: 0 0 8px 8px; /* Sudut footer */
-        }
+  to {
+    opacity: 1;
+  }
+}
 
-        .card {
-            margin-top: 10px;
-            font-size: small;
-            background-color: #f8f9fa; /* Warna latar belakang */
-            border: 2px solid #d8dbe0; /* Warna garis tepi */
-            border-radius: 8px; /* Sudut border */
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Bayangan */
-        }
+.search-form button[type="submit"] {
+  border-radius: 30px;
+  /* More rounded corners */
+  padding: 10px 20px;
+  /* Adjust padding as needed */
+  margin-left: 10px;
+  /* Add some space between input and button */
+  background-color: #4285f4;
+  color: white;
+  border: none;
+}
 
+@media (max-width: 768px) {
+  .navbar {
+    position: relative;
+  }
+  .sidebar {
+    position: relative;
+    width: 100%;
+  }
 
-        .search-form {
-            margin-bottom: 20px;
-        }
+  .content {
+    margin-left: 0;
+  }
 
-        .search-form input[type="search"] {
-            border-radius: 30px;
-            /* More rounded corners */
-            padding: 25px 20px;
-            /* Adjust padding as needed */
-            border: none;
-            box-shadow: none;
-            /* Remove default input styles */
-            width: 85%;
-            /* Full width input */
-        }
+  .navbar-brand a {
+    display: none;
+  }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
+  .navbar-brand img {
+    display: inline;
+    height: 100px;
+  }
+}
+.nav-item.disabled .nav-link {
+  pointer-events: none;
+  cursor: default;
+}
 
-            to {
-                opacity: 1;
-            }
-        }
+.nav-item.disabled .nav-link.active {
+  pointer-events: none;
+}
 
-        .search-form button[type="submit"] {
-            border-radius: 30px;
-            /* More rounded corners */
-            padding: 10px 20px;
-            /* Adjust padding as needed */
-            margin-left: 10px;
-            /* Add some space between input and button */
-            background-color: #4285f4;
-            color: white;
-            border: none;
-        }
+.search-form input[type="search"] {
+  background-color: #e9ecef;
+}
 
-        @media (max-width: 768px) {
-            .navbar {
-                position: relative; /* Mengatur posisi tetap hanya pada mode desktop */
-             
-            }
-            .sidebar {
-                position: relative;
-                width: 100%;
-                /* Lebar maksimum saat mode mobile */
-            }
+.search-form input[type="search"]:focus {
+  background-color: #ffffff;
+}
 
-            .content {
-                margin-left: 0;
-                /* Hapus margin pada mode mobile */
-            }
+.dropdown-toggle.dropdown-toggle-no-caret::after {
+  display: none;
+}
 
-            .navbar-brand a {
-                display: none;
-            }
+.dropdown-submenu.dropdown-toggle.dropdown-toggle-no-caret::after {
+  display: none;
+}
+.btn-group {
+  position: relative;
+  display: inline-flex;
+  vertical-align: middle;
+}
 
-            .navbar-brand img {
-                display: inline;
-                height: 100px;
+.form-wipe {
+  transition: height 0.5s ease-in-out;
+  overflow: hidden;
+}
+.not-clickable {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 1;
+}
 
-            }
-        }
-        .nav-item.disabled .nav-link {
-            pointer-events: none;
-            /* Menonaktifkan klik pada tautan */
-            cursor: default;
-            /* Mengubah kursor menjadi default */
-        }
+.form-fade {
+  transition: opacity 0.5s ease-in-out;
+  opacity: 0;
+}
+.btn-secondary {
+  background-color: #e9ecef;
+  color: #212529;
+  border: none;
+  padding: 20px 20px;
+  width: 203px;
+  margin-top: 15px;
+  border-radius: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: small;
+}
 
-        .nav-item.disabled .nav-link.active {
-            pointer-events: none;
-            /* Menonaktifkan klik pada tautan aktif */
-        }
+.btn-secondary:hover {
+  background-color: #dee2e6;
+  color: #212529;
+}
 
-        .nav-item.disabled .nav-link {
-            text-align: center;
-            /* Mengatur teks menjadi tengah */
-        }
+.btn-secondary .fas.fa-folder {
+  font-size: 1.2em;
+}
 
-        /* Menjadikan warna latar belakang form sedikit abu-abu */
-        .search-form input[type="search"] {
-            background-color: #e9ecef;
-            /* Warna abu-abu */
-        }
+.btn-text {
+  margin-left: 5px;
+}
+.dropdown-toggle-split {
+  margin-left: -1px;
+  margin-right: 10px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
 
-        /* Mengubah warna latar belakang form menjadi putih saat di klik */
-        .search-form input[type="search"]:focus {
-            background-color: #ffffff;
-            /* Warna putih */
-        }
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  float: left;
+  min-width: 10rem;
+  padding: 0.5rem 0;
+  margin: 0.125rem 0 0;
+  font-size: 1rem;
+  color: #212529;
+  text-align: left;
+  list-style: none;
+  background-color: #fff;
+  background-clip: padding-box;
+  border-radius: 0.25rem;
+}
 
-        .dropdown-toggle.dropdown-toggle-no-caret::after {
-            display: none;
-            /* Hide the caret */
-        }
+.dropdown-menu.show {
+  display: block;
+}
 
-        .dropdown-submenu.dropdown-toggle.dropdown-toggle-no-caret::after {
-            display: none; /* Hide the caret */
-        }
-        .btn-group {
-            position: relative;
-            display: inline-flex;
-            vertical-align: middle;
-        }
-            /* CSS for wipe animation */
-        .form-wipe {
-            transition: height 0.5s ease-in-out;
-            overflow: hidden;
-        }
-        .not-clickable {
-            pointer-events: none; /* Prevents clicking */
-            cursor: not-allowed; /* Shows the not-allowed cursor */
-            opacity: 1; /* Ensures the button does not appear faded */
-        }
-        /* CSS for fade-in animation */
-        .form-fade {
-            transition: opacity 0.5s ease-in-out;
-            opacity: 0;
-        }
-        .btn-secondary {
-            background-color: #e9ecef; /* Light gray background */
-            color: #212529; /* Text color */
-            border: none;
-            padding: 20px 20px; /* Adjust padding as needed */ 
-            width: 203px; /* Adjusted width for the button */
-            margin-top: 15px;
-            border-radius: 12px; 
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-size: small;
-        }
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 0.25rem 1.5rem;
+  clear: both;
+  font-weight: 400;
+  color: #212529;
+  text-align: inherit;
+  white-space: nowrap;
+  background-color: transparent;
+  border: 0;
+}
 
-        .btn-secondary:hover {
-            background-color: #dee2e6;
-            color: #212529;
-        }
+.dropdown-item:hover,
+.dropdown-item:focus {
+  color: #212529;
+  text-decoration: none;
+  background-color: #f8f9fa;
+}
+.btn-plus {
+  padding: 10px 90px 10px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #4285f4;
+  color: #dee2e6;
+  margin-left: -20px;
+}
+.btn-plus:hover {
+  background-color: #2e79f3;
+}
+.nav-link {
+  margin-left: 20px;
+}
 
-        .btn-secondary .fas.fa-folder {
-            font-size: 1.2em; /* Adjust icon size */
-        }
-        
-        .btn-text {
-            margin-left: 5px; /* Adjust the gap between icon and text */
-        }
-        .dropdown-toggle-split {
-            margin-left: -1px;
-            margin-right: 10px;
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
-        }
-        
-        .dropdown-menu {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            z-index: 1000;
-            display: none;
-            float: left;
-            min-width: 10rem;
-            padding: 0.5rem 0;
-            margin: 0.125rem 0 0;
-            font-size: 1rem;
-            color: #212529;
-            text-align: left;
-            list-style: none;
-            background-color: #fff;
-            background-clip: padding-box;
-            border-radius: 0.25rem;
-        }
-        
-        .dropdown-menu.show {
-            display: block;
-        }
-        
-        .dropdown-item {
-            display: block;
-            width: 100%;
-            padding: 0.25rem 1.5rem;
-            clear: both;
-            font-weight: 400;
-            color: #212529;
-            text-align: inherit;
-            white-space: nowrap;
-            background-color: transparent;
-            border: 0;
-        }
-        
-        .dropdown-item:hover,
-        .dropdown-item:focus {
-            color: #212529;
-            text-decoration: none;
-            background-color: #f8f9fa;
-        }
-        .btn-plus {
-            padding: 10px 90px 10px 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            background-color: #4285f4;
-            color: #dee2e6;
-            margin-left: -20px;
-        }
-        .btn-plus:hover{
-            background-color: #2e79f3;
-        }
-        .nav-link{
-            margin-left: 20px;
-        }
-        /* Styling for the loading screen */
-        #loading-screen {
-            position: fixed;
-            z-index: 9999;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        /* Styling for the spinner */
-        .spinner-border {
-            width: 3rem;
-            height: 3rem;
-        }
-        .fade-in {
-            animation: fadeInAnimation 0.6s ease-in forwards;
-            opacity: 0;
-        }
-        
-        /* Definisikan animasi fade in */
-        @keyframes fadeInAnimation {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-        .file-name {
-            margin-top: 10px;
-            font-size: 15px;
-            color: #333;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            display: inline-block;
-            max-width: 200px;
-          }
-          .upload-button, .cancel-button {
-            margin-top: 20px;
-            display: inline-block;
-            margin-right: 10px;
-          }
-          .file-icon {
-            margin-right: 20px;
-            font-size: 1.5em;
-            margin-top: 12px;
-        }
-        .file-preview {
-            margin: 0; /* Menghilangkan margin */
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-        .file-preview img,
-        .file-preview video,
-        .file-preview embed,
-        .file-preview pre {
-            max-width: 100%;
-            max-height: 100%;
-        }
-        .card-header {
-            display: flex;
-            align-items: center; /* Menyamakan tinggi elemen */
-        }
+#loading-screen {
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-          .trash {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            flex-direction: row;
-            align-items: center;
-            padding: 0.5rem; /* equivalent to p-3 */
-            margin-bottom: 1rem; /* equivalent to mb-3 */
-            background-color: #dee2e6; /* equivalent to bg-secondary */
-            border-radius: 12px;
-            width: 100%; /* equivalent to rounded-pill */
-        }
-        .btn-trash{
-            border-radius: 12px;
-        }
-        .btn-trash:hover{
-            background-color: #c3c6c9;
-        }
-        @media (min-width: 768px) {
-            .trash {
-                flex-wrap: nowrap; /* equivalent to flex-md-nowrap */
-            }
-        }
-        @media (max-width: 768px) {
-            .trash {
-               text-align: center;
-            }
-            .btn-trash{
-                justify-content: center;
-            }
-        }
-        .card-body{
-            background-color: #e3e4e6;
-        }
-        .progress{
-            margin: 0 30px 0 30px;
-        }
-        .span-progress{
-            margin: 0 30px 0 30px;
-            font-size: small;
-        }
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+.fade-in {
+  animation: fadeInAnimation 0.6s ease-in forwards;
+  opacity: 0;
+}
+
+@keyframes fadeInAnimation {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.file-name {
+  margin-top: 10px;
+  font-size: 15px;
+  color: #333;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: inline-block;
+  max-width: 200px;
+}
+.upload-button,
+.cancel-button {
+  margin-top: 20px;
+  display: inline-block;
+  margin-right: 10px;
+}
+.file-icon {
+  margin-right: 20px;
+  font-size: 1.5em;
+  margin-top: 12px;
+}
+.file-preview {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+.file-preview img,
+.file-preview video,
+.file-preview embed,
+.file-preview pre {
+  max-width: 100%;
+  max-height: 100%;
+}
+.card-header {
+  display: flex;
+  align-items: center;
+}
+
+.trash {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #dee2e6;
+  border-radius: 12px;
+  width: 100%;
+}
+.btn-trash {
+  border-radius: 12px;
+}
+.btn-trash:hover {
+  background-color: #c3c6c9;
+}
+@media (min-width: 768px) {
+  .trash {
+    flex-wrap: nowrap;
+  }
+}
+@media (max-width: 768px) {
+  .trash {
+    text-align: center;
+  }
+  .btn-trash {
+    justify-content: center;
+  }
+}
+.card-body {
+  background-color: #e3e4e6;
+}
+.progress {
+  margin: 0 30px 0 30px;
+}
+.span-progress {
+  margin: 0 30px 0 30px;
+  font-size: small;
+}

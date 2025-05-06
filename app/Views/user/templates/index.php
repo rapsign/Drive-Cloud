@@ -28,19 +28,19 @@
         </div>
     </div>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-danger">
-    <a class="navbar-brand" href="<?= base_url() ?>">
-        <span class="d-none d-md-inline">Cloud Storage UIGM</span>
-        <img src="<?= base_url() ?>/assets/img/logo.png" class="d-inline d-md-none" alt="Drive Logo" style="height: 3rem;">
-    </a>
+    <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+        <a class="navbar-brand" href="<?= base_url('/user') ?>">
+            <span class="d-none d-md-inline">Cloud Storage UIGM</span>
+            <img src="<?= base_url() ?>/assets/img/logo.png" class="d-inline d-md-none" alt="Drive Logo" style="height: 3rem;">
+        </a>
 
-    <!-- Add the ml-auto class to push this element to the right -->
-    <span class="d-none d-sm-inline ml-auto "><?= session('name') ?></span>
+        <!-- Add the ml-auto class to push this element to the right -->
+        <span class="d-none d-sm-inline ml-auto "><?= session('name') ?></span>
 
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-</nav>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </nav>
 
 
     <div class="container-fluid">
@@ -51,15 +51,15 @@
                     <ul class="nav flex-column">
                         <li class="nav-item disabled">
                             <a class="nav-link active" href="<?= base_url('user') ?>">
-                            <?= session('name') ?>
+                                <?= session('name') ?>
                             </a>
                         </li>
                         <li class="nav-item">
                             <div class="dropdown nav-link">
-                                <button class="btn btn-plus bg-danger dropdown-toggle dropdown-toggle-no-caret" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-plus"></i> New</button>
+                                <button class="btn btn-plus bg-primary dropdown-toggle dropdown-toggle-no-caret" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-plus"></i> New</button>
                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated" aria-labelledby="dropdownMenuButton1">
                                     <a class="dropdown-item" href="<?= base_url('user/upload') ?>"><i class="fas fa-upload"></i> File Upload</a>
-                                    <div class="dropdown-divider"></div> <!-- Divider line -->
+                                    <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" type="button" data-toggle="modal" data-target="#staticBackdrop"><i class="fas fa-folder"></i> New Folder</a>
                                 </div>
                             </div>
@@ -99,21 +99,19 @@
             </nav>
 
             <!-- Main Content -->
-
             <?= $this->renderSection('page-content'); ?>
         </div>
         <footer class="py-3 my-4">
             <ul class="nav justify-content-center border-bottom border-top p-3 mb-3">
-            <li class=""><a href="<?= base_url('user') ?>" class="mx-2 text-dark">Home</a></li>
-            <li class=""><a href="<?= base_url('/user/trash') ?>" class="mx-2 text-dark">Trash</a></li>
-            <li class=""><a href="https://www.uigm.ac.id/" class="mx-2 text-dark">About</a></li>
+                <li class=""><a href="<?= base_url('user') ?>" class="mx-2 text-dark">Home</a></li>
+                <li class=""><a href="<?= base_url('/user/trash') ?>" class="mx-2 text-dark">Trash</a></li>
+                <!-- <li class=""><a href="https://www.uigm.ac.id/" class="mx-2 text-dark">About</a></li> -->
             </ul>
-            <p class="text-center text-body-secondary">&copy; 2024 created by rrain. All rights reserved</p>
+            <p class="text-center text-body-secondary">&copy; 2024 created by RapSign. All rights reserved</p>
         </footer>
     </div>
-    
+
     <?php
-    // Assume $folder_name is set somewhere in your code
     $folder_slug = isset($folder_slug) ? $folder_slug : '';
     ?>
     <div class="modal fade " id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -281,11 +279,10 @@
             if (document.readyState !== "complete") {
                 document.querySelector("#loading-screen").style.visibility = "visible";
             } else {
-                // Menunda penyembunyian loading screen selama 2 detik
                 setTimeout(function() {
                     document.querySelector("#loading-screen").style.display = "none";
                     document.querySelector("main").style.visibility = "visible";
-                }); // Ubah angka 2000 menjadi jumlah milidetik yang Anda inginkan
+                });
             }
         };
     </script>
@@ -364,7 +361,7 @@
                 $('#folder-move-list .list-group-item').removeClass('active');
                 $(this).addClass('active');
                 var selectedFolder = $(this).data('folder');
-                $('#selected').val(selectedFolder); // Debug log
+                $('#selected').val(selectedFolder);
                 $('#move-folder-button').prop('disabled', false);
             });
 
@@ -378,7 +375,7 @@
     </script>
     <script>
         function Delete(event) {
-            event.preventDefault(); // Menghentikan pengiriman formulir secara langsung
+            event.preventDefault();
 
             Swal.fire({
                 title: 'Are you sure?',
@@ -390,14 +387,14 @@
                 confirmButtonText: 'Move to trash'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    event.target.parentElement.submit(); // Teruskan penghapusan
+                    event.target.parentElement.submit();
                 }
             });
         }
     </script>
     <script>
         function fileDelete(event) {
-            event.preventDefault(); // Menghentikan pengiriman formulir secara langsung
+            event.preventDefault();
 
             Swal.fire({
                 title: 'Are you sure?',
@@ -409,14 +406,14 @@
                 confirmButtonText: 'Move to trash'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    event.target.parentElement.submit(); // Teruskan penghapusan
+                    event.target.parentElement.submit();
                 }
             });
         }
     </script>
     <script>
         function deleteTrash(event) {
-            event.preventDefault(); // Mencegah pengiriman formulir langsung
+            event.preventDefault();
             Swal.fire({
                 title: 'Delete forever?',
                 text: "All items in the trash will be deleted forever and you won't be able to restore it",
@@ -427,14 +424,14 @@
                 confirmButtonText: 'Delete forever'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    event.target.parentElement.submit(); // Kirim formulir untuk menghapus file
+                    event.target.parentElement.submit();
                 }
             });
         }
-        // Fungsi untuk menghapus file
+
         function deleteFile(event) {
-            event.preventDefault(); // Mencegah pengiriman formulir langsung
-            var fileName = event.target.parentElement.querySelector('[name="fileName"]').value; // Dapatkan nama file
+            event.preventDefault();
+            var fileName = event.target.parentElement.querySelector('[name="fileName"]').value;
             Swal.fire({
                 title: 'Delete forever?',
                 text: fileName + " will be deleted forever and you won't be able to restore it",
@@ -445,15 +442,14 @@
                 confirmButtonText: 'Delete forever'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    event.target.parentElement.submit(); // Kirim formulir untuk menghapus file
+                    event.target.parentElement.submit();
                 }
             });
         }
 
-        // Fungsi untuk menghapus folder
         function deleteFolder(event) {
-            event.preventDefault(); // Mencegah pengiriman formulir langsung
-            var folderName = event.target.parentElement.querySelector('[name="folderName"]').value; // Dapatkan nama folder
+            event.preventDefault();
+            var folderName = event.target.parentElement.querySelector('[name="folderName"]').value;
             Swal.fire({
                 title: 'Delete forever?',
                 text: folderName + " will be deleted forever and you won't be able to restore it",
@@ -464,7 +460,7 @@
                 confirmButtonText: 'forever'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    event.target.parentElement.submit(); // Kirim formulir untuk menghapus folder
+                    event.target.parentElement.submit();
                 }
             });
         }
@@ -493,16 +489,13 @@
     </script>
     <script>
         var myDropzone = new Dropzone("#kt_dropzonejs_example_1", {
-            url: "<?= base_url('user/addFiles') ?>", // Set the url for your upload script location
-            paramName: "file", // The name that will be used to transfer the file
+            url: "<?= base_url('user/addFiles') ?>",
+            paramName: "file",
             maxFiles: 10,
             maxFilesize: null,
             init: function() {
                 this.on("complete", function(file) {
-                    // Callback function when each file upload is complete
                     if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
-                        // Jika tidak ada file lagi yang sedang di-upload atau di-queue
-                        // Reload halaman setelah proses upload selesai
                         location.reload();
                     }
                 });
@@ -514,15 +507,12 @@
         var lastSegment = urlSegments[urlSegments.length - 1];
         var url = "<?= base_url('user/addFiles/') ?>" + lastSegment;
         var myDropzone = new Dropzone("#kt_dropzonejs_example_2", {
-            url: url, // Set the url for your upload script location
-            paramName: "file", // The name that will be used to transfer the file
+            url: url,
+            paramName: "file",
             maxFiles: 10,
             init: function() {
                 this.on("complete", function(file) {
-                    // Callback function when each file upload is complete
                     if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
-                        // Jika tidak ada file lagi yang sedang di-upload atau di-queue
-                        // Reload halaman setelah proses upload selesai
                         location.reload();
                     }
                 });
@@ -671,32 +661,20 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Function to adjust dropdown position
             function adjustDropdownPosition() {
                 document.querySelectorAll('.dropdown-submenu.dropright').forEach(function(element) {
-                    // Get bounding rectangle of the element
                     var rect = element.getBoundingClientRect();
-
-                    // Check if the element is near the right edge of the viewport
                     if (rect.right >= window.innerWidth) {
-                        // Change class from dropright to dropleft
                         element.classList.remove('dropright');
                         element.classList.add('dropleft');
                     } else {
-                        // Ensure it has the correct class if it's not near the edge
                         element.classList.remove('dropleft');
                         element.classList.add('dropright');
                     }
                 });
             }
-
-            // Adjust dropdown position on page load
             adjustDropdownPosition();
-
-            // Adjust dropdown position on window resize
             window.addEventListener('resize', adjustDropdownPosition);
-
-            // Handle click for nested dropdowns
             document.querySelectorAll('.dropdown-submenu .dropdown-toggle').forEach(function(element) {
                 element.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -710,8 +688,6 @@
                     }
                 });
             });
-
-            // Close nested dropdowns when clicking outside
             document.addEventListener('click', function(e) {
                 if (!e.target.closest('.dropdown-menu')) {
                     document.querySelectorAll('.dropdown-menu.show').forEach(function(menu) {
@@ -722,8 +698,6 @@
                     });
                 }
             });
-
-            // Close nested dropdowns when parent dropdown is closed
             document.querySelectorAll('.dropdown').forEach(function(dropdown) {
                 dropdown.addEventListener('hide.bs.dropdown', function() {
                     this.querySelectorAll('.dropdown-submenu .show').forEach(function(submenu) {
@@ -735,37 +709,24 @@
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Get the button and form elements
             const addFileButton = document.getElementById('addFileButton');
             const addFileForm = document.getElementById('addFileForm');
-
-            // Add click event listener to the button
             addFileButton.addEventListener('click', function() {
-                // Toggle the visibility of the form
                 addFileForm.style.display = addFileForm.style.display === 'none' ? 'block' : 'none';
             });
         });
     </script>
     <script>
-        // Ambil elemen progress bar
         var progressBar = document.getElementById('progressBar');
 
-        // Fungsi untuk mengatur persentase progres bar
         function setProgress(percent) {
-            // Bulatkan nilai persentase menjadi bilangan bulat
             var roundedPercent = Math.round(percent);
             progressBar.style.width = roundedPercent + '%';
             progressBar.innerHTML = roundedPercent + '%';
         }
-
-        // Kustom angka
         var currentNumber = <?= $size ?>;
         var totalNumber = 16106127360;
-
-        // Hitung persentase
         var percent = (currentNumber / totalNumber) * 100;
-
-        // Atur progres bar dengan persentase yang dihitung
         setProgress(percent);
     </script>
 </body>

@@ -5,7 +5,7 @@
     <div class="search-form">
         <form class="form-inline" method="get" action="<?= base_url('trash/search') ?>">
             <input class="form-control mr-sm-2 rounded-pill" type="search" name="q" placeholder="Search in Trash" aria-label="Search" value="<?= esc($keyword) ?>">
-            <button class="btn btn-primary bg-danger rounded-pill" type="submit"><i class="fas fa-search"></i></button>
+            <button class="btn btn-primary  rounded-pill" type="submit"><i class="fas fa-search"></i></button>
         </form>
     </div>
 
@@ -20,7 +20,7 @@
     <?php endif; ?>
 
     <?php if (empty($folders) && empty($files)) : ?>
-        <div class="d-flex justify-content-center align-items-center" style="height: 700px;">
+        <div class="d-flex justify-content-center align-items-center" style="height: 540px;">
             <div>
                 <h3 class="text-center">Nothing in trash</h3>
                 <p>Items in trash will be deleted forever</p>

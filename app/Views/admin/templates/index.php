@@ -36,7 +36,7 @@
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-danger fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <a class="navbar-brand" href="<?= base_url('admin') ?>">Cloud Storage</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -77,7 +77,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script type="text/javascript">
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#myTable').DataTable();
             responsive: true;
 
