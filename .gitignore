@@ -86,6 +86,7 @@ phpunit
 #-------------------------
 vendor/
 
+
 #-------------------------
 # IDE / Development Files
 #-------------------------
@@ -125,5 +126,5 @@ nb-configuration.xml
 /results/
 /phpunit*.xml
 /.phpunit.*.cache
-
 /public/files/*
+!/public/files/.gitkeep
